@@ -12,7 +12,12 @@ namespace MVCWebApp.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            if (Request.HttpContext.User != null)
+            {
+                return View(Request.HttpContext.User.Claims.ToList());
+            }
+
+            return View(null);
         }
 
         public IActionResult About()
