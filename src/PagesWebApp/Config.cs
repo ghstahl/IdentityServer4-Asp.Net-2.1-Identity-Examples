@@ -81,7 +81,32 @@ namespace PagesWebApp
                         "api1"
                     },
                     AllowOfflineAccess = true
+                },
+                new Client
+                {
+                    ClientId = "mvc2",
+                    ClientName = "MVC2 Client",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    RequireConsent = false,
+                    RedirectUris =
+                    {
+
+                        "https://localhost:44343/signin-oidc2"
+                    },
+                    PostLogoutRedirectUris =
+                    {
+
+                        "https://localhost:44343/Account/SignoutCallbackOidc"
+                    },
+                    FrontChannelLogoutSessionRequired = true,
+                    FrontChannelLogoutUri = "https://localhost:44343/Account/SignoutFrontChannel",
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile
+                    }
                 }
+
             };
         }
 
