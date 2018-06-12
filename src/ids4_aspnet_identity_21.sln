@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCWebApp", "MVCWebApp\MVCWebApp.csproj", "{055284F6-3D48-4376-9B98-2AA1339DF128}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MVCWebApp", "MVCWebApp\MVCWebApp.csproj", "{055284F6-3D48-4376-9B98-2AA1339DF128}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PagesWebApp", "PagesWebApp\PagesWebApp.csproj", "{C0BF7511-19E5-4740-9529-BD51BE41AE98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{055284F6-3D48-4376-9B98-2AA1339DF128}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{055284F6-3D48-4376-9B98-2AA1339DF128}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{055284F6-3D48-4376-9B98-2AA1339DF128}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0BF7511-19E5-4740-9529-BD51BE41AE98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0BF7511-19E5-4740-9529-BD51BE41AE98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0BF7511-19E5-4740-9529-BD51BE41AE98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0BF7511-19E5-4740-9529-BD51BE41AE98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
