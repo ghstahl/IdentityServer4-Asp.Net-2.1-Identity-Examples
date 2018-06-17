@@ -29,12 +29,6 @@ namespace PagesWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -46,10 +40,14 @@ namespace PagesWebApp
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddTransient<IEmailSender, EmailSender>();
+
             // configure identity server with in-memory stores, keys, clients and scopes
             services.AddIdentityServer(options =>
                 {
                     options.UserInteraction.LoginUrl = "/identity/account/login";
+                    options.UserInteraction.LogoutUrl = "/identity/account/logout";
+                    options.Authentication.CheckSessionCookieName = $".idsrv.session.{Configuration["appName"]}";
                 })
                 .AddDeveloperSigningCredential()
                 .AddInMemoryPersistedGrants()
@@ -58,7 +56,13 @@ namespace PagesWebApp
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<IdentityUser>();
 
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = Configuration["Google-ClientId"];
+                    options.ClientSecret = Configuration["Google-ClientSecret"];
+                });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,9 +79,9 @@ namespace PagesWebApp
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+           // app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
+         //   app.UseCookiePolicy();
 
             // app.UseAuthentication(); // not needed, since UseIdentityServer adds the authentication middleware
             app.UseIdentityServer();

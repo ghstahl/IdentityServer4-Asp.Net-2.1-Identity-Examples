@@ -90,8 +90,7 @@ namespace PagesWebApp
                     RequireConsent = false,
                     RedirectUris =
                     {
-
-                        "https://localhost:44343/signin-oidc2"
+                        "https://localhost:44343/signin-oidc-pages-webapp"
                     },
                     PostLogoutRedirectUris =
                     {
