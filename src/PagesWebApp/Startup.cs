@@ -67,6 +67,12 @@ namespace PagesWebApp
                 {
                     options.ClientId = Configuration["Google-ClientId"];
                     options.ClientSecret = Configuration["Google-ClientSecret"];
+                    options.Events.OnRemoteFailure = context =>
+                    {
+                        context.Response.Redirect("/");
+                        context.HandleResponse();
+                        return Task.CompletedTask;
+                    };
                 });
 
         }
