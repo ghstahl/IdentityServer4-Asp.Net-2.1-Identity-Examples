@@ -39,17 +39,26 @@
 
                                     <label>
                                         <input asp-for="@Model.ConsentViewModel.IdentityScopes[i].Name"
-                                               type="hidden"/>
+                                               type="hidden" />
                                         <input asp-for="@Model.ConsentViewModel.IdentityScopes[i].Required"
-                                               type="hidden"/>
+                                               type="hidden" />
                                         @if (!Model.ConsentViewModel.IdentityScopes[i].Required)
                                         {
                                             <input asp-for="@Model.ConsentViewModel.IdentityScopes[i].Checked"
                                                    class="consent-scopecheck"
                                                    type="checkbox"
-                                                   value="@Model.ConsentViewModel.IdentityScopes[i].Checked"/>
+                                                   value="@Model.ConsentViewModel.IdentityScopes[i].Checked" />
                                         }
-
+                                        else
+                                        {
+                                            <input asp-for="@Model.ConsentViewModel.IdentityScopes[i].Checked"
+                                                   type="hidden" />
+                                            <input asp-for="@Model.TrueRequiredPlaceHolder"
+                                                   class="consent-scopecheck"
+                                                   type="checkbox"
+                                                   disabled ="true"/>
+                                        }
+                                    
 
                                         <strong>@Model.ConsentViewModel.IdentityScopes[i].DisplayName</strong>
                                         @if (Model.ConsentViewModel.IdentityScopes[i].Emphasize)
@@ -58,8 +67,7 @@
                                         }
                                         @if (Model.ConsentViewModel.IdentityScopes[i].Required)
                                         {
-                                            <input asp-for="@Model.ConsentViewModel.IdentityScopes[i].Checked"
-                                                   type="hidden"/>
+                                          
                                             <span><em>(required)</em></span>
                                         }
                                         @if (Model.ConsentViewModel.IdentityScopes[i].Description != null)

@@ -27,7 +27,7 @@ namespace PagesWebApp.Areas.Identity.Pages.Consent
 
         [BindProperty] public ConsentViewModel ConsentViewModel { get; set; }
         [BindProperty] public List<ScopeViewModel> IdentityScopes { get; set; }
-
+        [BindProperty] public bool TrueRequiredPlaceHolder { get; set; } = true;
         public IndexModel(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
