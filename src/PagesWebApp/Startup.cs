@@ -53,6 +53,7 @@ namespace PagesWebApp
                 {
                     options.UserInteraction.LoginUrl = "/identity/account/login";
                     options.UserInteraction.LogoutUrl = "/identity/account/logout";
+                    options.UserInteraction.ConsentUrl = "/identity/consent";
                     options.Authentication.CheckSessionCookieName = $".idsrv.session.{Configuration["appName"]}";
                 })
                 .AddDeveloperSigningCredential()

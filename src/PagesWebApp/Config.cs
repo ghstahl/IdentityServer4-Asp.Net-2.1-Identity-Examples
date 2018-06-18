@@ -87,7 +87,7 @@ namespace PagesWebApp
                     ClientId = "mvc2",
                     ClientName = "MVC2 Client",
                     AllowedGrantTypes = GrantTypes.Implicit,
-                    RequireConsent = false,
+                    RequireConsent = true,
                     RedirectUris =
                     {
                         "https://localhost:44343/signin-oidc-pages-webapp"
