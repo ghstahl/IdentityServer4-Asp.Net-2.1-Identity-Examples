@@ -31,28 +31,31 @@ namespace PagesWebAppClient.Areas.Identity.Pages.Account
         }
         public async Task<IActionResult> OnGetAsync()
         {
-            var clientSignoutCallback = $"{Request.Scheme}://{Request.Host}/Identity/Account/SignoutCallbackOidc";
             // Get id_token first to seed the iframe logout
             var user = await _signInManager.UserManager.GetUserAsync(User);
             if (user != null)
             {
                 var openIdConnectSessionDetails = HttpContext.Session.Get<OpenIdConnectSessionDetails>(Wellknown.OIDCSessionKey);
-               
-                var discoverCacheContainer = _configuredDiscoverCacheContainerFactory.Get(openIdConnectSessionDetails.LoginProider);
-                var discoveryCache = await discoverCacheContainer.DiscoveryCache.GetAsync();
-                var endSession = discoveryCache.EndSessionEndpoint;
-                EndSessionUrl = $"{endSession}?id_token_hint={openIdConnectSessionDetails.OIDC["id_token"]}&post_logout_redirect_uri={clientSignoutCallback}";
-
                 // no matter what, we are logging out our own app.
                 // Do Not trust the provider to keep its end of the bargain to frontchannel sign us out.
                 await _signInManager.SignOutAsync();
                 _logger.LogInformation("User logged out.");
 
-                // this redirect is to the provider to log everyone else out.  
-                // We will get a double hit here, as our $"{Request.Scheme}://{Request.Host}/Account/SignoutFrontChannel";
-                // will get hit as well.  
-                return new RedirectResult(EndSessionUrl);
-                //return Page();  return this is you want iFrame loggout.  Your OIDC provider needs to let this go through though.
+                HttpContext.Session.Clear();
+        
+                if (openIdConnectSessionDetails != null)
+                {
+                    // we have an external OIDC provider here.
+                    var clientSignoutCallback = $"{Request.Scheme}://{Request.Host}/Identity/Account/SignoutCallbackOidc";
+                    var discoverCacheContainer = _configuredDiscoverCacheContainerFactory.Get(openIdConnectSessionDetails.LoginProider);
+                    var discoveryCache = await discoverCacheContainer.DiscoveryCache.GetAsync();
+                    var endSession = discoveryCache.EndSessionEndpoint;
+                    EndSessionUrl = $"{endSession}?id_token_hint={openIdConnectSessionDetails.OIDC["id_token"]}&post_logout_redirect_uri={clientSignoutCallback}";
+                    // this redirect is to the provider to log everyone else out.  
+                    // We will get a double hit here, as our $"{Request.Scheme}://{Request.Host}/Account/SignoutFrontChannel";
+                    // will get hit as well.  
+                    return new RedirectResult(EndSessionUrl);
+                }
             }
             return new RedirectResult("/");
         }
