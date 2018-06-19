@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PagesWebApp", "PagesWebApp\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PagesWebAppClient", "PagesWebAppClient\PagesWebAppClient.csproj", "{68993A91-3450-4839-ABFD-F0C00D4B824A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PagesWebAppClient-NoUserDatabase", "PagesWebAppClient-NoUserDatabase\PagesWebAppClient-NoUserDatabase.csproj", "{375E71AE-6175-43AB-91DF-0218A7CEAB77}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "P7.AspNetCore.Identity.InMemory", "P7.AspNetCore.Identity.InMemory\P7.AspNetCore.Identity.InMemory.csproj", "{799DA0D2-82D9-4BA3-9C09-40324E62B418}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityModelExtras", "IdentityModelExtras\IdentityModelExtras.csproj", "{A2AF9E93-C4C4-4132-9911-252907C34EA1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +27,18 @@ Global
 		{68993A91-3450-4839-ABFD-F0C00D4B824A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68993A91-3450-4839-ABFD-F0C00D4B824A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68993A91-3450-4839-ABFD-F0C00D4B824A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{375E71AE-6175-43AB-91DF-0218A7CEAB77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{375E71AE-6175-43AB-91DF-0218A7CEAB77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{375E71AE-6175-43AB-91DF-0218A7CEAB77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{375E71AE-6175-43AB-91DF-0218A7CEAB77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{799DA0D2-82D9-4BA3-9C09-40324E62B418}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{799DA0D2-82D9-4BA3-9C09-40324E62B418}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{799DA0D2-82D9-4BA3-9C09-40324E62B418}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{799DA0D2-82D9-4BA3-9C09-40324E62B418}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2AF9E93-C4C4-4132-9911-252907C34EA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2AF9E93-C4C4-4132-9911-252907C34EA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2AF9E93-C4C4-4132-9911-252907C34EA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2AF9E93-C4C4-4132-9911-252907C34EA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
