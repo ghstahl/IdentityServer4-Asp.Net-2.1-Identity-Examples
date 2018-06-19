@@ -105,7 +105,30 @@ namespace PagesWebApp
                         IdentityServerConstants.StandardScopes.Profile
                     }
                 }
+                ,
+                new Client
+                {
+                    ClientId = "PagesWebAppClient",
+                    ClientName = "PagesWebAppClient Client",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    RequireConsent = true,
+                    RedirectUris =
+                    {
+                        "https://localhost:44307/signin-oidc-pages-webapp-client"
+                    },
+                    PostLogoutRedirectUris =
+                    {
 
+                        "https://localhost:44307/Identity/Account/SignoutCallbackOidc"
+                    },
+                    FrontChannelLogoutSessionRequired = true,
+                    FrontChannelLogoutUri = "https://localhost:44307/Identity/Account/SignoutFrontChannel",
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile
+                    }
+                }
             };
         }
 
