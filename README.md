@@ -15,3 +15,11 @@ This is a full on asp.net 2.1 Identity app, which has its own user database.  Th
 
 [PagesWebAppClient-NoUserDatabase](src/PagesWebAppClient-NoUserDatabase)  
 This is still using asp.net 2.1 Identity, however the user database is in-memory.  A little trick I do is during the [ExternalLogin Callback](src/PagesWebAppClient-NoUserDatabase/Areas/Identity/Pages/Account/ExternalLogin.cshtml.cs)  I create the user, sign them in, and then promptly delete the user.  I have found out that in the case of using an external system as my user database, that there is no need to call any UserManager stuff.  This one only points to our single OIDC [PagesWebApp](src/PagesWebApp)  
+
+
+# References
+[learnrazorpages](https://www.learnrazorpages.com/razor-pages)  
+[IdentityServer4.AspNetIdentity](https://github.com/IdentityServer/IdentityServer4.AspNetIdentity)  
+[asp.net core 2.1](https://docs.microsoft.com/en-us/aspnet/core/aspnetcore-2.1?view=aspnetcore-2.1)  
+
+
