@@ -63,11 +63,15 @@ namespace PagesWebApp
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<IdentityUser>();
 
-            services.AddAuthentication()
-                .AddGoogle(options =>
+            var authenticationBuilder = services.AddAuthentication();
+            var googleClientId = Configuration["Google-ClientId"];
+            var googleClientSecret = Configuration["Google-ClientSecret"];
+            if (!string.IsNullOrEmpty(googleClientId) && !string.IsNullOrEmpty(googleClientSecret))
+            {
+                authenticationBuilder.AddGoogle(options =>
                 {
-                    options.ClientId = Configuration["Google-ClientId"];
-                    options.ClientSecret = Configuration["Google-ClientSecret"];
+                    options.ClientId = googleClientId;
+                    options.ClientSecret = googleClientSecret;
                     options.Events.OnRemoteFailure = context =>
                     {
                         context.Response.Redirect("/");
@@ -75,6 +79,8 @@ namespace PagesWebApp
                         return Task.CompletedTask;
                     };
                 });
+            }
+                
 
         }
 
