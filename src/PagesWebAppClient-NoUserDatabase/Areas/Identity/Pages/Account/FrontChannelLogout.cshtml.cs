@@ -33,19 +33,15 @@ namespace PagesWebAppClient.Areas.Identity.Pages.Account
         {
             if (User.Identity.IsAuthenticated)
             {
-                var idTokenClaim = (from claim in User.Claims
-                    where claim.Type == "id_token"
-                    select claim).FirstOrDefault();
-                var loginProviderClaim = (from claim in User.Claims
-                    where claim.Type == "login_provider"
-                                          select claim).FirstOrDefault();
                 string idToken = null;
                 string loginProvider = null;
-                if (idTokenClaim != null && loginProviderClaim != null)
+                var openIdConnectSessionDetails = HttpContext.Session.Get<OpenIdConnectSessionDetails>(Wellknown.OIDCSessionKey);
+                if (openIdConnectSessionDetails != null)
                 {
-                    idToken = idTokenClaim.Value;
-                    loginProvider = loginProviderClaim.Value;
+                    idToken = openIdConnectSessionDetails.OIDC["id_token"];
+                    loginProvider = openIdConnectSessionDetails.LoginProider;
                 }
+
                 /*
                 var openIdConnectSessionDetails = HttpContext.Session.Get<OpenIdConnectSessionDetails>(Wellknown.OIDCSessionKey);
                 if (openIdConnectSessionDetails != null)

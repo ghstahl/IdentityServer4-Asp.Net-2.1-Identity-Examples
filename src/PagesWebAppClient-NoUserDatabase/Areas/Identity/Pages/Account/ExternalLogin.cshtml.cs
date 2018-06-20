@@ -163,7 +163,6 @@ namespace PagesWebAppClient.Areas.Identity.Pages.Account
                 var eClaims = new List<Claim>
                 {
                     new Claim("display-name", displayName),
-                    new Claim("id_token",oidc["id_token"]),
                     new Claim("login_provider",info.LoginProvider)
                 };
                 // normalized id.
