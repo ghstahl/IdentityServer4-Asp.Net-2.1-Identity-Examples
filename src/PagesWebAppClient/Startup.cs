@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using PagesWebAppClient.ClaimsFactory;
 using PagesWebAppClient.Services;
 using PagesWebAppClient.Utils;
 
@@ -47,12 +48,17 @@ namespace PagesWebAppClient
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.ConfigureApplicationCookie(options => {
                 options.Cookie.Name = $"{Configuration["applicationName"]}.AspNetCore.Identity.Application";
             });
-            
+
+            services
+                .AddScoped
+                <Microsoft.AspNetCore.Identity.IUserClaimsPrincipalFactory<IdentityUser>,
+                    AppClaimsPrincipalFactory<IdentityUser, IdentityRole>>();
+
             // Hosting doesn't add IHttpContextAccessor by default
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IEmailSender, EmailSender>();

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -82,19 +83,25 @@ namespace PagesWebAppClient.Areas.Identity.Pages.Account
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
             var oidc = await HarvestOidcDataAsync();
+            // this is the session alternative to storing tokens
             HttpContext.Session.Set(Wellknown.OIDCSessionKey, new OpenIdConnectSessionDetails
             {
                 LoginProider = info.LoginProvider,
                 OIDC = oidc
             });
 
+            // here we add the OIDC Login details into the item.
+            // This will later be picked up by AppClaimsPrincipalFactory which will add the loginProvider as a claim.
+            HttpContext.Items[Wellknown.OIDCSessionKey] = new OpenIdConnectSessionDetails
+            {
+                LoginProider = info.LoginProvider
+            };
 
-            ((ClaimsIdentity)info.Principal.Identity).AddClaim(new Claim("id_token", oidc["id_token"]));
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor : true);
-
+           
             if (result.Succeeded)
-            {    
+            {   
                 // Update the token
                 await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
 
@@ -107,6 +114,14 @@ namespace PagesWebAppClient.Areas.Identity.Pages.Account
             }
             else
             {
+                var openIdConnectSessionDetails = new OpenIdConnectSessionDetails
+                {
+                    LoginProider = info.LoginProvider,
+                    OIDC = oidc
+                };
+
+                HttpContext.Response.Cookies.Set(Wellknown.OIDCSessionKey, openIdConnectSessionDetails,5);
+              
                 // If the user does not have an account, then ask the user to create an account.
                 ReturnUrl = returnUrl;
                 LoginProvider = info.LoginProvider;
