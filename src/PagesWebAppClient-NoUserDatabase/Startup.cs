@@ -17,7 +17,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using P7.AspNetCore.Identity.InMemory;
 using PagesWebAppClient.InMemory;
 using PagesWebAppClient.Services;
 using PagesWebAppClient.Utils;

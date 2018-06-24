@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Identity.Contrib.InMemoryStore" Version="1.0.0-alpha-5" />
     <PackageReference Include="IdentityModel" Version="3.7.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.0" PrivateAssets="All" />
@@ -18,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IdentityModelExtras\IdentityModelExtras.csproj" />
-    <ProjectReference Include="..\P7.AspNetCore.Identity.InMemory\P7.AspNetCore.Identity.InMemory.csproj" />
   </ItemGroup>
 
 </Project>
