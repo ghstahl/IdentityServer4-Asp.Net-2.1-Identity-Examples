@@ -46,9 +46,11 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
             public string Email { get; set; }
         }
 
-        public IActionResult OnGetAsync()
+        public IActionResult OnGetAsync(string provider, string returnUrl = null)
         {
-            return RedirectToPage("./Login");
+            var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return new ChallengeResult(provider, properties);
         }
 
         public IActionResult OnPost(string provider, string returnUrl = null)

@@ -30,15 +30,19 @@ namespace PagesWebAppClient.Utils
                         select item;
                     var record = query.FirstOrDefault();
 
-                    var discoveryClient = new DiscoveryClient(record.Authority) { Policy = { ValidateEndpoints = false } };
+                    //      var discoveryClient = new DiscoveryClient(record.Authority) { Policy = { ValidateEndpoints = false } };
+                    var discoveryPolicy = new DiscoveryPolicy()
+                    {
+                        ValidateEndpoints = false
+                    };
                     if (record.AdditionalEndpointBaseAddresses != null)
                     {
                         foreach (var additionalEndpointBaseAddress in record.AdditionalEndpointBaseAddresses)
                         {
-                            discoveryClient.Policy.AdditionalEndpointBaseAddresses.Add(additionalEndpointBaseAddress);
+                            discoveryPolicy.AdditionalEndpointBaseAddresses.Add(additionalEndpointBaseAddress);
                         }
                     }
-                    _discoveryCache = new DiscoveryCache(discoveryClient);
+                    _discoveryCache = new DiscoveryCache(record.Authority,policy: discoveryPolicy);
                 }
                 return _discoveryCache;
             }

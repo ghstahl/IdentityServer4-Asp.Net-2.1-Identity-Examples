@@ -53,8 +53,22 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
+            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+            var idpProvider = (from item in context.AcrValues
+                where item.StartsWith("idp=")
+                select item.Substring(4)).FirstOrDefault();
+            if (!string.IsNullOrEmpty(idpProvider))
+            {
+
+                var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
+                var properties = _signInManager.ConfigureExternalAuthenticationProperties(
+                    idpProvider, redirectUrl);
+                return new ChallengeResult(idpProvider, properties);
+
+            }
+
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -68,6 +82,7 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(string button, string returnUrl = null)
