@@ -38,7 +38,7 @@ namespace PagesWebApp
                     ClientId = "support",
                     ClientName = "Support Client",
                     AllowedGrantTypes = GrantTypes.Implicit,
-                    RequireConsent = true,
+                    RequireConsent = false,
                     RedirectUris =
                     {
                         "https://localhost:44317/signin-support"
