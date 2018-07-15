@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PagesWebAppClient-NoUserDat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityModelExtras", "IdentityModelExtras\IdentityModelExtras.csproj", "{A2AF9E93-C4C4-4132-9911-252907C34EA1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore.Identity.Neo4j", "AspNetCore.Identity.Neo4j\AspNetCore.Identity.Neo4j.csproj", "{2D86D385-2961-411E-A2D6-25DBD289F3DB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PagesWebApp.AspNetCoreNeo4j", "PagesWebApp.AspNetCoreNeo4j\PagesWebApp.AspNetCoreNeo4j.csproj", "{CB62AF2F-B692-4FF7-9683-7A29ED0104D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{A2AF9E93-C4C4-4132-9911-252907C34EA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2AF9E93-C4C4-4132-9911-252907C34EA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2AF9E93-C4C4-4132-9911-252907C34EA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D86D385-2961-411E-A2D6-25DBD289F3DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D86D385-2961-411E-A2D6-25DBD289F3DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D86D385-2961-411E-A2D6-25DBD289F3DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D86D385-2961-411E-A2D6-25DBD289F3DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB62AF2F-B692-4FF7-9683-7A29ED0104D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB62AF2F-B692-4FF7-9683-7A29ED0104D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB62AF2F-B692-4FF7-9683-7A29ED0104D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB62AF2F-B692-4FF7-9683-7A29ED0104D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

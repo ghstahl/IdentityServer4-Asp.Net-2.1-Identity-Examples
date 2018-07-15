@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <PackageId>AspNetCore.Identity.Neo4j</PackageId>
+        <PackageTags>aspnetcore;identity;membership;neo4j</PackageTags>
+        <Title>AspNetCore.Identity.Neo4j</Title>
+        <Description>ASP.NET Core Identity provider based on Neo4j</Description>
+        <Authors>Mike Mazmanyan</Authors>
+        <TargetFrameworks>netstandard2.0</TargetFrameworks>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <FileVersion>1.0.0</FileVersion>
+        <VersionPrefix>1.0.0</VersionPrefix>
+        <Optimize Condition="'$(Configuration)'!='Debug'">true</Optimize>
+        <VersionSuffix>alpha1</VersionSuffix>
+        <Copyright>Copyright (c) 2017 Mkrtich Mazmanyan</Copyright>
+        <PackageLicenseUrl>https://github.com/dopare/AspNetCore.Identity.Neo4j/master/LICENSE.md</PackageLicenseUrl>
+        <PackageProjectUrl>https://github.com/dopare/AspNetCore.Identity.Neo4j</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/dopare/AspNetCore.Identity.Neo4j</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <NeutralLanguage>en-US</NeutralLanguage>
+        <SignAssembly>false</SignAssembly>
+        <AssemblyOriginatorKeyFile>..\..\build\Key.snk</AssemblyOriginatorKeyFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\..\LICENSE.md" Pack="true" PackagePath="LICENSE.md" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.2" />
+        <PackageReference Include="Neo4j.Driver" Version="1.6.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    </ItemGroup>
+</Project>
