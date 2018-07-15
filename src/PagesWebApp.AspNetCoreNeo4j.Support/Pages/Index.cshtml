@@ -1,0 +1,40 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    var signedIn = SignInManager.IsSignedIn(User);
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <h2>Application uses</h2>
+        <ul>
+            <li><a href="/.well-known/openid-configuration">Discovery Endpoint</a></li>
+            @if (signedIn)
+            {
+                <li><a href="/Identity/Grants">Manage Grants</a></li>
+            }
+        </ul>
+    </div>
+    @if (signedIn)
+    {
+        <div class="col-md-3">
+            <h2>User</h2>
+            <ul>
+                @if (Model != null)
+                {        
+                    foreach (var claim in Model.Claims)
+                    {
+                        var item = $"{claim.Type} :: {claim.Value}";
+                        <li>@item</li>
+                    }
+                }
+            </ul>
+        </div>
+    }
+
+</div>

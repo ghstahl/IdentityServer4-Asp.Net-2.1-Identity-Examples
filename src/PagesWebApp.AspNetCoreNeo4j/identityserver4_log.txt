@@ -1875,3 +1875,314 @@ System.NullReferenceException: Object reference not set to an instance of an obj
 2018-07-15 05:51:25.226 -07:00 [INF] AuthenticationScheme: Identity.Application signed out.
 2018-07-15 05:51:25.226 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
 2018-07-15 05:51:25.226 -07:00 [INF] AuthenticationScheme: Identity.TwoFactorUserId signed out.
+2018-07-15 06:42:54.150 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 06:42:54.192 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 06:42:54.196 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 06:42:54.196 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 06:42:54.196 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 06:42:54.196 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 06:54:19.998 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 06:54:20.039 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 06:54:20.042 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 06:54:20.042 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 06:54:20.042 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 06:54:20.042 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 06:55:20.297 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 06:55:20.341 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 06:55:20.344 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 06:55:20.344 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 06:55:20.344 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 06:55:20.344 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 06:57:17.758 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 06:57:17.804 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 06:57:17.806 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 06:57:17.806 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 06:57:17.807 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 06:57:17.807 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 06:59:00.566 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 06:59:00.615 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 06:59:00.618 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 06:59:00.618 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 06:59:00.619 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 06:59:00.619 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 07:02:12.965 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 07:02:13.012 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 07:02:13.015 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 07:02:13.015 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 07:02:13.015 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 07:02:13.016 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 07:25:12.839 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 07:25:12.885 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 07:25:12.887 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 07:25:12.888 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 07:25:12.888 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 07:25:12.888 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 07:30:53.431 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 07:30:53.475 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 07:30:53.478 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 07:30:53.478 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 07:30:53.478 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 07:30:53.478 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 07:31:45.132 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 07:31:45.179 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 07:31:45.182 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 07:31:45.182 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 07:31:45.182 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 07:31:45.182 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 07:32:56.153 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 07:32:56.195 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 07:32:56.198 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 07:32:56.198 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 07:32:56.198 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 07:32:56.198 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 07:33:09.574 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 07:33:09.613 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 07:33:09.616 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 07:33:09.616 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 07:33:09.616 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 07:33:09.616 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 07:33:22.116 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 07:33:22.158 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 07:33:22.161 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 07:33:22.161 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 07:33:22.161 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 07:33:22.161 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 07:48:57.005 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 07:48:57.051 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 07:48:57.054 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 07:48:57.054 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 07:48:57.054 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 07:48:57.054 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 08:40:20.740 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 08:40:20.787 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 08:40:20.790 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 08:40:20.790 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 08:40:20.790 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 08:40:20.790 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 08:40:23.240 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 08:42:15.961 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 08:42:16.008 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 08:42:16.011 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 08:42:16.011 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 08:42:16.011 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 08:42:16.011 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 08:45:31.355 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 08:45:31.395 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 08:45:31.398 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 08:45:31.398 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 08:45:31.398 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 08:45:31.398 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 08:48:35.142 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 08:48:35.181 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 08:48:35.184 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 08:48:35.184 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 08:48:35.184 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 08:48:35.184 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 08:51:24.133 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 08:51:24.173 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 08:51:24.176 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 08:51:24.176 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 08:51:24.176 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 08:51:24.176 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 09:12:59.500 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 09:12:59.542 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 09:12:59.545 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 09:12:59.545 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 09:12:59.545 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 09:12:59.545 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 09:13:03.351 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 09:13:07.148 -07:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: IDX20803: Unable to obtain configuration from: 'https://localhost:44318/.well-known/openid-configuration'. ---> System.IO.IOException: IDX20804: Unable to retrieve document from: 'https://localhost:44318/.well-known/openid-configuration'. ---> System.Net.Http.HttpRequestException: Response status code does not indicate success: 500 (Internal Server Error).
+   at System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()
+   at Microsoft.IdentityModel.Protocols.HttpDocumentRetriever.GetDocumentAsync(String address, CancellationToken cancel)
+   --- End of inner exception stack trace ---
+   at Microsoft.IdentityModel.Protocols.HttpDocumentRetriever.GetDocumentAsync(String address, CancellationToken cancel)
+   at Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectConfigurationRetriever.GetAsync(String address, IDocumentRetriever retriever, CancellationToken cancel)
+   at Microsoft.IdentityModel.Protocols.ConfigurationManager`1.GetConfigurationAsync(CancellationToken cancel)
+   --- End of inner exception stack trace ---
+   at Microsoft.IdentityModel.Protocols.ConfigurationManager`1.GetConfigurationAsync(CancellationToken cancel)
+   at Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectHandler.HandleChallengeAsync(AuthenticationProperties properties)
+   at Microsoft.AspNetCore.Authentication.AuthenticationHandler`1.ChallengeAsync(AuthenticationProperties properties)
+   at Microsoft.AspNetCore.Authentication.AuthenticationService.ChallengeAsync(HttpContext context, String scheme, AuthenticationProperties properties)
+   at Microsoft.AspNetCore.Mvc.ChallengeResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultAsync(IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResultFilterAsync[TFilter,TFilterAsync]()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeResultFilters()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeNextResourceFilter()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Builder.RouterMiddleware.Invoke(HttpContext httpContext)
+   at IdentityServer4.Hosting.IdentityServerMiddleware.Invoke(HttpContext context, IEndpointRouter router, IUserSession session, IEventService events) in C:\local\identity\server4\IdentityServer4\src\IdentityServer4\Hosting\IdentityServerMiddleware.cs:line 72
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Cors.Infrastructure.CorsMiddleware.Invoke(HttpContext context)
+   at IdentityServer4.Hosting.BaseUrlMiddleware.Invoke(HttpContext context) in C:\local\identity\server4\IdentityServer4\src\IdentityServer4\Hosting\BaseUrlMiddleware.cs:line 43
+   at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2018-07-15 10:21:01.825 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 10:21:01.885 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 10:21:01.889 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 10:21:01.889 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 10:21:01.889 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 10:21:01.889 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 10:22:19.561 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 10:22:19.603 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 10:22:19.606 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 10:22:19.606 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 10:22:19.606 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 10:22:19.606 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 10:25:14.360 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 10:25:14.402 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 10:25:14.405 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 10:25:14.405 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 10:25:14.405 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 10:25:14.405 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 10:25:45.061 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 10:25:47.194 -07:00 [INF] AuthenticationScheme: Support was challenged.
+2018-07-15 10:25:53.252 -07:00 [DBG] CORS request made for path: /signin-support from origin: null but was ignored because path was not for an allowed IdentityServer CORS endpoint
+2018-07-15 10:25:53.288 -07:00 [INF] AuthenticationScheme: Identity.External signed in.
+2018-07-15 10:25:53.305 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:53.305 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:53.581 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:53.582 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:53.582 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:53.582 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:53.625 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:53.625 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:53.631 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:53.631 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:59.557 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:59.557 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:59.603 -07:00 [WRN] User 9248653f-98ab-40a6-87b3-b02f51ddd56c validation failed: DuplicateUserName.
+2018-07-15 10:25:59.621 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:59.621 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:59.621 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:59.621 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:59.655 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:59.655 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:59.662 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 10:25:59.662 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:33:14.001 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 11:33:14.042 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 11:33:14.045 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 11:33:14.045 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 11:33:14.045 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 11:33:14.045 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 11:33:38.323 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 11:34:24.644 -07:00 [INF] AuthenticationScheme: Support was challenged.
+2018-07-15 11:34:33.963 -07:00 [DBG] CORS request made for path: /signin-support from origin: null but was ignored because path was not for an allowed IdentityServer CORS endpoint
+2018-07-15 11:34:33.998 -07:00 [INF] AuthenticationScheme: Identity.External signed in.
+2018-07-15 11:34:34.005 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:34:34.005 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:19.364 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 11:49:19.405 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 11:49:19.407 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 11:49:19.408 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 11:49:19.408 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 11:49:19.408 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 11:49:19.967 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:19.981 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:25.976 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:25.976 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:26.031 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 11:49:26.122 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:26.122 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:26.122 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:26.122 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:26.168 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:26.168 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:26.180 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:26.180 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:27.049 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:27.049 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:27.481 -07:00 [INF] AuthenticationScheme: Support was challenged.
+2018-07-15 11:49:27.578 -07:00 [DBG] CORS request made for path: /signin-support from origin: null but was ignored because path was not for an allowed IdentityServer CORS endpoint
+2018-07-15 11:49:27.618 -07:00 [INF] AuthenticationScheme: Identity.External signed in.
+2018-07-15 11:49:27.623 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:49:27.623 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:20.882 -07:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2018-07-15 11:54:20.922 -07:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-07-15 11:54:20.925 -07:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-07-15 11:54:20.925 -07:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-07-15 11:54:20.925 -07:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-07-15 11:54:20.925 -07:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-07-15 11:54:21.388 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:21.402 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:23.545 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:23.546 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:23.604 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 11:54:23.691 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:23.691 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:23.691 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:23.691 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:23.727 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:23.727 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:23.739 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:23.739 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:24.816 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:24.816 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:25.230 -07:00 [INF] AuthenticationScheme: Support was challenged.
+2018-07-15 11:54:25.328 -07:00 [DBG] CORS request made for path: /signin-support from origin: null but was ignored because path was not for an allowed IdentityServer CORS endpoint
+2018-07-15 11:54:25.370 -07:00 [INF] AuthenticationScheme: Identity.External signed in.
+2018-07-15 11:54:25.376 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:25.376 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:36.748 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 11:54:36.794 -07:00 [DBG] Augmenting SignInContext
+2018-07-15 11:54:36.796 -07:00 [DBG] Removing amr claim with value: Support
+2018-07-15 11:54:36.796 -07:00 [DBG] Adding idp claim with value: Support
+2018-07-15 11:54:36.796 -07:00 [DBG] Adding amr claim with value: external
+2018-07-15 11:54:36.797 -07:00 [DBG] Adding auth_time claim with value: 1531680876
+2018-07-15 11:54:36.801 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:54:36.804 -07:00 [INF] AuthenticationScheme: Identity.Application signed in.
+2018-07-15 11:54:40.247 -07:00 [INF] null logged in with Support provider.
+2018-07-15 11:54:50.552 -07:00 [INF] AuthenticationScheme: Identity.Application signed out.
+2018-07-15 11:54:50.552 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 11:54:50.553 -07:00 [INF] AuthenticationScheme: Identity.TwoFactorUserId signed out.
+2018-07-15 11:54:50.559 -07:00 [INF] AuthenticationScheme: Support signed out.
+2018-07-15 11:55:10.253 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 11:55:13.993 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 11:55:15.344 -07:00 [INF] AuthenticationScheme: Support was challenged.
+2018-07-15 11:55:19.115 -07:00 [DBG] CORS request made for path: /signin-support from origin: null but was ignored because path was not for an allowed IdentityServer CORS endpoint
+2018-07-15 11:55:19.117 -07:00 [INF] AuthenticationScheme: Identity.External signed in.
+2018-07-15 11:55:19.123 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:55:19.123 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:55:23.076 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 11:55:23.088 -07:00 [DBG] Augmenting SignInContext
+2018-07-15 11:55:23.089 -07:00 [DBG] Removing amr claim with value: Support
+2018-07-15 11:55:23.089 -07:00 [DBG] Adding idp claim with value: Support
+2018-07-15 11:55:23.089 -07:00 [DBG] Adding amr claim with value: external
+2018-07-15 11:55:23.089 -07:00 [DBG] Adding auth_time claim with value: 1531680923
+2018-07-15 11:55:23.089 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:55:23.089 -07:00 [INF] AuthenticationScheme: Identity.Application signed in.
+2018-07-15 11:55:28.410 -07:00 [INF] null logged in with Support provider.
+2018-07-15 11:55:39.174 -07:00 [INF] AuthenticationScheme: Identity.Application signed out.
+2018-07-15 11:55:39.174 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 11:55:39.175 -07:00 [INF] AuthenticationScheme: Identity.TwoFactorUserId signed out.
+2018-07-15 11:55:39.175 -07:00 [INF] AuthenticationScheme: Support signed out.
+2018-07-15 11:55:56.582 -07:00 [INF] User created a new account with password.
+2018-07-15 11:55:56.591 -07:00 [DBG] Augmenting SignInContext
+2018-07-15 11:55:56.591 -07:00 [DBG] Adding idp claim with value: local
+2018-07-15 11:55:56.591 -07:00 [DBG] Adding amr claim with value: pwd
+2018-07-15 11:55:56.591 -07:00 [DBG] Adding auth_time claim with value: 1531680956
+2018-07-15 11:55:56.592 -07:00 [INF] AuthenticationScheme: Identity.Application signed in.
+2018-07-15 11:55:58.399 -07:00 [INF] AuthenticationScheme: Identity.Application signed out.
+2018-07-15 11:55:58.399 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 11:55:58.399 -07:00 [INF] AuthenticationScheme: Identity.TwoFactorUserId signed out.
+2018-07-15 11:56:00.199 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 11:56:01.209 -07:00 [INF] AuthenticationScheme: Support was challenged.
+2018-07-15 11:56:08.840 -07:00 [DBG] CORS request made for path: /signin-support from origin: null but was ignored because path was not for an allowed IdentityServer CORS endpoint
+2018-07-15 11:56:08.842 -07:00 [INF] AuthenticationScheme: Identity.External signed in.
+2018-07-15 11:56:08.847 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:56:08.847 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:56:08.884 -07:00 [INF] AuthenticationScheme: Identity.External signed out.
+2018-07-15 11:56:08.889 -07:00 [DBG] Augmenting SignInContext
+2018-07-15 11:56:08.889 -07:00 [DBG] Removing amr claim with value: Support
+2018-07-15 11:56:08.889 -07:00 [DBG] Adding idp claim with value: Support
+2018-07-15 11:56:08.889 -07:00 [DBG] Adding amr claim with value: external
+2018-07-15 11:56:08.889 -07:00 [DBG] Adding auth_time claim with value: 1531680968
+2018-07-15 11:56:08.889 -07:00 [INF] Identity.Application was not authenticated. Failure message: Unprotect ticket failed
+2018-07-15 11:56:08.889 -07:00 [INF] AuthenticationScheme: Identity.Application signed in.
+2018-07-15 11:56:08.889 -07:00 [INF] null logged in with Support provider.

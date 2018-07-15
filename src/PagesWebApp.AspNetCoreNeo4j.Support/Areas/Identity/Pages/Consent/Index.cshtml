@@ -1,0 +1,167 @@
+﻿@page
+@model IndexModel
+@{
+}
+<div class="page-consent">
+    <div class="row page-header">
+        <div class="col-sm-10">
+            @if (Model.ConsentViewModel.ClientLogoUrl != null)
+            {
+                <div class="client-logo"><img src="@Model.ConsentViewModel.ClientLogoUrl"></div>
+            }
+            <h1>
+                @Model.ConsentViewModel.ClientName
+                <small>is requesting your permission</small>
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-8">
+          
+
+            <form asp-action="Index" class="consent-form">
+                <input type="hidden" asp-for="ConsentViewModel.ReturnUrl" />
+
+                <div>Uncheck the permissions you do not wish to grant.</div>
+
+                @if (Model.ConsentViewModel.IdentityScopes.Any())
+                {
+                    <div class="panel panel-default consent-buttons">
+                        <div class="panel-heading">
+                            <span class="glyphicon glyphicon-user"></span>
+                            Personal Information
+                        </div>
+                        <ul class="list-group">
+                            @for (int i = 0; i < Model.ConsentViewModel.IdentityScopes.Count; i++)
+                            {
+                                <li class="list-group-item">
+
+                                    <label>
+                                        <input asp-for="@Model.ConsentViewModel.IdentityScopes[i].Name"
+                                               type="hidden" />
+                                        <input asp-for="@Model.ConsentViewModel.IdentityScopes[i].Required"
+                                               type="hidden" />
+                                        @if (!Model.ConsentViewModel.IdentityScopes[i].Required)
+                                        {
+                                            <input asp-for="@Model.ConsentViewModel.IdentityScopes[i].Checked"
+                                                   class="consent-scopecheck"
+                                                   type="checkbox"
+                                                   value="@Model.ConsentViewModel.IdentityScopes[i].Checked" />
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="@Model.ConsentViewModel.IdentityScopes[i].Checked"
+                                                   type="hidden" />
+                                            <input asp-for="@Model.TrueRequiredPlaceHolder"
+                                                   class="consent-scopecheck"
+                                                   type="checkbox"
+                                                   disabled ="true"/>
+                                        }
+                                    
+
+                                        <strong>@Model.ConsentViewModel.IdentityScopes[i].DisplayName</strong>
+                                        @if (Model.ConsentViewModel.IdentityScopes[i].Emphasize)
+                                        {
+                                            <span class="glyphicon glyphicon-exclamation-sign"></span>
+                                        }
+                                        @if (Model.ConsentViewModel.IdentityScopes[i].Required)
+                                        {
+                                          
+                                            <span><em>(required)</em></span>
+                                        }
+                                        @if (Model.ConsentViewModel.IdentityScopes[i].Description != null)
+                                        {
+                                            <div class="consent-description">
+                                                <label for="scopes_@Model.ConsentViewModel.IdentityScopes[i].Name">@Model.ConsentViewModel.IdentityScopes[i].Description</label>
+                                            </div>
+                                        }
+                                    </label>
+                                </li>
+                            }
+                             
+                        </ul>
+                    </div>
+                }
+
+                @if (Model.ConsentViewModel.ResourceScopes.Any())
+                {
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="glyphicon glyphicon-tasks"></span>
+                            Application Access
+                        </div>
+                        <ul class="list-group">
+                            @for (int i = 0; i < Model.ConsentViewModel.ResourceScopes.Count; i++)
+                            {
+                                <li class="list-group-item">
+
+                                    <label>
+                                        <input asp-for="@Model.ConsentViewModel.ResourceScopes[i].Name"
+                                               type="hidden" />
+                                        <input asp-for="@Model.ConsentViewModel.ResourceScopes[i].Required"
+                                               type="hidden" />
+                                        @if (!Model.ConsentViewModel.ResourceScopes[i].Required)
+                                        {
+                                            <input asp-for="@Model.ConsentViewModel.ResourceScopes[i].Checked"
+                                                   class="consent-scopecheck"
+                                                   type="checkbox"
+                                                   value="@Model.ConsentViewModel.ResourceScopes[i].Checked" />
+                                        }
+
+
+                                        <strong>@Model.ConsentViewModel.ResourceScopes[i].DisplayName</strong>
+                                        @if (Model.ConsentViewModel.ResourceScopes[i].Emphasize)
+                                        {
+                                            <span class="glyphicon glyphicon-exclamation-sign"></span>
+                                        }
+                                        @if (Model.ConsentViewModel.ResourceScopes[i].Required)
+                                        {
+                                            <input asp-for="@Model.ConsentViewModel.ResourceScopes[i].Checked"
+                                                   type="hidden" />
+                                            <span><em>(required)</em></span>
+                                        }
+                                        @if (Model.ConsentViewModel.ResourceScopes[i].Description != null)
+                                        {
+                                            <div class="consent-description">
+                                                <label for="scopes_@Model.ConsentViewModel.ResourceScopes[i].Name">@Model.ConsentViewModel.ResourceScopes[i].Description</label>
+                                            </div>
+                                        }
+                                    </label>
+                                </li>
+                            }
+
+                        </ul>
+                       
+                    </div>
+                }
+
+                @if (Model.ConsentViewModel.AllowRememberConsent)
+                {
+                    <div class="consent-remember">
+                        <label>
+                            <input class="consent-scopecheck" asp-for="ConsentViewModel.RememberConsent" />
+                            <strong>Remember My Decision</strong>
+                        </label>
+                    </div>
+                }
+
+                <div class="consent-buttons">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary" name="button" value="yes" autofocus>Yes, Allow</button>
+                        <button type="submit" class="cancel btn btn-default" name="button" value="no" CausesValidation="false">No, Do Not Allow</button>
+                    </div>
+
+               
+                    @if (Model.ConsentViewModel.ClientUrl != null)
+                    {
+                        <a class="pull-right btn btn-default" target="_blank" href="@Model.ConsentViewModel.ClientUrl">
+                            <span class="glyphicon glyphicon-info-sign"></span>
+                            <strong>@Model.ConsentViewModel.ClientName</strong>
+                        </a>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

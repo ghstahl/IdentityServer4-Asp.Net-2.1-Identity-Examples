@@ -89,6 +89,23 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
             }
             else
             {
+                var user = await _userManager.FindByIdAsync(info.ProviderKey);
+                if (user != null)
+                {
+                    var addResult = await _userManager.AddLoginAsync(user, info);
+                    if (!addResult.Succeeded)
+                    {
+                        throw new InvalidOperationException($"Unexpected error occurred adding external login for user with ID '{user.Id}'.");
+                    }
+                    result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
+                        return LocalRedirect(returnUrl);
+                    }
+                    throw new InvalidOperationException($"Unexpected error occurred adding external login for user with ID '{user.Id}'.");
+                }
+
                 // If the user does not have an account, then ask the user to create an account.
                 ReturnUrl = returnUrl;
                 LoginProvider = info.LoginProvider;
