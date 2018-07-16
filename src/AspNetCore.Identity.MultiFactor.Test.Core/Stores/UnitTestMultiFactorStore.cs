@@ -42,6 +42,33 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
             var result = await _multiFactorStore.CreateAsync(challengeFactor, CancellationToken.None);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
+
+            var findResult = await _multiFactorStore.FindByIdAsync(challengeFactor.Id, CancellationToken.None);
+            findResult.ShouldNotBeNull();
+            findResult.Id.ShouldBe(challengeFactor.Id);
+        }
+
+        [TestMethod]
+        public async Task Create_ChallengeFactor_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            var challengeFactor = _multiFactorTest.CreateTestFactor();
+            var result = await _multiFactorStore.CreateAsync(challengeFactor, CancellationToken.None);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult = await _multiFactorStore.FindByIdAsync(challengeFactor.Id, CancellationToken.None);
+            findResult.ShouldNotBeNull();
+            findResult.Id.ShouldBe(challengeFactor.Id);
+
+            result = await _multiFactorStore.DeleteAsync(challengeFactor, CancellationToken.None);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            findResult = await _multiFactorStore.FindByIdAsync(challengeFactor.Id, CancellationToken.None);
+            findResult.ShouldBeNull();
+           
         }
     }
 }
