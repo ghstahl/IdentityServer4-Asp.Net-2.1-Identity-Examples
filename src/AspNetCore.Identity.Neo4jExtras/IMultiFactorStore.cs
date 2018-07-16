@@ -8,13 +8,12 @@ using Microsoft.AspNetCore.Identity;
 namespace AspNetCore.Identity.Neo4j
 {
     public interface IMultiFactorTest<TFactor>
-        where TFactor : ChallengeFactor
+        where TFactor : class
     {
-        TFactor CreateTestFactor();
         Task DropDatabaseAsync();
     }
     public interface IMultiFactorStore<TFactor>: 
-        IDisposable
+        IDisposable where TFactor:class
     {
 
         Task<IdentityResult> CreateAsync(TFactor factor, CancellationToken cancellationToken);

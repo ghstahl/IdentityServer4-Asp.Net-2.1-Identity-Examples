@@ -9,26 +9,8 @@ using Neo4j.Driver.V1;
 
 namespace AspNetCore.Identity.Neo4jExtras
 {
-    public class Neo4jMultiFactorStore : Neo4jMultiFactorStoreBase<ChallengeFactor>
-    {
-        public Neo4jMultiFactorStore(ISession session, IdentityErrorDescriber describer) : base(session, describer)
-        {
-        }
-
-        public override ChallengeFactor CreateTestFactor()
-        {
-            var challenge = Unique.S;
-            var challengeResponse = Unique.S;
-            var challengeFactor = new ChallengeFactor()
-            {
-                Challenge = challenge,
-                Id = Unique.G,
-                ChallengeResponseHash = SecurePasswordHasher.Hash(challengeResponse)
-            };
-            return challengeFactor;
-        }
-    }
-    public abstract class Neo4jMultiFactorStoreBase<TFactor>: 
+    
+    public class Neo4jMultiFactorStore<TFactor>: 
         IMultiFactorStore<TFactor>,
         IMultiFactorTest<TFactor>
         where TFactor : ChallengeFactor
@@ -40,12 +22,12 @@ namespace AspNetCore.Identity.Neo4jExtras
         private bool _disposed;
 
         public static string Factor { get; set; }
-        static Neo4jMultiFactorStoreBase()
+        static Neo4jMultiFactorStore()
         {
             Factor = typeof(TFactor).GetNeo4jLabelName();
         }
 
-        public Neo4jMultiFactorStoreBase(ISession session, IdentityErrorDescriber describer)
+        public Neo4jMultiFactorStore(ISession session, IdentityErrorDescriber describer)
         {
             Session = session ?? throw new ArgumentNullException(nameof(session));
             ErrorDescriber = describer ?? new IdentityErrorDescriber();
@@ -136,8 +118,6 @@ namespace AspNetCore.Identity.Neo4jExtras
             }
         }
 
-
-        public abstract TFactor CreateTestFactor();
         public async Task DropDatabaseAsync()
         {
             //MATCH (client)-[r]->() DELETE r;

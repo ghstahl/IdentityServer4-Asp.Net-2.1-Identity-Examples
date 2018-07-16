@@ -5,10 +5,11 @@ namespace AspNetCore.Identity.Neo4j
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddNeo4jMultiFactorStore(this IServiceCollection serviceCollection)
+        public static void AddNeo4jMultiFactorStore<TFactor>(this IServiceCollection serviceCollection)
+        where TFactor:ChallengeFactor
         {
-            serviceCollection.AddScoped<IMultiFactorStore<ChallengeFactor>, Neo4jMultiFactorStore>();
-            serviceCollection.AddScoped<IMultiFactorTest<ChallengeFactor>, Neo4jMultiFactorStore>();
+            serviceCollection.AddScoped<IMultiFactorStore<TFactor>, Neo4jMultiFactorStore<TFactor>>();
+            serviceCollection.AddScoped<IMultiFactorTest<TFactor>, Neo4jMultiFactorStore<TFactor>>();
         }
     }
 }

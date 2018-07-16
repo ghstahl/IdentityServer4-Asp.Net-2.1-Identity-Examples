@@ -15,7 +15,8 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
         private IMultiFactorStore<TFactor> _multiFactorStore;
         private IMultiFactorTest<TFactor> _multiFactorTest;
 
-        public UnitTestMultiFactorStore(IMultiFactorStore<TFactor> multiFactorStore,
+        public UnitTestMultiFactorStore(
+            IMultiFactorStore<TFactor> multiFactorStore,
             IMultiFactorTest<TFactor> multiFactorTest)
         {
             _multiFactorStore = multiFactorStore;
@@ -38,7 +39,7 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
         {
             var challenge = Unique.S;
             var challengeResponse = Unique.S;
-            var challengeFactor = _multiFactorTest.CreateTestFactor();
+            var challengeFactor = CreateTestFactor();
             var result = await _multiFactorStore.CreateAsync(challengeFactor, CancellationToken.None);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
@@ -48,12 +49,14 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
             findResult.Id.ShouldBe(challengeFactor.Id);
         }
 
+        protected abstract TFactor CreateTestFactor();
+
         [TestMethod]
         public async Task Create_ChallengeFactor_Delete()
         {
             var challenge = Unique.S;
             var challengeResponse = Unique.S;
-            var challengeFactor = _multiFactorTest.CreateTestFactor();
+            var challengeFactor = CreateTestFactor();
             var result = await _multiFactorStore.CreateAsync(challengeFactor, CancellationToken.None);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();

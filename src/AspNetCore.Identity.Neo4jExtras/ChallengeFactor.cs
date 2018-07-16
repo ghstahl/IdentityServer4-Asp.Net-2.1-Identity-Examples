@@ -13,5 +13,11 @@ namespace AspNetCore.Identity.Neo4j
         {
             Id = Guid.NewGuid().ToString();
         }
+        public ChallengeFactor(string challenge,string challengeResponse)
+        {
+            Id = Guid.NewGuid().ToString();
+            Challenge = challenge;
+            ChallengeResponseHash = SecurePasswordHasher.Hash(challengeResponse);
+        }
     }
 }
