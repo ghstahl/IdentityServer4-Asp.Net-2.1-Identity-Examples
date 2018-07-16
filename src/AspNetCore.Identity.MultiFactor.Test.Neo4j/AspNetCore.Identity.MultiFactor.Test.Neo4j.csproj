@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
@@ -17,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AspNetCore.Identity.MultiFactor.Test.Core\AspNetCore.Identity.MultiFactor.Test.Core.csproj" />
     <ProjectReference Include="..\AspNetCore.Identity.Neo4jExtras\AspNetCore.Identity.Neo4jExtras.csproj" />
+    <ProjectReference Include="..\AspNetCore.Identity.Neo4j\AspNetCore.Identity.Neo4j.csproj" />
   </ItemGroup>
 
 </Project>

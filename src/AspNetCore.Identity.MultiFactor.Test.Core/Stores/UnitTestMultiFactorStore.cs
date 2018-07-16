@@ -4,47 +4,76 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
 namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
 {
-    public abstract class UnitTestMultiFactorStore<TFactor>
+    public abstract class UnitTestMultiFactorStore<TUser, TFactor>
+        where TUser : Neo4jIdentityUser
         where TFactor : ChallengeFactor
     {
-        private IMultiFactorStore<TFactor> _multiFactorStore;
+       
         private IMultiFactorTest<TFactor> _multiFactorTest;
+        private IUserStore<TUser> _userStore;
+        private IMultiFactorUserStore<TUser, TFactor> _multiFactorUserStore;
 
         public UnitTestMultiFactorStore(
-            IMultiFactorStore<TFactor> multiFactorStore,
+            IUserStore<TUser> userStore,
+            IMultiFactorUserStore<TUser,TFactor> multiFactorUserStore,
             IMultiFactorTest<TFactor> multiFactorTest)
         {
-            _multiFactorStore = multiFactorStore;
+            _userStore = userStore;
+            _multiFactorUserStore = multiFactorUserStore;
             _multiFactorTest = multiFactorTest;
 
         }
+
         [TestInitialize]
         public async Task Initialize()
         {
-           await _multiFactorTest.DropDatabaseAsync();
+            await _multiFactorTest.DropDatabaseAsync();
         }
+
         [TestMethod]
         public async Task Valid_DI()
         {
-            _multiFactorStore.ShouldNotBeNull();
+            _userStore.ShouldNotBeNull();
+            _multiFactorUserStore.ShouldNotBeNull();
             _multiFactorTest.ShouldNotBeNull();
         }
+        [TestMethod]
+        public async Task Create_User_ChallengeFactor()
+        {
+            var testUser = CreateTestUser();
+            var challengeFactor = CreateTestFactor();
+
+            var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
+
+            await _multiFactorUserStore.AddToFactorAsync(
+                testUser, challengeFactor, CancellationToken.None);
+
+            var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id, 
+                CancellationToken.None);
+            findResult.ShouldNotBeNull();
+            findResult.Id.ShouldBe(challengeFactor.Id);
+
+        }
+
+        protected abstract TUser CreateTestUser();
+
         [TestMethod]
         public async Task Create_ChallengeFactor()
         {
             var challenge = Unique.S;
             var challengeResponse = Unique.S;
             var challengeFactor = CreateTestFactor();
-            var result = await _multiFactorStore.CreateAsync(challengeFactor, CancellationToken.None);
+            var result = await _multiFactorUserStore.CreateAsync(challengeFactor, CancellationToken.None);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
-            var findResult = await _multiFactorStore.FindByIdAsync(challengeFactor.Id, CancellationToken.None);
+            var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id, CancellationToken.None);
             findResult.ShouldNotBeNull();
             findResult.Id.ShouldBe(challengeFactor.Id);
         }
@@ -57,21 +86,21 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
             var challenge = Unique.S;
             var challengeResponse = Unique.S;
             var challengeFactor = CreateTestFactor();
-            var result = await _multiFactorStore.CreateAsync(challengeFactor, CancellationToken.None);
+            var result = await _multiFactorUserStore.CreateAsync(challengeFactor, CancellationToken.None);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
-            var findResult = await _multiFactorStore.FindByIdAsync(challengeFactor.Id, CancellationToken.None);
+            var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id, CancellationToken.None);
             findResult.ShouldNotBeNull();
             findResult.Id.ShouldBe(challengeFactor.Id);
 
-            result = await _multiFactorStore.DeleteAsync(challengeFactor, CancellationToken.None);
+            result = await _multiFactorUserStore.DeleteAsync(challengeFactor, CancellationToken.None);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
-            findResult = await _multiFactorStore.FindByIdAsync(challengeFactor.Id, CancellationToken.None);
+            findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id, CancellationToken.None);
             findResult.ShouldBeNull();
-           
+
         }
     }
 }

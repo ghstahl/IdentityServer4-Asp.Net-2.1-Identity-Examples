@@ -7,6 +7,16 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AspNetCore.Identity.Neo4j
 {
+    public interface IMultiFactorUserStore<TUser, TFactor>: 
+        IMultiFactorStore<TFactor>,
+        IDisposable 
+        where TUser : class 
+        where TFactor : class
+    {
+        Task AddToFactorAsync(TUser user, TFactor factor, CancellationToken cancellationToken);
+
+        Task<IList<TFactor>> GetFactorsAsync(TUser user, CancellationToken cancellationToken);
+    }
     public interface IMultiFactorTest<TFactor>
         where TFactor : class
     {

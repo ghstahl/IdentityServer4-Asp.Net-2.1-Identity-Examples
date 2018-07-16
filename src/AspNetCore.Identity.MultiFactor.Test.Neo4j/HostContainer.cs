@@ -22,7 +22,8 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
                     serviceCollection.AddSingleton(s => 
                         GraphDatabase.Driver("bolt://127.0.0.1:7687", AuthTokens.Basic("neo4j", "password")));
                     serviceCollection.AddScoped(s => s.GetService<IDriver>().Session());
-                    serviceCollection.AddNeo4jMultiFactorStore<TestFactor>();
+                    serviceCollection.AddScoped<IUserStore<TestUser>, Neo4jUserStore<TestUser>>();
+                    serviceCollection.AddNeo4jMultiFactorStore<TestUser,TestFactor>();
                     serviceCollection.AddTransient<IdentityErrorDescriber>();
                     //  serviceCollection.AddNeo4jRestHook();
 
