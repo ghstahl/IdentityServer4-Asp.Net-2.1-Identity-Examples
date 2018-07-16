@@ -5,10 +5,9 @@ namespace AspNetCore.Identity.Neo4j
     public static class IdentityBuilderExtensions
     {
 
-        public static IdentityBuilder AddNeo4jMultiFactorStore<TFactor>(this IdentityBuilder builder) 
-            where TFactor:ChallengeFactor
+        public static IdentityBuilder AddNeo4jMultiFactorStore(this IdentityBuilder builder) 
         {
-            builder.Services.AddNeo4jMultiFactorStore<TFactor>();
+            builder.Services.AddNeo4jMultiFactorStore();
             return builder;
         }
     }

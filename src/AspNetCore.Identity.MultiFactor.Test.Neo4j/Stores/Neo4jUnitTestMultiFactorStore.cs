@@ -9,7 +9,8 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
     public class Neo4jUnitTestMultiFactorStore : UnitTestMultiFactorStore<ChallengeFactor>
     {
         public Neo4jUnitTestMultiFactorStore() : base(
-            HostContainer.ServiceProvider.GetService<IMultiFactorStore<ChallengeFactor>>())
+            HostContainer.ServiceProvider.GetService<IMultiFactorStore<ChallengeFactor>>(),
+            HostContainer.ServiceProvider.GetService<IMultiFactorTest<ChallengeFactor>>())
         {
         }
     }
