@@ -14,7 +14,8 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
         where TUser : Neo4jIdentityUser
         where TFactor : ChallengeFactor
     {
-       
+        protected abstract TFactor CreateTestFactor();
+
         private IMultiFactorTest<TFactor> _multiFactorTest;
         private IUserStore<TUser> _userStore;
         private IMultiFactorUserStore<TUser, TFactor> _multiFactorUserStore;
@@ -89,6 +90,39 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
             findResult.Id.ShouldBe(challengeFactor.Id);
 
         }
+        [TestMethod]
+        public async Task Create_User_ChallengeFactor_Update()
+        {
+            var testUser = CreateTestUser();
+
+            var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
+
+            var challengeFactor = CreateTestFactor();
+            await _multiFactorUserStore.AddToFactorAsync(
+                testUser, challengeFactor, CancellationToken.None);
+
+            var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id,
+                CancellationToken.None);
+            findResult.ShouldNotBeNull();
+            findResult.Id.ShouldBe(challengeFactor.Id);
+            findResult.ChallengeResponseHash.ShouldBe(challengeFactor.ChallengeResponseHash);
+
+            var challengeFactor2 = CreateTestFactor();
+            challengeFactor.ChallengeResponseHash = challengeFactor2.ChallengeResponseHash;
+
+            var updateResult = await _multiFactorUserStore.UpdateAsync(challengeFactor,
+                CancellationToken.None);
+            updateResult.ShouldNotBeNull();
+            updateResult.Succeeded.ShouldBeTrue();
+
+            findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id,
+                CancellationToken.None);
+            findResult.ShouldNotBeNull();
+            findResult.Id.ShouldBe(challengeFactor.Id);
+            findResult.ChallengeResponseHash.ShouldBe(challengeFactor.ChallengeResponseHash);
+
+
+        }
 
         protected abstract TUser CreateTestUser();
 
@@ -107,7 +141,7 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
             findResult.Id.ShouldBe(challengeFactor.Id);
         }
 
-        protected abstract TFactor CreateTestFactor();
+       
 
         [TestMethod]
         public async Task Create_ChallengeFactor_Delete()
