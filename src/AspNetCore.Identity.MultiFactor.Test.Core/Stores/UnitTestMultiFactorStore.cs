@@ -46,7 +46,7 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
         }
 
         [TestMethod]
-        public async Task Create_User_many_ChallengeFactor()
+        public async Task Create_User_many_Factor()
         {
             var testUser = CreateTestUser();
             
@@ -58,8 +58,10 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
             for (int i = 0; i < nCount; ++i)
             {
                 var challengeFactor = CreateTestFactor();
-                await _multiFactorUserStore.AddToFactorAsync(
+                var identityResult =await _multiFactorUserStore.AddToFactorAsync(
                     testUser, challengeFactor, CancellationToken.None);
+                identityResult.ShouldNotBeNull();
+                identityResult.Succeeded.ShouldBeTrue();
 
                 var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id,
                     CancellationToken.None);
@@ -74,15 +76,17 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
         }
 
         [TestMethod]
-        public async Task Create_User_ChallengeFactor()
+        public async Task Create_User_Factor()
         {
             var testUser = CreateTestUser();
 
             var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
 
             var challengeFactor = CreateTestFactor();
-            await _multiFactorUserStore.AddToFactorAsync(
+            var identityResult = await _multiFactorUserStore.AddToFactorAsync(
                 testUser, challengeFactor, CancellationToken.None);
+            identityResult.ShouldNotBeNull();
+            identityResult.Succeeded.ShouldBeTrue();
 
             var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id, 
                 CancellationToken.None);
@@ -91,15 +95,17 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
 
         }
         [TestMethod]
-        public async Task Create_User_ChallengeFactor_Update()
+        public async Task Create_User_Factor_Update()
         {
             var testUser = CreateTestUser();
 
             var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
 
             var challengeFactor = CreateTestFactor();
-            await _multiFactorUserStore.AddToFactorAsync(
+            var identityResult = await _multiFactorUserStore.AddToFactorAsync(
                 testUser, challengeFactor, CancellationToken.None);
+            identityResult.ShouldNotBeNull();
+            identityResult.Succeeded.ShouldBeTrue();
 
             var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id,
                 CancellationToken.None);
@@ -110,10 +116,10 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
             var challengeFactor2 = CreateTestFactor();
             challengeFactor.ChallengeResponseHash = challengeFactor2.ChallengeResponseHash;
 
-            var updateResult = await _multiFactorUserStore.UpdateAsync(challengeFactor,
+            identityResult = await _multiFactorUserStore.UpdateAsync(challengeFactor,
                 CancellationToken.None);
-            updateResult.ShouldNotBeNull();
-            updateResult.Succeeded.ShouldBeTrue();
+            identityResult.ShouldNotBeNull();
+            identityResult.Succeeded.ShouldBeTrue();
 
             findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id,
                 CancellationToken.None);
@@ -127,7 +133,7 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
         protected abstract TUser CreateTestUser();
 
         [TestMethod]
-        public async Task Create_ChallengeFactor()
+        public async Task Create_Factor()
         {
             var challenge = Unique.S;
             var challengeResponse = Unique.S;
@@ -144,7 +150,7 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
        
 
         [TestMethod]
-        public async Task Create_ChallengeFactor_Delete()
+        public async Task Create_Factor_Delete()
         {
             var challenge = Unique.S;
             var challengeResponse = Unique.S;

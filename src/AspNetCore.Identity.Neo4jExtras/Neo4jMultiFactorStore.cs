@@ -127,7 +127,7 @@ namespace AspNetCore.Identity.Neo4jExtras
             return factor;
         }
 
-        public async Task AddToFactorAsync(TUser user, TFactor factor,
+        public async Task<IdentityResult> AddToFactorAsync(TUser user, TFactor factor,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -140,8 +140,8 @@ namespace AspNetCore.Identity.Neo4jExtras
                 MERGE (l:{Factor} {"$p1".AsMapFor<TFactor>()})
                 MERGE (u)-[:{Neo4jConstants.Relationships.HasFactor}]->(l)";
 
-            await Session.RunAsync(cypher, Params.Create(user.Id, factor));
-
+            var result = await Session.RunAsync(cypher, Params.Create(user.Id, factor));
+            return IdentityResult.Success;
         }
 
         public async Task<IList<TFactor>> GetFactorsAsync(TUser user,

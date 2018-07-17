@@ -13,7 +13,7 @@ namespace AspNetCore.Identity.Neo4j
         where TUser : class 
         where TFactor : class
     {
-        Task AddToFactorAsync(TUser user, TFactor factor, CancellationToken cancellationToken);
+        Task<IdentityResult> AddToFactorAsync(TUser user, TFactor factor, CancellationToken cancellationToken);
 
         Task<IList<TFactor>> GetFactorsAsync(TUser user, CancellationToken cancellationToken);
     }
