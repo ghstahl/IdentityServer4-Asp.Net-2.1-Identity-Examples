@@ -87,10 +87,10 @@ namespace AspNetCore.Identity.Neo4jExtras
 
             var cypher = $@"
                 MATCH (r:{Factor})
-                WHERE r.Id = $p0
+                WHERE r.FactorId = $p0
                 SET r = $p1";
 
-            await Session.RunAsync(cypher, Params.Create(factor.Id, factor.ConvertToMap()));
+            await Session.RunAsync(cypher, Params.Create(factor.FactorId, factor.ConvertToMap()));
             return IdentityResult.Success;
         }
 
@@ -103,10 +103,10 @@ namespace AspNetCore.Identity.Neo4jExtras
 
             var cypher = $@"
                 MATCH (r:{Factor})
-                WHERE r.Id = $p0
+                WHERE r.FactorId = $p0
                 DETACH DELETE r";
 
-            await Session.RunAsync(cypher, Params.Create(factor.Id));
+            await Session.RunAsync(cypher, Params.Create(factor.FactorId));
             return IdentityResult.Success;
         }
 
@@ -119,7 +119,7 @@ namespace AspNetCore.Identity.Neo4jExtras
 
             var cypher = $@"
                 MATCH (r:{Factor})
-                WHERE r.Id = $p0
+                WHERE r.FactorId = $p0
                 RETURN r {{ .* }}";
 
             var result = await Session.RunAsync(cypher, Params.Create(factorId));
@@ -155,9 +155,10 @@ namespace AspNetCore.Identity.Neo4jExtras
             var cypher = $@"
                 MATCH (u:{User})-[:{Neo4jConstants.Relationships.HasFactor}]->(r:{Factor})
                 WHERE u.Id = $p0
-                RETURN r";
+                RETURN r{{ .* }}";
 
             var result = await Session.RunAsync(cypher, Params.Create(user.Id));
+      
             var factors = await result.ToListAsync(r => r.MapTo<TFactor>("r"));
             return factors;
         }

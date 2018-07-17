@@ -10,7 +10,9 @@ namespace AspNetCore.Identity.Neo4j.Internal.Extensions
     {
         public static T MapTo<T>(this IRecord record, string alias)
         {
-            return JObject.FromObject(record[alias]).ToObject<T>();
+            var objAlias = record[alias];
+            var result = JObject.FromObject(objAlias).ToObject<T>();
+            return result;
         }
 
         /// <summary>

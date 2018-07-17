@@ -63,16 +63,23 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
                 identityResult.ShouldNotBeNull();
                 identityResult.Succeeded.ShouldBeTrue();
 
-                var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id,
+                var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.FactorId,
                     CancellationToken.None);
                 findResult.ShouldNotBeNull();
-                findResult.Id.ShouldBe(challengeFactor.Id);
+                findResult.FactorId.ShouldBe(challengeFactor.FactorId);
             }
 
             var factors = await _multiFactorUserStore.GetFactorsAsync(testUser, CancellationToken.None);
             factors.ShouldNotBeNull();
             factors.Count.ShouldBe(nCount);
-           
+            foreach (var factor in factors)
+            {
+                factor.ShouldNotBeNull();
+                factor.Challenge.ShouldNotBeNull();
+                factor.ChallengeResponseHash.ShouldNotBeNull();
+                factor.FactorId.ShouldNotBeNull();
+            }
+
         }
 
         [TestMethod]
@@ -88,10 +95,10 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
             identityResult.ShouldNotBeNull();
             identityResult.Succeeded.ShouldBeTrue();
 
-            var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id, 
+            var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.FactorId, 
                 CancellationToken.None);
             findResult.ShouldNotBeNull();
-            findResult.Id.ShouldBe(challengeFactor.Id);
+            findResult.FactorId.ShouldBe(challengeFactor.FactorId);
 
         }
         [TestMethod]
@@ -107,10 +114,10 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
             identityResult.ShouldNotBeNull();
             identityResult.Succeeded.ShouldBeTrue();
 
-            var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id,
+            var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.FactorId,
                 CancellationToken.None);
             findResult.ShouldNotBeNull();
-            findResult.Id.ShouldBe(challengeFactor.Id);
+            findResult.FactorId.ShouldBe(challengeFactor.FactorId);
             findResult.ChallengeResponseHash.ShouldBe(challengeFactor.ChallengeResponseHash);
 
             var challengeFactor2 = CreateTestFactor();
@@ -121,10 +128,10 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
             identityResult.ShouldNotBeNull();
             identityResult.Succeeded.ShouldBeTrue();
 
-            findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id,
+            findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.FactorId,
                 CancellationToken.None);
             findResult.ShouldNotBeNull();
-            findResult.Id.ShouldBe(challengeFactor.Id);
+            findResult.FactorId.ShouldBe(challengeFactor.FactorId);
             findResult.ChallengeResponseHash.ShouldBe(challengeFactor.ChallengeResponseHash);
 
 
@@ -142,9 +149,9 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
-            var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id, CancellationToken.None);
+            var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.FactorId, CancellationToken.None);
             findResult.ShouldNotBeNull();
-            findResult.Id.ShouldBe(challengeFactor.Id);
+            findResult.FactorId.ShouldBe(challengeFactor.FactorId);
         }
 
        
@@ -159,15 +166,15 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
-            var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id, CancellationToken.None);
+            var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.FactorId, CancellationToken.None);
             findResult.ShouldNotBeNull();
-            findResult.Id.ShouldBe(challengeFactor.Id);
+            findResult.FactorId.ShouldBe(challengeFactor.FactorId);
 
             result = await _multiFactorUserStore.DeleteAsync(challengeFactor, CancellationToken.None);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
-            findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id, CancellationToken.None);
+            findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.FactorId, CancellationToken.None);
             findResult.ShouldBeNull();
 
         }

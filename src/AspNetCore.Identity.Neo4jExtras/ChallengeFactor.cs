@@ -6,18 +6,17 @@ namespace AspNetCore.Identity.Neo4j
     [Neo4jLabel(Neo4jConstants.Labels.ChallengeFactor)]
     public class ChallengeFactor
     {
-        public string Id { get; set; }
+        public string FactorId { get; set; }
         public string Challenge { get; set; }
         public string ChallengeResponseHash { get; set; }
-        public ChallengeFactor()
+
+        public static string UniqueFactorId()
         {
-            Id = Guid.NewGuid().ToString();
+            return Unique.G;
         }
-        public ChallengeFactor(string challenge,string challengeResponse)
+        public static string GenerateChallengeResponseHash(string value)
         {
-            Id = Guid.NewGuid().ToString();
-            Challenge = challenge;
-            ChallengeResponseHash = SecurePasswordHasher.Hash(challengeResponse);
+           return SecurePasswordHasher.Hash(value);
         }
     }
 }

@@ -23,13 +23,20 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
         {
             return new TestUser()
             {
-                UserName = Unique.S
+                UserName = Unique.S,
+                Email = Unique.Email
             };
         }
 
         protected override TestFactor CreateTestFactor()
         {
-            return new TestFactor();
+
+            return new TestFactor()
+            {
+                Challenge = Unique.S,
+                ChallengeResponseHash = TestFactor.GenerateChallengeResponseHash(Unique.S),
+                FactorId = Unique.G
+            };
         }
     }
 }
