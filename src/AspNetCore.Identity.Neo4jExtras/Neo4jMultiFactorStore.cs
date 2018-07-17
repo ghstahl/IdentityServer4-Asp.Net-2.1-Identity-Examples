@@ -144,15 +144,22 @@ namespace AspNetCore.Identity.Neo4jExtras
 
         }
 
-        public Task<IList<TFactor>> GetFactorsAsync(TUser user,
+        public async Task<IList<TFactor>> GetFactorsAsync(TUser user,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             user.ThrowIfNull(nameof(user));
-            throw new NotImplementedException();
-        }
 
-       
+
+            var cypher = $@"
+                MATCH (u:{User})-[:{Neo4jConstants.Relationships.HasFactor}]->(r:{Factor})
+                WHERE u.Id = $p0
+                RETURN r";
+
+            var result = await Session.RunAsync(cypher, Params.Create(user.Id));
+            var factors = await result.ToListAsync(r => r.MapTo<TFactor>("r"));
+            return factors;
+        }
     }
 }

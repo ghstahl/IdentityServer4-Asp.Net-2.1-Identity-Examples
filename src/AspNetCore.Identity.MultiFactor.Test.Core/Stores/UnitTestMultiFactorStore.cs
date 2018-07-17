@@ -43,14 +43,43 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
             _multiFactorUserStore.ShouldNotBeNull();
             _multiFactorTest.ShouldNotBeNull();
         }
+
+        [TestMethod]
+        public async Task Create_User_many_ChallengeFactor()
+        {
+            var testUser = CreateTestUser();
+            
+
+            var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
+            createUserResult.ShouldNotBeNull();
+            createUserResult.Succeeded.ShouldBeTrue();
+            int nCount = 10;
+            for (int i = 0; i < nCount; ++i)
+            {
+                var challengeFactor = CreateTestFactor();
+                await _multiFactorUserStore.AddToFactorAsync(
+                    testUser, challengeFactor, CancellationToken.None);
+
+                var findResult = await _multiFactorUserStore.FindByIdAsync(challengeFactor.Id,
+                    CancellationToken.None);
+                findResult.ShouldNotBeNull();
+                findResult.Id.ShouldBe(challengeFactor.Id);
+            }
+
+            var factors = await _multiFactorUserStore.GetFactorsAsync(testUser, CancellationToken.None);
+            factors.ShouldNotBeNull();
+            factors.Count.ShouldBe(nCount);
+           
+        }
+
         [TestMethod]
         public async Task Create_User_ChallengeFactor()
         {
             var testUser = CreateTestUser();
-            var challengeFactor = CreateTestFactor();
 
             var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
 
+            var challengeFactor = CreateTestFactor();
             await _multiFactorUserStore.AddToFactorAsync(
                 testUser, challengeFactor, CancellationToken.None);
 
