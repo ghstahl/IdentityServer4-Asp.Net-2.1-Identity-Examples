@@ -1,0 +1,63 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile Factors";
+}
+
+<h4>@ViewData["Title"]</h4>
+@Html.Partial("_StatusMessage", Model.StatusMessage)
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Username"></label>
+                <input asp-for="Username" class="form-control" disabled />
+                <input type="hidden" asp-for="Username" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Challenge"></label>
+                <input asp-for="Input.Challenge" class="form-control" />
+                <span asp-validation-for="Input.Challenge" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.ChallengeResponse"></label>
+                <input asp-for="Input.ChallengeResponse" class="form-control" />
+                <span asp-validation-for="Input.ChallengeResponse" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-default">Save</button>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <table id="user" class="table table-bordered table-striped" style="clear: both">
+            <tbody>
+            <thead>
+            <tr>
+                <th scope="col">Challenge</th>
+                <th scope="col">...</th>
+            </tr>
+            </thead>
+            @foreach (var factor in Model.Factors)
+            {
+            <tr>
+                <td>@factor.Challenge</td>
+                <td>
+                    <a asp-page="./Edit"
+                       asp-route-clientId="@factor.FactorId">Edit</a>
+                    <a asp-page="./Delete"
+                       asp-route-clientId="@factor.FactorId">Delete</a>
+                </td>
+            </tr>
+                 
+
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

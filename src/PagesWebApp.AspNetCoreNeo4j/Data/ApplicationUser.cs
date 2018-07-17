@@ -9,4 +9,10 @@ namespace Microsoft.AspNetCore.Identity
     public class ApplicationUser : Neo4jIdentityUser
     {
     }
+
+    [Neo4jLabel("ApplicationFactor")]
+    public class ApplicationFactor : ChallengeFactor
+    {
+       
+    }
 }

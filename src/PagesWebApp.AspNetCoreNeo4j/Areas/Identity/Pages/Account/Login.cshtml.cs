@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCore.Identity.Neo4j;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -20,10 +21,15 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private IIdentityServerInteractionService _interaction;
+        private IMultiFactorUserStore<ApplicationUser, ApplicationFactor> _multiFactorUserStore;
 
-        public LoginModel(IIdentityServerInteractionService interaction, 
-            SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(
+            IIdentityServerInteractionService interaction, 
+            SignInManager<ApplicationUser> signInManager,
+            IMultiFactorUserStore<ApplicationUser, ApplicationFactor> multiFactorUserStore,
+            ILogger<LoginModel> logger)
         {
+            _multiFactorUserStore = multiFactorUserStore;
             _interaction = interaction;
             _signInManager = signInManager;
             _logger = logger;

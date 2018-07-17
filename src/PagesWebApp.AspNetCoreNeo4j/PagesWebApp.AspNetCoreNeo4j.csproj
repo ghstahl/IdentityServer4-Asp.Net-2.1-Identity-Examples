@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AspNetCore.Identity.Neo4jExtras\AspNetCore.Identity.Neo4jExtras.csproj" />
     <ProjectReference Include="..\AspNetCore.Identity.Neo4j\AspNetCore.Identity.Neo4j.csproj" />
   </ItemGroup>
 
@@ -67,6 +68,15 @@
     </Content>
     <Content Update="Areas\Identity\Pages\Account\Logout.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Identity\Pages\Account\ManageFactors\_Layout.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Identity\Pages\Account\ManageFactors\_StatusMessage.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Identity\Pages\Account\ManageFactors\_ViewImports.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Identity\Pages\Account\Manage\ChangePassword.cshtml">

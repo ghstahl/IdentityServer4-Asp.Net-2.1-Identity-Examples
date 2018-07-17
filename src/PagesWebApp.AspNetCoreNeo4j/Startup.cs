@@ -67,6 +67,7 @@ namespace PagesWebApp
 
             services.AddIdentity<ApplicationUser, Neo4jIdentityRole>()
                 .AddNeo4jDataStores()
+                .AddNeo4jMultiFactorStore<ApplicationFactor>()
                 .AddDefaultTokenProviders();
 
 
