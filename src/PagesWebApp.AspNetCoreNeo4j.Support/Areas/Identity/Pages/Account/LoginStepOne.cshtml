@@ -1,0 +1,34 @@
+﻿@page
+@model LoginStepOneModel
+@{
+    ViewData["Title"] = "Log in - Find User";
+}
+
+<h2>@ViewData["Title"]</h2>
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <form method="post">
+                <h4>Prompt the user for their email address.</h4>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="InputStepOne.Email"></label>
+                    <input asp-for="InputStepOne.Email" class="form-control" />
+                    <span asp-validation-for="InputStepOne.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" name="button" value="submit">Submit</button>
+                    <button type="submit" class="cancel btn btn-default" name="button" value="cancel" CausesValidation="false">Cancel</button>
+                </div>
+
+            </form>
+        </section>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

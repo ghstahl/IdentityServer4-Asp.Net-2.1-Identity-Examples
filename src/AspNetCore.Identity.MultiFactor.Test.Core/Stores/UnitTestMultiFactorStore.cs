@@ -38,6 +38,14 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
         }
 
         [TestMethod]
+        public async Task SecurePasswordHasher_test()
+        {
+            var hash = SecurePasswordHasher.Hash("2324");
+            var v = SecurePasswordHasher.Verify("2324", hash);
+            v.ShouldBeTrue();
+        }
+
+        [TestMethod]
         public async Task Valid_DI()
         {
             _userStore.ShouldNotBeNull();
