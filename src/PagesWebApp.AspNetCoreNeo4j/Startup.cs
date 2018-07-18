@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
@@ -117,7 +118,7 @@ namespace PagesWebApp
             foreach (var record in oAuth2SchemeRecords)
             {
                 var scheme = record.Scheme;
-                authenticationBuilder.AddOpenIdConnect(scheme, scheme, options =>
+                authenticationBuilder.P7AddOpenIdConnect(scheme, scheme, options =>
                 {
                     options.Authority = record.Authority;
                     options.CallbackPath = record.CallbackPath;
@@ -125,6 +126,9 @@ namespace PagesWebApp
 
                     options.ClientId = record.ClientId;
                     options.SaveTokens = true;
+
+                    options.ClaimActions.P7MapUniqueJsonKey("role", "website");
+
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
                         if (context.ProtocolMessage.RequestType == OpenIdConnectRequestType.Authentication)

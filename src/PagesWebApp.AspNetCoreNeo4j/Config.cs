@@ -130,13 +130,13 @@ namespace PagesWebApp
                 },
                 new Client
                 {
-                    ClientId = "PagesWebAppClient.NoUserDatabase",
-                    ClientName = "PagesWebAppClient.NoUserDatabase Client",
+                    ClientId = "Neo4j.PagesWebAppClient.NoUserDatabase",
+                    ClientName = "Neo4j.PagesWebAppClient.NoUserDatabase Client",
                     AllowedGrantTypes = GrantTypes.Implicit,
                     RequireConsent = true,
                     RedirectUris =
                     {
-                        "https://localhost:44308/signin-oidc-pages-webapp-client"
+                        "https://localhost:44308/signin-oidc-Neo4j"
                     },
                     PostLogoutRedirectUris =
                     {
