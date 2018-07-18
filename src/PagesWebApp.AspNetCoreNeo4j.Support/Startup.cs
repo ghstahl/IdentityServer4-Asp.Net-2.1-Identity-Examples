@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
@@ -16,8 +17,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
  
 using Neo4j.Driver.V1;
- 
-
+using PagesWebApp.ClaimsFactory;
+using PagesWebApp.Extensions;
 using PagesWebApp.Services;
  
 
@@ -64,11 +65,14 @@ namespace PagesWebApp
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddTransient<IEmailSender, EmailSender>();
-
-           
+            
+            services
+                .AddScoped
+                <Microsoft.AspNetCore.Identity.IUserClaimsPrincipalFactory<ApplicationUser>,
+                    AppClaimsPrincipalFactory<ApplicationUser, Neo4jIdentityRole>>();
 
             // configure identity server with in-memory stores, keys, clients and scopes
-            services.AddIdentityServer(options =>
+            var identityBuilder = services.AddIdentityServer(options =>
                 {
                     options.UserInteraction.LoginUrl = "/identity/account/login";
                     options.UserInteraction.LogoutUrl = "/identity/account/logout";
@@ -81,7 +85,12 @@ namespace PagesWebApp
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<ApplicationUser>();
- 
+
+            // Now my overrides
+
+            identityBuilder.AddSupportAgentAspNetIdentity<ApplicationUser>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

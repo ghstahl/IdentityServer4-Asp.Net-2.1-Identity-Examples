@@ -1,11 +1,32 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
+using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 
 namespace PagesWebApp
 {
+    public static class IdentityResourcesExtra
+    {
+        /// <summary>
+        /// Models the standard openid scope
+        /// </summary>
+        /// <seealso cref="IdentityServer4.Models.IdentityResource" />
+        public class SupportAgent : IdentityResource
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="SupportAgent"/> class.
+            /// </summary>
+            public SupportAgent()
+            {
+                Name = "supportagent";
+                DisplayName = "Your support agent delegated user identifier";
+                Required = true;
+            }
+        }
+    }
+
     public class Config
     {
         // scopes define the resources in your system
@@ -15,6 +36,7 @@ namespace PagesWebApp
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
+                new IdentityResourcesExtra.SupportAgent(),
             };
         }
 
@@ -53,8 +75,10 @@ namespace PagesWebApp
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "supportagent"
                     }
+                    
                 }
             };
         }
