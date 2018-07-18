@@ -12,3 +12,32 @@
         <strong>Deleting this challenge will permanently remove it from your account, and this cannot be recovered.</strong>
     </p>
 </div>
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <form method="post">
+                <input type="hidden" asp-for="FactorId" class="form-control" />
+                
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <input type="hidden" asp-for="Factor.Challenge" class="form-control" />
+                    <label asp-for="Factor.Challenge"></label>
+                    <input asp-for="Factor.Challenge" class="form-control" disabled />
+                    <span asp-validation-for="Factor.Challenge" class="text-danger"></span>
+                </div>
+                 
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" name="button" value="delete">Delete</button>
+                    <button type="submit" class="cancel btn btn-default" name="button" value="cancel" CausesValidation="false">Cancel</button>
+                </div>
+
+            </form>
+        </section>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

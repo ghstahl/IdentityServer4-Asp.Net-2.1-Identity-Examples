@@ -17,11 +17,10 @@ namespace PagesWebApp.Areas.Identity.Pages.Account.ManageFactors
         private UserManager<ApplicationUser> _userManager;
         private ILogger<LoginModel> _logger;
         [TempData] public string StatusMessage { get; set; }
-        [BindProperty]
-        public string FactorId { get; set; }
+        [BindProperty] public string FactorId { get; set; }
 
         public ApplicationFactor Factor { get; set; }
-    
+
         public DeleteModel(
             UserManager<ApplicationUser> userManager,
             IMultiFactorUserStore<ApplicationUser, ApplicationFactor> multiFactorUserStore,
@@ -31,10 +30,22 @@ namespace PagesWebApp.Areas.Identity.Pages.Account.ManageFactors
             _userManager = userManager;
             _logger = logger;
         }
+
         public async Task OnGetAsync(string factorId)
         {
             FactorId = factorId;
-            Factor = await _multiFactorUserStore.FindByIdAsync(factorId,CancellationToken.None);
+            Factor = await _multiFactorUserStore.FindByIdAsync(factorId, CancellationToken.None);
+        }
+
+        public async Task<IActionResult> OnPostAsync(string button)
+        {
+            if (button == "delete")
+            {
+                var factor = await _multiFactorUserStore.FindByIdAsync(FactorId, CancellationToken.None);
+                var deleteResult = await _multiFactorUserStore.DeleteAsync(factor, CancellationToken.None);
+            }
+
+            return RedirectToPage("./Index");
         }
     }
 }
