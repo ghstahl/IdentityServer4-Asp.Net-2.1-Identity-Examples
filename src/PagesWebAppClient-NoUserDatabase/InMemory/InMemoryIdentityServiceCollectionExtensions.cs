@@ -46,7 +46,7 @@ namespace PagesWebAppClient.InMemory
                     {
                         if (context.ProtocolMessage.RequestType == OpenIdConnectRequestType.Authentication)
                         {
-                            context.ProtocolMessage.AcrValues = "idp=Google";
+                            context.ProtocolMessage.AcrValues = "some-acr=some-value";
                         }
                         return Task.CompletedTask;
                     };
