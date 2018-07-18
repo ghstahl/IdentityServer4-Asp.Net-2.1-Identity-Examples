@@ -1,5 +1,14 @@
 ﻿@page
 @model DeleteModel
 @{
+    ViewData["Title"] = "Delete Challenge";
 }
-Delete
+
+<h4>@ViewData["Title"]</h4>
+
+<div class="alert alert-warning" role="alert">
+    <p>
+        <span class="glyphicon glyphicon-warning-sign"></span>
+        <strong>Deleting this challenge will permanently remove it from your account, and this cannot be recovered.</strong>
+    </p>
+</div>
