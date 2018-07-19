@@ -47,6 +47,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "P7.AspNetCore.Authenticatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4Extras", "IdentityServer4Extras\IdentityServer4Extras.csproj", "{B316B475-02D0-40C6-9686-888C1777282E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreConsoleClient", "NetCoreConsoleClient\NetCoreConsoleClient.csproj", "{786E18C2-D5F1-425A-898D-341E9F2B69C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiServer", "ApiServer\ApiServer.csproj", "{B33B6D0F-C81E-4427-A728-2446EF22AFEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +133,14 @@ Global
 		{B316B475-02D0-40C6-9686-888C1777282E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B316B475-02D0-40C6-9686-888C1777282E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B316B475-02D0-40C6-9686-888C1777282E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{786E18C2-D5F1-425A-898D-341E9F2B69C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{786E18C2-D5F1-425A-898D-341E9F2B69C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{786E18C2-D5F1-425A-898D-341E9F2B69C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{786E18C2-D5F1-425A-898D-341E9F2B69C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B33B6D0F-C81E-4427-A728-2446EF22AFEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B33B6D0F-C81E-4427-A728-2446EF22AFEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B33B6D0F-C81E-4427-A728-2446EF22AFEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B33B6D0F-C81E-4427-A728-2446EF22AFEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

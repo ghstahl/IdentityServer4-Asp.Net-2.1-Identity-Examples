@@ -22,7 +22,14 @@ namespace PagesWebApp
         {
             return new List<ApiResource>
             {
-                new ApiResource("api1", "My API")
+                new ApiResource("api1", "My API"),
+                new ApiResource("native_api", "Native Client API")
+                {
+                    ApiSecrets =
+                    {
+                        new Secret("native_api_secret".Sha256())
+                    }
+                }
             };
         }
 
@@ -34,6 +41,23 @@ namespace PagesWebApp
             {
                 new Client
                 {
+                    ClientId = "native.code",
+                    ClientName = "Native Client (Code with PKCE)",
+
+                    RedirectUris = {"http://127.0.0.1:45656"},
+                    PostLogoutRedirectUris = {"http://127.0.0.1:45656"},
+
+                    RequireClientSecret = false,
+
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+                    AllowedScopes = {"openid", "profile", "native_api"},
+
+                    AllowOfflineAccess = true,
+                    RefreshTokenUsage = TokenUsage.ReUse
+                },
+                new Client
+                {
                     ClientId = "client",
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
 
@@ -41,7 +65,7 @@ namespace PagesWebApp
                     {
                         new Secret("secret".Sha256())
                     },
-                    AllowedScopes = { "api1" }
+                    AllowedScopes = {"api1"}
                 },
 
                 // resource owner password grant client
@@ -54,7 +78,7 @@ namespace PagesWebApp
                     {
                         new Secret("secret".Sha256())
                     },
-                    AllowedScopes = { "api1" }
+                    AllowedScopes = {"api1"}
                 },
 
                 // OpenID Connect hybrid flow and client credentials client (MVC)
@@ -71,8 +95,8 @@ namespace PagesWebApp
                         new Secret("secret".Sha256())
                     },
 
-                    RedirectUris = { "http://localhost:5002/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
+                    RedirectUris = {"http://localhost:5002/signin-oidc"},
+                    PostLogoutRedirectUris = {"http://localhost:5002/signout-callback-oidc"},
 
                     AllowedScopes =
                     {
