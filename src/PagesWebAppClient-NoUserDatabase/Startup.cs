@@ -62,8 +62,8 @@ namespace PagesWebAppClient
             });
             var identityBuilder = services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddDefaultTokenProviders();
-            identityBuilder.Services.AddTransientDecorator<IAuthenticationService, IdentityServerAuthenticationService>();
-           identityBuilder.Services.AddTransientDecorator<IUserClaimsPrincipalFactory<ApplicationUser>, UserClaimsFactory<ApplicationUser>>();
+    //        identityBuilder.Services.AddTransientDecorator<IAuthenticationService, IdentityServerAuthenticationService>();
+    //       identityBuilder.Services.AddTransientDecorator<IUserClaimsPrincipalFactory<ApplicationUser>, UserClaimsFactory<ApplicationUser>>();
 
             services.ConfigureApplicationCookie(options => {
                 options.Cookie.Name = $"{Configuration["applicationName"]}.AspNetCore.Identity.Application";

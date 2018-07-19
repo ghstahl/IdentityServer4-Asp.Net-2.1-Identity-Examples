@@ -15,16 +15,25 @@
     {
         <div class="col-md-3">
             <h2>User</h2>
-            <ul>
-                @if (Model != null)
-                {
-                    foreach (var claim in Model.Claims)
+            
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                    @foreach (var claim in Model.Claims)
                     {
-                        var item = $"{claim.Type} :: {claim.Value}";
-                        <li>@item</li>
+                        <tr>
+                            <th scope="row">@claim.Type</th>
+                            <td>@claim.Value</td>
+                          
+                        </tr>
                     }
-                }
-            </ul>
+                </tbody>
+            </table>
         </div>
     }
 
