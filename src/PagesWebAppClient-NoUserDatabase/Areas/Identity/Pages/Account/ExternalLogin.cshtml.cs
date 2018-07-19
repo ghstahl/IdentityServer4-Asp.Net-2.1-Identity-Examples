@@ -153,8 +153,11 @@ namespace PagesWebAppClient.Areas.Identity.Pages.Account
             {
                 await _userManager.DeleteAsync(leftoverUser); // just using this inMemory userstore as a scratch holding pad
             }
-            var user = new ApplicationUser { UserName = nameIdClaim.Value, Email = displayName };
-
+            var user = new ApplicationUser
+            {
+                UserName = nameIdClaim.Value, Email = displayName,
+            };
+            
             var result = await _userManager.CreateAsync(user);
 
             if (result.Succeeded)
@@ -167,7 +170,7 @@ namespace PagesWebAppClient.Areas.Identity.Pages.Account
                 };
                 // normalized id.
                 await _userManager.AddClaimsAsync(newUser, eClaims);
-
+                await _userManager.AddClaimsAsync(newUser, info.Principal.Claims);
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 await _userManager.DeleteAsync(user); // just using this inMemory userstore as a scratch holding pad
                 _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);

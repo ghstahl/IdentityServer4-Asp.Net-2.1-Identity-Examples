@@ -127,8 +127,6 @@ namespace PagesWebApp
                     options.ClientId = record.ClientId;
                     options.SaveTokens = true;
 
-                    options.ClaimActions.P7MapUniqueJsonKey("role", "website");
-
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
                         if (context.ProtocolMessage.RequestType == OpenIdConnectRequestType.Authentication)

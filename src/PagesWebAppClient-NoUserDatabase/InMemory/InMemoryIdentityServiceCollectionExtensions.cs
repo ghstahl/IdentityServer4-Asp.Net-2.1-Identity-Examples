@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityModelExtras;
 using Microsoft.AspNetCore.Identity;
@@ -55,6 +56,17 @@ namespace PagesWebAppClient.InMemory
                         context.Response.Redirect("/");
                         context.HandleResponse();
                         return Task.CompletedTask;
+                    };
+                    options.Events.OnTokenValidated = async context =>
+                    {
+                        var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Role, "superadmin")
+                        };
+                        var appIdentity = new ClaimsIdentity(claims);
+
+                        context.Principal.AddIdentity(appIdentity);
+
                     };
                 });
             }

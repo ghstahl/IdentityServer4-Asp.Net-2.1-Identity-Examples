@@ -4,6 +4,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityServer4Extras;
+using IdentityServer4Extras.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -58,16 +60,16 @@ namespace PagesWebAppClient
             {
                 return inMemoryStore;
             });
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
+            var identityBuilder = services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddDefaultTokenProviders();
+            identityBuilder.Services.AddTransientDecorator<IAuthenticationService, IdentityServerAuthenticationService>();
+           identityBuilder.Services.AddTransientDecorator<IUserClaimsPrincipalFactory<ApplicationUser>, UserClaimsFactory<ApplicationUser>>();
+
             services.ConfigureApplicationCookie(options => {
                 options.Cookie.Name = $"{Configuration["applicationName"]}.AspNetCore.Identity.Application";
             });
             services.AddAuthentication<ApplicationUser>(Configuration);
-            services
-                .AddScoped
-                <Microsoft.AspNetCore.Identity.IUserClaimsPrincipalFactory<ApplicationUser>,
-                    AppClaimsPrincipalFactory<ApplicationUser, ApplicationRole>>();
+         
 
             // Hosting doesn't add IHttpContextAccessor by default
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
