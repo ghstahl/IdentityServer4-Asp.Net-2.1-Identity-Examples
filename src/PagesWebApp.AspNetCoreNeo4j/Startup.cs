@@ -20,7 +20,8 @@ using Neo4j.Driver.V1;
  
 
 using PagesWebApp.Services;
- 
+using IdentityServer4Extras.Extensions;
+using IdentityServer4Extras.Validation;
 
 namespace PagesWebApp
 {
@@ -80,7 +81,7 @@ namespace PagesWebApp
            
 
             // configure identity server with in-memory stores, keys, clients and scopes
-            services.AddIdentityServer(options =>
+            var identityServerBuilder = services.AddIdentityServer(options =>
                 {
                     options.UserInteraction.LoginUrl = "/identity/account/login";
                     options.UserInteraction.LogoutUrl = "/identity/account/logout";
@@ -93,6 +94,10 @@ namespace PagesWebApp
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<ApplicationUser>();
+            
+            // My Overrides.
+            identityServerBuilder.ReplaceRedirectUriValidator<StrictRemoteRedirectUriValidator>();
+
 
             var authenticationBuilder = services.AddAuthentication();
             var googleClientId = Configuration["Google-ClientId"];

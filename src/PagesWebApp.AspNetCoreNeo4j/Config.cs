@@ -44,11 +44,11 @@ namespace PagesWebApp
                     ClientId = "native.code",
                     ClientName = "Native Client (Code with PKCE)",
 
-                    RedirectUris = {"http://127.0.0.1:45656"},
-                    PostLogoutRedirectUris = {"http://127.0.0.1:45656"},
+                   RedirectUris = {"http://notreal"},
+                  PostLogoutRedirectUris = {"http://notreal"},
 
                     RequireClientSecret = false,
-
+                    
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
                     AllowedScopes = {"openid", "profile", "native_api"},

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using IdentityServer4.Validation;
 using IdentityServer4Extras.Configuration.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -49,6 +50,21 @@ namespace IdentityServer4Extras.Extensions
                 services.Add(new ServiceDescriptor(typeof(Decorator<TService>), innerType, ServiceLifetime.Transient));
                 services.Add(new ServiceDescriptor(type, type, registration.Lifetime));
             }
+        }
+
+        /// <summary>
+        /// Adds a redirect URI validator.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <returns></returns>
+        public static IIdentityServerBuilder ReplaceRedirectUriValidator<T>(this IIdentityServerBuilder builder)
+            where T : class, IRedirectUriValidator
+        {
+            builder.Services.Remove<IRedirectUriValidator>();
+            builder.Services.AddTransient<IRedirectUriValidator, T>();
+
+            return builder;
         }
     }
 }
