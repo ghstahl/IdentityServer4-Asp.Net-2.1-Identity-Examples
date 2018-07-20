@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using IdentityModel.OidcClient;
+using Newtonsoft.Json.Linq;
 
 namespace WpfApp
 {
@@ -24,9 +27,10 @@ namespace WpfApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        static string _api = "https://localhost:44303/Identity";
         const string clientID = "native.code";
         private const string Authority = "https://localhost:44317/";
-
+        static HttpClient _apiClient = new HttpClient { BaseAddress = new Uri(_api) };
         public MainWindow()
         {
             InitializeComponent();
@@ -41,7 +45,7 @@ namespace WpfApp
             {
                 Authority = authority,
                 ClientId = clientID,
-                Scope = "openid profile",
+                Scope = "openid profile native_api",
                 RedirectUri = RedirectUri,
                 Browser = browser,
                 Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode,
@@ -73,31 +77,34 @@ namespace WpfApp
 
             // create an HttpListener to listen for requests on that redirect URI.
 
-            var result = await OidcClient.LoginAsync();
+            CurrentResult = await OidcClient.LoginAsync();
 
             
 
-            if (result.IsError)
+            if (CurrentResult.IsError)
             {
-                output($"\n\nError:\n{result.Error}");
+                output($"\n\nError:\n{CurrentResult.Error}");
             }
             else
             {
                 output("\n\nClaims:");
-                foreach (var claim in result.User.Claims)
+                foreach (var claim in CurrentResult.User.Claims)
                 {
                     output($"{claim.Type}: {claim.Value}");
                 }
 
                 output("");
-                output($"Access token:\n{result.AccessToken}");
+                output($"Access token:\n{CurrentResult.AccessToken}");
 
-                if (!string.IsNullOrWhiteSpace(result.RefreshToken))
+                if (!string.IsNullOrWhiteSpace(CurrentResult.RefreshToken))
                 {
-                    output($"Refresh token:\n{result.RefreshToken}");
+                    output($"Refresh token:\n{CurrentResult.RefreshToken}");
                 }
             }
         }
+
+        public LoginResult CurrentResult { get; set; }
+
         /// <summary>
         /// Appends the given string to the on-screen log, and the debug console.
         /// </summary>
@@ -106,6 +113,28 @@ namespace WpfApp
         {
             textBoxOutput.Text = textBoxOutput.Text + output + Environment.NewLine;
             Console.WriteLine(output);
+        }
+
+        private async void ButtonApi_Click(object sender, RoutedEventArgs e)
+        {
+            await CallApiAsync(CurrentResult.AccessToken);
+        }
+        private  async Task CallApiAsync(string currentAccessToken)
+        {
+            _apiClient.SetBearerToken(currentAccessToken);
+            var response = await _apiClient.GetAsync("");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var jArray = JArray.Parse(json);
+                output("\n\n");
+                output(json);
+            }
+            else
+            {
+                output($"Error: {response.ReasonPhrase}");
+            }
         }
     }
 }

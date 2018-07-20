@@ -12,11 +12,12 @@
                 BorderThickness="0" Padding="0" Background="Transparent">
             <Image Source="Assets/btn_neo4j_sign-in.png" Stretch="UniformToFill"/>
         </Button>
-       
+        <Button Content="API" HorizontalAlignment="Left" Margin="239,22,0,0" VerticalAlignment="Top" Width="206" Height="46" Click="ButtonApi_Click"/>
         <TextBox x:Name="textBoxOutput" HorizontalAlignment="Left" Height="209" Margin="22,89,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="470"
                  IsReadOnly="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
         />
-       
+        
+
 
     </Grid>
 </Window>
