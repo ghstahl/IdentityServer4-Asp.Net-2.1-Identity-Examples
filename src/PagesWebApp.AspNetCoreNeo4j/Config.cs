@@ -39,6 +39,24 @@ namespace PagesWebApp
             // client credentials client
             return new List<Client>
             {
+                
+                new Client
+                {
+                    ClientId = "native.code.wpf",
+                    ClientName = "Native Client (Code with PKCE)",
+
+                    RedirectUris = { "http://127.0.0.1/sample-wpf-app" },
+                    PostLogoutRedirectUris = { "http://127.0.0.1/sample-wpf-app" },
+
+                    RequireClientSecret = false,
+
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+                    AllowedScopes = { "openid", "profile","native_api" },
+
+                    AllowOfflineAccess = true,
+                    RefreshTokenUsage = TokenUsage.ReUse
+                },
                 new Client
                 {
                     ClientId = "native.code",
