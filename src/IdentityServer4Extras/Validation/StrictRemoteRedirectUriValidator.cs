@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
+using IdentityServer4.Stores;
 using IdentityServer4.Validation;
 
 namespace IdentityServer4Extras.Validation
@@ -15,6 +16,12 @@ namespace IdentityServer4Extras.Validation
     /// </summary>
     public class StrictRemoteRedirectUriValidator : IRedirectUriValidator
     {
+        private IClientStore _clientStore;
+
+        public StrictRemoteRedirectUriValidator(IClientStore clientStore)
+        {
+            _clientStore = clientStore;
+        }
         /// <summary>
         /// Checks if a given URI string is in a collection of strings (using ordinal ignore case comparison)
         /// </summary>
@@ -23,8 +30,6 @@ namespace IdentityServer4Extras.Validation
         /// <returns></returns>
         protected bool StringCollectionContainsString(IEnumerable<string> uris, string requestedUri)
         {
-            if (requestedUri.Contains("://127.0.0.1"))
-                return true;
             if (uris.IsNullOrEmpty()) return false;
 
             return uris.Contains(requestedUri, StringComparer.OrdinalIgnoreCase);
@@ -40,6 +45,20 @@ namespace IdentityServer4Extras.Validation
         /// </returns>
         public virtual Task<bool> IsRedirectUriValidAsync(string requestedUri, Client client)
         {
+            try
+            {
+                ClientExtra clientExtra = client as ClientExtra;
+                if (clientExtra.AllowArbitraryLocalRedirectUris &&
+                    (requestedUri.Contains("://127.0.0.1") || requestedUri.Contains("://localhost"))
+                    )
+                {
+                    return Task.FromResult(true);
+                }
+            }
+            catch  
+            {
+                // eatit
+            }
             return Task.FromResult(StringCollectionContainsString(client.RedirectUris, requestedUri));
         }
 

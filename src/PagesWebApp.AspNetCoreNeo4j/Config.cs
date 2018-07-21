@@ -3,6 +3,7 @@ using System.Security.Claims;
 using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
+using IdentityServer4Extras;
 
 namespace PagesWebApp
 {
@@ -39,34 +40,35 @@ namespace PagesWebApp
             // client credentials client
             return new List<Client>
             {
-                
-                new Client
+                new ClientExtra
                 {
-                    ClientId = "native.code.wpf",
-                    ClientName = "Native Client (Code with PKCE)",
+                    AllowArbitraryLocalRedirectUris = true,
+                    ClientId = "native.hybrid",
+                    ClientName = "Native Client (Hybrid with PKCE)",
 
-                    RedirectUris = { "http://127.0.0.1/sample-wpf-app" },
-                    PostLogoutRedirectUris = { "http://127.0.0.1/sample-wpf-app" },
+                    RedirectUris = {"https://notused"},
+                    PostLogoutRedirectUris = {"https://notused"},
 
                     RequireClientSecret = false,
 
-                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowedGrantTypes = GrantTypes.Hybrid,
                     RequirePkce = true,
-                    AllowedScopes = { "openid", "profile","native_api" },
+                    AllowedScopes = {"openid", "profile", "email", "native_api"},
 
                     AllowOfflineAccess = true,
                     RefreshTokenUsage = TokenUsage.ReUse
                 },
-                new Client
+                new ClientExtra
                 {
-                    ClientId = "native.code",
+                    AllowArbitraryLocalRedirectUris = true,
+                    ClientId = "native.code.wpf",
                     ClientName = "Native Client (Code with PKCE)",
 
-                   RedirectUris = {"http://notreal"},
-                  PostLogoutRedirectUris = {"http://notreal"},
+                    RedirectUris = {"http://127.0.0.1/sample-wpf-app"},
+                    PostLogoutRedirectUris = {"http://127.0.0.1/sample-wpf-app"},
 
                     RequireClientSecret = false,
-                    
+
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
                     AllowedScopes = {"openid", "profile", "native_api"},
@@ -74,7 +76,25 @@ namespace PagesWebApp
                     AllowOfflineAccess = true,
                     RefreshTokenUsage = TokenUsage.ReUse
                 },
-                new Client
+                new ClientExtra
+                {
+                    AllowArbitraryLocalRedirectUris = true,
+                    ClientId = "native.code",
+                    ClientName = "Native Client (Code with PKCE)",
+
+                    RedirectUris = {"http://notreal"},
+                    PostLogoutRedirectUris = {"http://notreal"},
+
+                    RequireClientSecret = false,
+
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+                    AllowedScopes = {"openid", "profile", "native_api"},
+
+                    AllowOfflineAccess = true,
+                    RefreshTokenUsage = TokenUsage.ReUse
+                },
+                new ClientExtra
                 {
                     ClientId = "client",
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
@@ -87,7 +107,7 @@ namespace PagesWebApp
                 },
 
                 // resource owner password grant client
-                new Client
+                new ClientExtra
                 {
                     ClientId = "ro.client",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
@@ -100,7 +120,7 @@ namespace PagesWebApp
                 },
 
                 // OpenID Connect hybrid flow and client credentials client (MVC)
-                new Client
+                new ClientExtra
                 {
                     ClientId = "mvc",
                     ClientName = "MVC Client",
@@ -124,7 +144,7 @@ namespace PagesWebApp
                     },
                     AllowOfflineAccess = true
                 },
-                new Client
+                new ClientExtra
                 {
                     ClientId = "mvc2",
                     ClientName = "MVC2 Client",
@@ -147,7 +167,7 @@ namespace PagesWebApp
                         IdentityServerConstants.StandardScopes.Profile
                     }
                 },
-                new Client
+                new ClientExtra
                 {
                     ClientId = "PagesWebAppClient",
                     ClientName = "PagesWebAppClient Client",
@@ -170,7 +190,7 @@ namespace PagesWebApp
                         IdentityServerConstants.StandardScopes.Profile
                     }
                 },
-                new Client
+                new ClientExtra
                 {
                     ClientId = "Neo4j.PagesWebAppClient.NoUserDatabase",
                     ClientName = "Neo4j.PagesWebAppClient.NoUserDatabase Client",

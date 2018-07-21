@@ -20,9 +20,9 @@ namespace WinForms
 
             var options = new OidcClientOptions
             {
-                Authority = "https://demo.identityserver.io",
+                Authority = "https://localhost:44317",
                 ClientId = "native.hybrid",
-                Scope = "openid email api offline_access",
+                Scope = "openid profile native_api offline_access",
                 RedirectUri = "http://localhost/winforms.client",
 
                 Browser = new WinFormsEmbeddedBrowser()
