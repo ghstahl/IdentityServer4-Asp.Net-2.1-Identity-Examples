@@ -72,7 +72,7 @@ namespace PagesWebApp
                 .AddNeo4jMultiFactorStore<ApplicationFactor>()
                 .AddDefaultTokenProviders();
 
-
+            services.AddDetection();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
