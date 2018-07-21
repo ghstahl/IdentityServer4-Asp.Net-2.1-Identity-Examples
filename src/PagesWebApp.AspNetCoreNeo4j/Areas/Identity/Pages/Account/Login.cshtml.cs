@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Wangkanai.Detection;
 
 namespace PagesWebApp.Areas.Identity.Pages.Account
 {
@@ -22,13 +23,16 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
         private readonly ILogger<LoginModel> _logger;
         private IIdentityServerInteractionService _interaction;
         private IMultiFactorUserStore<ApplicationUser, ApplicationFactor> _multiFactorUserStore;
+        public IDetection Detection { get;  }
 
         public LoginModel(
+            IDetection detection,
             IIdentityServerInteractionService interaction, 
             SignInManager<ApplicationUser> signInManager,
             IMultiFactorUserStore<ApplicationUser, ApplicationFactor> multiFactorUserStore,
             ILogger<LoginModel> logger)
         {
+            Detection = detection;
             _multiFactorUserStore = multiFactorUserStore;
             _interaction = interaction;
             _signInManager = signInManager;
