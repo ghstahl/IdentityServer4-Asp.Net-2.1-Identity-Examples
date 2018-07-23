@@ -165,7 +165,8 @@ namespace PagesWebApp
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile
-                    }
+                    },
+                    AllowOfflineAccess = true
                 },
                 new ClientExtra
                 {
@@ -188,13 +189,14 @@ namespace PagesWebApp
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile
-                    }
+                    },
+                    AllowOfflineAccess = true
                 },
                 new ClientExtra
                 {
                     ClientId = "Neo4j.PagesWebAppClient.NoUserDatabase",
                     ClientName = "Neo4j.PagesWebAppClient.NoUserDatabase Client",
-                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowedGrantTypes =  new[] { GrantType.Implicit,GrantType.Hybrid,GrantType.AuthorizationCode },
                     RequireConsent = true,
                     RedirectUris =
                     {
@@ -210,8 +212,13 @@ namespace PagesWebApp
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile
-                    }
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        IdentityServerConstants.StandardScopes.Email
+                    },
+                    AllowOfflineAccess = true,
+                    AllowAccessTokensViaBrowser = true
+                    
                 }
             };
         }

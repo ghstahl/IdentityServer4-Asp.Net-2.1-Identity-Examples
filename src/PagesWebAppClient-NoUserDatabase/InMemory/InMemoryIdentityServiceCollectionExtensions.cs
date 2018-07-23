@@ -35,14 +35,19 @@ namespace PagesWebAppClient.InMemory
             foreach (var record in oAuth2SchemeRecords)
             {
                 var scheme = record.Scheme;
-                authenticationBuilder.AddOpenIdConnect(scheme, scheme, options =>
+                authenticationBuilder.P7AddOpenIdConnect(scheme, scheme, options =>
                 {
                     options.Authority = record.Authority;
                     options.CallbackPath = record.CallbackPath;
                     options.RequireHttpsMetadata = false;
 
+                    options.Scope.Clear();
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
+                    options.Scope.Add("offline_access");
                     options.ClientId = record.ClientId;
                     options.SaveTokens = true;
+                    options.ResponseType = "id_token token";
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
                         if (context.ProtocolMessage.RequestType == OpenIdConnectRequestType.Authentication)
@@ -68,6 +73,12 @@ namespace PagesWebAppClient.InMemory
                         context.Principal.AddIdentity(appIdentity);
 
                     };
+                    options.Events.OnTicketReceived = async (context) =>
+                    {
+                        ClaimsIdentity identity = (ClaimsIdentity)context.Principal.Identity;
+
+                    };
+
                 });
             }
             

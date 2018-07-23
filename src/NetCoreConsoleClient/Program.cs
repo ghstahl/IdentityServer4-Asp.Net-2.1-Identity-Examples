@@ -43,7 +43,7 @@ namespace NetCoreConsoleClient
                 Authority = _authority,
                 ClientId = "native.code",
                 RedirectUri = redirectUri,
-                Scope = "openid profile native_api",
+                Scope = "openid profile offline_access native_api",
                 FilterClaims = false,
                 Browser = browser,
                 Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode,
