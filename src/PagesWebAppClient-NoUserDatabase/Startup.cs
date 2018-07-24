@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityModel.Client;
 using IdentityServer4Extras;
 using IdentityServer4Extras.Extensions;
 using Microsoft.AspNetCore.Authentication;
@@ -18,13 +19,45 @@ using Microsoft.EntityFrameworkCore;
  using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using PagesWebAppClient.InMemory;
 using PagesWebAppClient.Services;
 using PagesWebAppClient.Utils;
+using OAuth2SchemeRecord = IdentityModelExtras.OAuth2SchemeRecord;
 
 namespace PagesWebAppClient
 {
+    public class TokenClientAccessor
+    {
+        private IOptions<List<OAuth2SchemeRecord>> _oAuth2SchemeRecords;
+        private Dictionary<string, TokenClient> TokenClients { get; set; }
+        public TokenClientAccessor(IOptions<List<OAuth2SchemeRecord>> oAuth2SchemeRecords)
+        {
+            _oAuth2SchemeRecords = oAuth2SchemeRecords;
+            TokenClients = new Dictionary<string, TokenClient>();
+        }
+        public async Task<TokenClient> TokenClientByAuthorityAsync(string authority)
+        {
+            var record = (from item in _oAuth2SchemeRecords.Value
+                where item.Authority == authority
+                select item).FirstOrDefault();
+            if (record == null)
+                return null;
+            if (!TokenClients.ContainsKey(record.Authority))
+            {
+                var disco = await DiscoveryClient.GetAsync(record.Authority);
+                if (disco.IsError)
+                    throw new Exception(disco.Error);
+                var tokenClient = new TokenClient(
+                    disco.TokenEndpoint,
+                    record.ClientId,
+                    record.ClientSecret);
+                TokenClients.Add(record.Authority, tokenClient);
+            }
+            return TokenClients[record.Authority];
+        }
+    }
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -90,9 +123,10 @@ namespace PagesWebAppClient
                 options.IdleTimeout = TimeSpan.FromSeconds(3600);
                 options.Cookie.HttpOnly = true;
             });
-
+            services.Configure<List<OAuth2SchemeRecord>>(Configuration.GetSection("oauth2"));
+            services.AddSingleton<TokenClientAccessor>();
         }
-
+       
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {

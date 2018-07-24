@@ -222,7 +222,7 @@ namespace PagesWebApp
                     {
                         new Secret("secret".Sha256())
                     },
-                    RequireClientSecret = false,
+                    RequireClientSecret = true,
                     AlwaysIncludeUserClaimsInIdToken = true
 
                 }

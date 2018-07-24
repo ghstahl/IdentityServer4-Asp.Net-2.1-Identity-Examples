@@ -9,5 +9,6 @@ namespace PagesWebAppClient.Models
     {
         public string LoginProider { get; set; }
         public Dictionary<string,string> OIDC { get; set; }
+        public string Authority { get; set; }
     }
 }
