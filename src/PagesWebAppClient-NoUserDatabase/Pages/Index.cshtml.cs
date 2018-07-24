@@ -10,37 +10,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using PagesWebAppClient.Constants;
+using PagesWebAppClient.Extensions;
+using PagesWebAppClient.Models;
 
 namespace PagesWebAppClient.Pages
 {
     public class IndexModel : PageModel
     {
-        private IAuthenticationService _authenticationService;
-        private IOptions<List<OAuth2SchemeRecord>> _oAuth2SchemeRecords;
-        private TokenClientAccessor _tokenClientAccessor;
-
-        public IndexModel(
-            IOptions<List<OAuth2SchemeRecord>> oAuth2SchemeRecords,
-            TokenClientAccessor tokenClientAccessor,
-            IAuthenticationService authenticationService)
+        public IndexModel()
         {
-            _authenticationService = authenticationService;
-            _tokenClientAccessor = tokenClientAccessor;
-            _oAuth2SchemeRecords = oAuth2SchemeRecords;
         }
         public List<Claim> Claims { get; set; }
+        public OpenIdConnectSessionDetails OpenIdConnectSessionDetails { get; set; }
         public async void OnGet()
         {
             if (User.Identity.IsAuthenticated)
             {
 
-                var kk = await _authenticationService.GetTokenAsync(HttpContext, "access_token");
-                  kk = await _authenticationService.GetTokenAsync(HttpContext, "refresh_token");
-                string accessToken = await HttpContext.GetTokenAsync("access_token");
-          
-
-
-                string idToken = await HttpContext.GetTokenAsync("id_token");
+                OpenIdConnectSessionDetails = HttpContext.Session.Get<OpenIdConnectSessionDetails>(Wellknown.OIDCSessionKey);
 
                 Claims = Request.HttpContext.User.Claims.ToList();
             }
