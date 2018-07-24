@@ -41,13 +41,18 @@ namespace PagesWebAppClient.InMemory
                     options.CallbackPath = record.CallbackPath;
                     options.RequireHttpsMetadata = false;
 
+                    if (!string.IsNullOrEmpty(record.ClientSecret))
+                    {
+                        options.ClientSecret = record.ClientSecret;
+                    }
+
                     options.Scope.Clear();
                     options.Scope.Add("openid");
                     options.Scope.Add("profile");
                     options.Scope.Add("offline_access");
                     options.ClientId = record.ClientId;
                     options.SaveTokens = true;
-                    options.ResponseType = "id_token token";
+                    options.ResponseType = "code id_token token";
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
                         if (context.ProtocolMessage.RequestType == OpenIdConnectRequestType.Authentication)

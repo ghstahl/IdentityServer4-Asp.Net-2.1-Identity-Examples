@@ -196,7 +196,7 @@ namespace PagesWebApp
                 {
                     ClientId = "Neo4j.PagesWebAppClient.NoUserDatabase",
                     ClientName = "Neo4j.PagesWebAppClient.NoUserDatabase Client",
-                    AllowedGrantTypes =  new[] { GrantType.Implicit,GrantType.Hybrid,GrantType.AuthorizationCode },
+                    AllowedGrantTypes =  new[] { GrantType.Hybrid },
                     RequireConsent = true,
                     RedirectUris =
                     {
@@ -217,8 +217,14 @@ namespace PagesWebApp
                         IdentityServerConstants.StandardScopes.Email
                     },
                     AllowOfflineAccess = true,
-                    AllowAccessTokensViaBrowser = true
-                    
+                    AllowAccessTokensViaBrowser = true,
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    RequireClientSecret = false,
+                    AlwaysIncludeUserClaimsInIdToken = true
+
                 }
             };
         }
