@@ -13,7 +13,7 @@
   
     @if (signedIn)
     {
-        <div class="col-md-3">
+        <div class="col-md-9">
             <h2>User</h2>
             
             <table class="table">
@@ -39,3 +39,41 @@
 
 </div>
 
+<div class="row">
+  
+    @if (signedIn)
+    {
+        <div class="col-md-9">
+            <h2>OIDC</h2>
+            
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">@nameof(Model.OpenIdConnectSessionDetails.LoginProider)</th>
+                    <td>@Model.OpenIdConnectSessionDetails.LoginProider</td>   
+                </tr>
+                <tr>
+                    <th scope="row">@nameof(Model.OpenIdConnectSessionDetails.Authority)</th>
+                    <td>@Model.OpenIdConnectSessionDetails.Authority</td>
+                </tr>
+
+                @foreach (var oidcItem in Model.OpenIdConnectSessionDetails.OIDC)
+                {
+                    <tr>
+                        <th scope="row">@oidcItem.Key</th>
+                        <td class="word-wrap">@oidcItem.Value</td>
+
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+
+</div>

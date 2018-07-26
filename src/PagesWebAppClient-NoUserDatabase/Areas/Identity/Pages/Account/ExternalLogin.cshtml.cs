@@ -4,12 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityModelExtras;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PagesWebAppClient.Constants;
 using PagesWebAppClient.Extensions;
 using PagesWebAppClient.Models;
@@ -24,12 +26,15 @@ namespace PagesWebAppClient.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ExternalLoginModel> _logger;
         private string[] _possibleNameTypes = new[] { "DisplayName", "preferred_username", "name", ClaimTypes.Name, ClaimTypes.GivenName, ClaimTypes.Email };
+        private IOptions<List<OAuth2SchemeRecord>> _oAuth2SchemeRecords;
 
         public ExternalLoginModel(
+            IOptions<List<OAuth2SchemeRecord>> oAuth2SchemeRecords,
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             ILogger<ExternalLoginModel> logger)
         {
+            _oAuth2SchemeRecords = oAuth2SchemeRecords;
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
@@ -91,11 +96,16 @@ namespace PagesWebAppClient.Areas.Identity.Pages.Account
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
             var oidc = await HarvestOidcDataAsync();
-            HttpContext.Session.Set(Wellknown.OIDCSessionKey, new OpenIdConnectSessionDetails
-            {
-                LoginProider = info.LoginProvider,
-                OIDC = oidc
-            });
+            var oAuth2SchemeRecord = (_oAuth2SchemeRecords.Value.Where(item => item.Scheme == info.LoginProvider)).FirstOrDefault();
+
+              HttpContext.Session.Set(
+                  Wellknown.OIDCSessionKey,
+                  new OpenIdConnectSessionDetails
+              {
+                  Authority = oAuth2SchemeRecord.Authority,
+                  LoginProider = info.LoginProvider,
+                  OIDC = oidc
+              });
 
             var queryNameId = from claim in info.Principal.Claims
                 where claim.Type == ClaimTypes.NameIdentifier
