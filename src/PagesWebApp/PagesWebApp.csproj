@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IdentityServer4.AspNetIdentity.All\IdentityServer4.AspNetIdentity.All.csproj" />
+    <ProjectReference Include="..\IdentityServer4Extras\IdentityServer4Extras.csproj" />
   </ItemGroup>
 
 </Project>

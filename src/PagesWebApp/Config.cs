@@ -3,6 +3,7 @@ using System.Security.Claims;
 using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
+using IdentityServer4Extras;
 
 namespace PagesWebApp
 {
@@ -32,7 +33,7 @@ namespace PagesWebApp
             // client credentials client
             return new List<Client>
             {
-                new Client
+                new ClientExtra
                 {
                     ClientId = "client",
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
@@ -41,11 +42,11 @@ namespace PagesWebApp
                     {
                         new Secret("secret".Sha256())
                     },
-                    AllowedScopes = { "api1" }
+                    AllowedScopes = {"api1"}
                 },
 
                 // resource owner password grant client
-                new Client
+                new ClientExtra
                 {
                     ClientId = "ro.client",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
@@ -54,11 +55,11 @@ namespace PagesWebApp
                     {
                         new Secret("secret".Sha256())
                     },
-                    AllowedScopes = { "api1" }
+                    AllowedScopes = {"api1"}
                 },
 
                 // OpenID Connect hybrid flow and client credentials client (MVC)
-                new Client
+                new ClientExtra
                 {
                     ClientId = "mvc",
                     ClientName = "MVC Client",
@@ -71,8 +72,8 @@ namespace PagesWebApp
                         new Secret("secret".Sha256())
                     },
 
-                    RedirectUris = { "http://localhost:5002/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
+                    RedirectUris = {"http://localhost:5002/signin-oidc"},
+                    PostLogoutRedirectUris = {"http://localhost:5002/signout-callback-oidc"},
 
                     AllowedScopes =
                     {
@@ -82,7 +83,7 @@ namespace PagesWebApp
                     },
                     AllowOfflineAccess = true
                 },
-                new Client
+                new ClientExtra
                 {
                     ClientId = "mvc2",
                     ClientName = "MVC2 Client",
@@ -105,7 +106,7 @@ namespace PagesWebApp
                         IdentityServerConstants.StandardScopes.Profile
                     }
                 },
-                new Client
+                new ClientExtra
                 {
                     ClientId = "PagesWebAppClient",
                     ClientName = "PagesWebAppClient Client",
@@ -128,11 +129,11 @@ namespace PagesWebApp
                         IdentityServerConstants.StandardScopes.Profile
                     }
                 },
-                new Client
+                new ClientExtra
                 {
                     ClientId = "PagesWebAppClient.NoUserDatabase",
                     ClientName = "PagesWebAppClient.NoUserDatabase Client",
-                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowedGrantTypes = new[] {GrantType.Hybrid},
                     RequireConsent = true,
                     RedirectUris =
                     {
@@ -148,8 +149,19 @@ namespace PagesWebApp
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile
-                    }
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        IdentityServerConstants.StandardScopes.Email
+                    },
+                    AllowOfflineAccess = true,
+                    AllowAccessTokensViaBrowser = true,
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    RequireClientSecret = false,
+                    AlwaysIncludeUserClaimsInIdToken = true
+
                 }
             };
         }
