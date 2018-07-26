@@ -1,6 +1,7 @@
 # IdentityServer4 Asp.Net 2.1 Identity Examples
 
-[IdentityServer4 Issue](https://github.com/IdentityServer/IdentityServer4/issues/2373)  
+![GitHub Logo](./Apps.png)
+
 
 All these examples are based on the following;  
   * asp.net 2.1 WebApp  
@@ -8,6 +9,11 @@ All these examples are based on the following;
 
 ## The IdentityServer4 Host
 [PagesWebApp](src/PagesWebApp)  
+[PagesWebApp.AspNetCoreNeo4j](src/PagesWebApp.AspNetCoreNeo4j)  
+
+## External IDP
+[PagesWebApp.AspNetCoreNeo4j.Support](src/PagesWebApp.AspNetCoreNeo4j.Support)  
+This IDP shares the same Neo4j user database.  The support IDP is used by a support agent to ask may factor questions which results in a login.  The Support idp is recorded in the id_token so that the final clients know the difference between a user login vs on that was done over the phone.
 
 ## Clients
 [PagesWebAppClient](src/PagesWebAppClient)  
