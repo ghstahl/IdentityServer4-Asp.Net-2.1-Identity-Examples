@@ -62,5 +62,6 @@ This is still using asp.net 2.1 Identity, however the user database is in-memory
 [learnrazorpages](https://www.learnrazorpages.com/razor-pages)  
 [IdentityServer4.AspNetIdentity](https://github.com/IdentityServer/IdentityServer4.AspNetIdentity)  
 [asp.net core 2.1](https://docs.microsoft.com/en-us/aspnet/core/aspnetcore-2.1?view=aspnetcore-2.1)  
+[AspNetCore.Identity.Neo4j](https://github.com/dopare/AspNetCore.Identity.Neo4j)  
 
 
