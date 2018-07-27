@@ -6,6 +6,17 @@
 All these examples are based on the following;  
   * asp.net 2.1 WebApp  
   * asp.net identity  
+  
+## Minimal Apps
+1. Neo4J desktop  
+   The User Database
+2. [PagesWebApp.AspNetCoreNeo4j](src/PagesWebApp.AspNetCoreNeo4j)  
+   The Federated Gateway
+3. [PagesWebApp.AspNetCoreNeo4j.Support](src/PagesWebApp.AspNetCoreNeo4j.Support)  
+   The External Support IDP  
+
+
+
 ## Neo4j Setup
 [Neo4j Desktop](https://neo4j.com/download/)  
 
