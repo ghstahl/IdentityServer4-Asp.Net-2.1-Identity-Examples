@@ -64,7 +64,10 @@ namespace PagesWebApp
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddSingleton(s => GraphDatabase.Driver(Configuration.GetConnectionString("DefaultConnection"), AuthTokens.Basic("neo4j", "password")));
+            var neo4JConnectionConfiguration = Configuration.FromSection<Neo4JConnectionConfiguration>("neo4JConnectionConfiguration");
+
+            services.AddSingleton(s => GraphDatabase.Driver(neo4JConnectionConfiguration.ConnectionString,
+                AuthTokens.Basic(neo4JConnectionConfiguration.UserName, neo4JConnectionConfiguration.Password)));
             services.AddScoped(s => s.GetService<IDriver>().Session());
 
             services.AddIdentity<ApplicationUser, Neo4jIdentityRole>()
