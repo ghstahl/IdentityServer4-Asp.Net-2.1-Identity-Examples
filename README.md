@@ -6,6 +6,20 @@
 All these examples are based on the following;  
   * asp.net 2.1 WebApp  
   * asp.net identity  
+## Neo4j Setup
+[Neo4j Desktop](https://neo4j.com/download/)  
+
+```
+"neo4JConnectionConfiguration": {
+    "connectionString": "bolt://127.0.0.1:7687",
+    "userName": "neo4j",
+    "password": "password"
+  }
+```
+Make sure you create a project in Neo4j using the above settings.  The following projects require Neo4J;
+[PagesWebApp.AspNetCoreNeo4j](src/PagesWebApp.AspNetCoreNeo4j)  
+[PagesWebApp.AspNetCoreNeo4j.Support](src/PagesWebApp.AspNetCoreNeo4j.Support)  
+
 
 ## The IdentityServer4 Host
 [PagesWebApp](src/PagesWebApp)  
