@@ -21,13 +21,16 @@ Make sure you create a project in Neo4j using the above settings.  The following
 [PagesWebApp.AspNetCoreNeo4j.Support](src/PagesWebApp.AspNetCoreNeo4j.Support)  
 
 
-## The IdentityServer4 Host
+## IdentityServer4 Federated Gateways 
 [PagesWebApp](src/PagesWebApp)  
+This Federated Gateway is using the out-of-the-box framework provided by Microsoft.  
+
 [PagesWebApp.AspNetCoreNeo4j](src/PagesWebApp.AspNetCoreNeo4j)  
+This Federated Gateway is using Neo4j as its user store.  It also points to our Support IDP as an external IDP.  
 
 ## External IDP
 [PagesWebApp.AspNetCoreNeo4j.Support](src/PagesWebApp.AspNetCoreNeo4j.Support)  
-This IDP shares the same Neo4j user database.  The support IDP is used by a support agent to ask may factor questions which results in a login.  The Support idp is recorded in the id_token so that the final clients know the difference between a user login vs on that was done over the phone.
+This IDP shares the same Neo4j user database as [PagesWebApp.AspNetCoreNeo4j](src/PagesWebApp.AspNetCoreNeo4j).  The support IDP is used by a support agent to ask many factor questions which results in a login.  The Support idp is recorded in the id_token so that the final clients know the difference between a user login vs on that was done over the phone.
 
 ## Web Clients
 [PagesWebAppClient](src/PagesWebAppClient)  
