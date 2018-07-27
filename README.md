@@ -1,6 +1,6 @@
 # IdentityServer4 Asp.Net 2.1 Identity Examples
 
-![GitHub Logo](./Apps.png)
+![Architecture](./Apps.png)
 
 
 All these examples are based on the following;  
@@ -31,6 +31,10 @@ This Federated Gateway is using Neo4j as its user store.  It also points to our 
 ## External IDP
 [PagesWebApp.AspNetCoreNeo4j.Support](src/PagesWebApp.AspNetCoreNeo4j.Support)  
 This IDP shares the same Neo4j user database as [PagesWebApp.AspNetCoreNeo4j](src/PagesWebApp.AspNetCoreNeo4j).  The support IDP is used by a support agent to ask many factor questions which results in a login.  The Support idp is recorded in the id_token so that the final clients know the difference between a user login vs on that was done over the phone.
+
+Don't forget to add many factors to a user using the Federated Gateway [PagesWebApp.AspNetCoreNeo4j](src/PagesWebApp.AspNetCoreNeo4j);  
+
+![Many Factor](./many-factor.png)
 
 ## Web Clients
 [PagesWebAppClient](src/PagesWebAppClient)  
