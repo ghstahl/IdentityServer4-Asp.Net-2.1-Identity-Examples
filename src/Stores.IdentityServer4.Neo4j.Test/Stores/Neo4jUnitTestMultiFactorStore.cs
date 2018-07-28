@@ -17,7 +17,14 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
     public class Neo4jUnitTestMultiFactorStore : UnitTestClientStore<TestUser, Neo4jIdentityServer4Client>
     {
 
-
+        protected override TestUser CreateTestUser()
+        {
+            return new TestUser()
+            {
+                UserName = Unique.S,
+                Email = Unique.Email
+            };
+        }
         protected override Neo4jIdentityServer4Client CreateTestClient()
         {
             return new Neo4jIdentityServer4Client()

@@ -60,6 +60,65 @@ namespace Stores.IdentityServer4.Test.Core.Store
             findResult.ClientId.ShouldBe(client.ClientId);
 
         }
+        [TestMethod]
+        public async Task Create_User_Client_update()
+        {
+            var testUser = CreateTestUser();
 
+            var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
+
+            var client = CreateTestClient();
+            var identityResult = await _clientUserStore.AddToClientAsync(
+                testUser, client, CancellationToken.None);
+            identityResult.ShouldNotBeNull();
+            identityResult.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindByClientIdAsync(client.ClientId, CancellationToken.None);
+            findResult.ShouldNotBeNull();
+            findResult.ClientId.ShouldBe(client.ClientId);
+            findResult.ClientName.ShouldBe(client.ClientName);
+
+            var client2 = CreateTestClient();
+            client.ClientName = client2.ClientName;
+
+            identityResult = await _clientUserStore.UpdateAsync(client,
+                CancellationToken.None);
+            identityResult.ShouldNotBeNull();
+            identityResult.Succeeded.ShouldBeTrue();
+
+            findResult =
+                await _clientUserStore.FindByClientIdAsync(client.ClientId, CancellationToken.None);
+            findResult.ShouldNotBeNull();
+            findResult.ClientId.ShouldBe(client.ClientId);
+            findResult.ClientName.ShouldBe(client.ClientName);
+        }
+
+        [TestMethod]
+        public async Task Create_Factor_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            TClient client = CreateTestClient();
+
+            var result = await _clientUserStore.CreateAsync(client, CancellationToken.None);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindByClientIdAsync(client.ClientId, CancellationToken.None);
+            findResult.ShouldNotBeNull();
+            findResult.ClientId.ShouldBe(client.ClientId);
+
+            result = await _clientUserStore.DeleteAsync(client, CancellationToken.None);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            findResult =
+                await _clientUserStore.FindByClientIdAsync(client.ClientId, CancellationToken.None);
+            findResult.ShouldBeNull();
+
+        }
+        protected abstract TUser CreateTestUser();
     }
 }
