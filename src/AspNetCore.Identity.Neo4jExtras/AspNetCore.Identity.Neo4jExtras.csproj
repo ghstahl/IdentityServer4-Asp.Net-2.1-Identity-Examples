@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AspNetCore.Identity.Neo4j\AspNetCore.Identity.Neo4j.csproj" />
+    <ProjectReference Include="..\Neo4jExtras\Neo4jExtras.csproj" />
   </ItemGroup>
 
 </Project>

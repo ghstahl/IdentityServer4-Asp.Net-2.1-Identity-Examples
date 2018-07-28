@@ -2,6 +2,7 @@
 using System;
 using IdentityServer4.Models;
 using IdentityServer4Extras;
+using Stores.IdentityServer4.Neo4j.Entities;
 
 namespace Stores.IdentityServer4.Neo4j
 {
@@ -17,7 +18,7 @@ namespace Stores.IdentityServer4.Neo4j
     /// Represents an IdentityServer4 Client
     /// </summary>
     [Neo4jLabel(Neo4jConstants.Labels.IdentityServer4Client)]
-    public class Neo4jIdentityServer4Client : ClientExtra
+    public class Neo4jIdentityServer4Client : ClientRoot
     {
         /// <summary>
         /// Initializes a new instance of <see cref="Neo4jIdentityServer4Client"/>.
@@ -27,9 +28,8 @@ namespace Stores.IdentityServer4.Neo4j
         /// </remarks>
         public Neo4jIdentityServer4Client()
         {
-            Id = Unique.G;
+            
         }
 
-        public string Id { get; set; }
     }
 }

@@ -4,10 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
 using AspNetCore.Identity.Neo4j.Internal;
-using AspNetCore.Identity.Neo4j.Internal.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Neo4j.Driver.V1;
-
+using Neo4jExtras;
+using Neo4jExtras.Extensions;
 namespace AspNetCore.Identity.Neo4jExtras
 {
 

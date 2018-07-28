@@ -29,7 +29,12 @@ namespace IdentityServer4Extras
         //     (defaults to RequireClientSecret)
         public bool AllowArbitraryLocalRedirectUris
         {
-            get => (bool)_allowArbitraryLocalRedirectUris;
+            get
+            {
+                if (_allowArbitraryLocalRedirectUris == null)
+                    return false;
+                return (bool) _allowArbitraryLocalRedirectUris;
+            }
             set => _allowArbitraryLocalRedirectUris = value;
         }
     }

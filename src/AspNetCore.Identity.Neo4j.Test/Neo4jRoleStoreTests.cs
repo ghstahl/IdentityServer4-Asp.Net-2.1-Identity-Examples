@@ -8,6 +8,7 @@ using Neo4j.Driver.V1;
 using Xunit;
 using AspNetCore.Identity.Neo4j.Test.Models;
 using AspNetCore.Identity.Neo4j.Internal;
+using Neo4jExtras;
 
 namespace AspNetCore.Identity.Neo4j.Test
 {

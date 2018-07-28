@@ -1,3 +1,5 @@
+using Neo4jExtras;
+
 namespace AspNetCore.Identity.Neo4j
 {
     /// <summary>

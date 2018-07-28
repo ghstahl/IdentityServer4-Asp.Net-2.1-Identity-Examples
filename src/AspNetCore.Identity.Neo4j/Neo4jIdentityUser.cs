@@ -1,5 +1,6 @@
 ﻿using System;
 using AspNetCore.Identity.Neo4j.Internal;
+using Neo4jExtras;
 
 namespace AspNetCore.Identity.Neo4j
 {

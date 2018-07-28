@@ -3,36 +3,44 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
+using IdentityServer4Extras;
 using Microsoft.AspNetCore.Identity;
 using Neo4j.Driver.V1;
 using Neo4jExtras;
 using Neo4jExtras.Extensions;
+using Stores.IdentityServer4.Neo4j.Entities;
 
 namespace Stores.IdentityServer4.Neo4j
 {
-    public interface IIdentityServer4ClientStore: IDisposable
+    public interface IIdentityServer4ClientStore<TClient> :
+        IDisposable
+        where TClient : ClientRoot
     {
-        Task<IdentityResult> CreateAsync(Neo4jIdentityServer4Client client, CancellationToken cancellationToken);
-        Task<IdentityResult> DeleteAsync(Neo4jIdentityServer4Client client, CancellationToken cancellationToken);
+        Task<IdentityResult> CreateAsync(TClient client, CancellationToken cancellationToken);
+        Task<IdentityResult> DeleteAsync(TClient client, CancellationToken cancellationToken);
         Task<Neo4jIdentityServer4Client> FindByClientIdAsync(string clientId, CancellationToken cancellationToken);
-        Task<IdentityResult> UpdateAsync(Neo4jIdentityServer4Client client, CancellationToken cancellationToken);
-        Task<IdentityResult> AddSecretToClientAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientSecret secret, CancellationToken cancellationToken);
+        Task<IdentityResult> UpdateAsync(TClient client, CancellationToken cancellationToken);
+
+        Task<IdentityResult> AddSecretToClientAsync(TClient client,
+            Neo4jIdentityServer4ClientSecret secret, CancellationToken cancellationToken);
 
     }
 
-    public interface IIdentityServer4ClientUserStore<TUser> :
-        IIdentityServer4ClientStore,
+    public interface IIdentityServer4ClientUserStore<TUser, TClient> :
+        IIdentityServer4ClientStore<TClient>,
         IDisposable
         where TUser : class
+        where TClient : ClientRoot
 
     {
-        Task<IdentityResult> AddToClientAsync(TUser user, Neo4jIdentityServer4Client client, CancellationToken cancellationToken);
+        Task<IdentityResult> AddToClientAsync(TUser user, TClient client,
+            CancellationToken cancellationToken);
 
-        Task<IList<Neo4jIdentityServer4Client>> GetClientsAsync(TUser user, CancellationToken cancellationToken);
+        Task<IList<TClient>> GetClientsAsync(TUser user, CancellationToken cancellationToken);
     }
 
-    public class IdentityServer4ClientUserStore<TUser> :
-        IIdentityServer4ClientUserStore<TUser>
+    public class Neo4jIdentityServer4ClientUserStore<TUser> :
+        IIdentityServer4ClientUserStore<TUser,Neo4jIdentityServer4Client>
         where TUser : Neo4jIdentityUser
     {
         private bool _disposed;
@@ -61,14 +69,14 @@ namespace Stores.IdentityServer4.Neo4j
         private static readonly string IdentityServer4Client;
         public static readonly string IdentityServer4ClientSecret;
 
-        static IdentityServer4ClientUserStore()
+        static Neo4jIdentityServer4ClientUserStore()
         {
             User = typeof(TUser).GetNeo4jLabelName();
             IdentityServer4Client = typeof(Neo4jIdentityServer4Client).GetNeo4jLabelName();
             IdentityServer4ClientSecret = typeof(Neo4jIdentityServer4ClientSecret).GetNeo4jLabelName();
         }
 
-        public IdentityServer4ClientUserStore(ISession session)
+        public Neo4jIdentityServer4ClientUserStore(ISession session)
         {
             Session = session;
         }

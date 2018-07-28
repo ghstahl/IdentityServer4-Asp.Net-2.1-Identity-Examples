@@ -1,7 +1,8 @@
 ﻿using System;
 using Xunit;
-using AspNetCore.Identity.Neo4j.Internal.Extensions;
+
 using AspNetCore.Identity.Neo4j.Test.Models;
+using Neo4jExtras.Extensions;
 
 namespace AspNetCore.Identity.Neo4j.Test
 {
