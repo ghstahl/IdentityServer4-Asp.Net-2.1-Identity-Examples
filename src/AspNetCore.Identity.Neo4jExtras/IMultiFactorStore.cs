@@ -17,8 +17,7 @@ namespace AspNetCore.Identity.Neo4j
 
         Task<IList<TFactor>> GetFactorsAsync(TUser user, CancellationToken cancellationToken);
     }
-    public interface IMultiFactorTest<TFactor>
-        where TFactor : class
+    public interface INeo4jTest 
     {
         Task DropDatabaseAsync();
     }

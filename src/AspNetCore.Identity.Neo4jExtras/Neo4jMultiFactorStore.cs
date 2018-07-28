@@ -12,8 +12,7 @@ namespace AspNetCore.Identity.Neo4jExtras
 {
 
     public class Neo4jMultiFactorStore<TUser, TFactor> :
-        IMultiFactorUserStore<TUser, TFactor>,
-        IMultiFactorTest<TFactor>
+        IMultiFactorUserStore<TUser, TFactor> 
         where TUser : Neo4jIdentityUser
         where TFactor : ChallengeFactor
     {
@@ -31,16 +30,6 @@ namespace AspNetCore.Identity.Neo4jExtras
             {
                 throw new ObjectDisposedException(GetType().Name);
             }
-        }
-
-        public async Task DropDatabaseAsync()
-        {
-            //MATCH (client)-[r]->() DELETE r;
-            var cypher = @"MATCH (client)-[r]->() DELETE r";
-            await Session.RunAsync(cypher);
-            cypher = @"MATCH (n) DELETE n";
-            await Session.RunAsync(cypher);
-
         }
 
         public IdentityErrorDescriber ErrorDescriber { get; set; }

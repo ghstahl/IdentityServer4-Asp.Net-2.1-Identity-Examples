@@ -63,11 +63,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityModel.OidcClient", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.AccessTokenValidation", "IdentityServer4.AccessTokenValidation\IdentityServer4.AccessTokenValidation.csproj", "{53334B00-0098-4A3D-8893-BC27F11D75DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer4.AccessTokenValidation.All", "IdentityServer4.AccessTokenValidation.All\IdentityServer4.AccessTokenValidation.All.csproj", "{FF2C8974-A503-481B-B6B4-7DACFEEEE8BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.AccessTokenValidation.All", "IdentityServer4.AccessTokenValidation.All\IdentityServer4.AccessTokenValidation.All.csproj", "{FF2C8974-A503-481B-B6B4-7DACFEEEE8BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stores.IdentityServer4.Neo4j", "Stores.IdentityServer4.Neo4j\Stores.IdentityServer4.Neo4j.csproj", "{1195535A-910A-4190-891A-D97786D5F731}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stores.IdentityServer4.Neo4j", "Stores.IdentityServer4.Neo4j\Stores.IdentityServer4.Neo4j.csproj", "{1195535A-910A-4190-891A-D97786D5F731}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neo4jExtras", "Neo4jExtras\Neo4jExtras.csproj", "{FB41B463-4361-48F1-9C56-E8586DC1700C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neo4jExtras", "Neo4jExtras\Neo4jExtras.csproj", "{FB41B463-4361-48F1-9C56-E8586DC1700C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stores.IdentityServer4.Neo4j.Test", "Stores.IdentityServer4.Neo4j.Test\Stores.IdentityServer4.Neo4j.Test.csproj", "{AA5C40CF-A688-474C-866F-B355B17A8B3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stores.IdentityServer4.Test.Core", "Stores.IdentityServer4.Test.Core\Stores.IdentityServer4.Test.Core.csproj", "{8008E3FC-BDE3-4246-AC4A-5F27D4EC0C39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -183,6 +187,14 @@ Global
 		{FB41B463-4361-48F1-9C56-E8586DC1700C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB41B463-4361-48F1-9C56-E8586DC1700C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB41B463-4361-48F1-9C56-E8586DC1700C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA5C40CF-A688-474C-866F-B355B17A8B3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA5C40CF-A688-474C-866F-B355B17A8B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA5C40CF-A688-474C-866F-B355B17A8B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA5C40CF-A688-474C-866F-B355B17A8B3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8008E3FC-BDE3-4246-AC4A-5F27D4EC0C39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8008E3FC-BDE3-4246-AC4A-5F27D4EC0C39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8008E3FC-BDE3-4246-AC4A-5F27D4EC0C39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8008E3FC-BDE3-4246-AC4A-5F27D4EC0C39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -209,6 +221,8 @@ Global
 		{2A2CEC5E-1A45-4CF2-9240-2611A6C9E240} = {EAD7FB7F-9F16-4834-8394-14F5D659E481}
 		{53334B00-0098-4A3D-8893-BC27F11D75DE} = {EAD7FB7F-9F16-4834-8394-14F5D659E481}
 		{FF2C8974-A503-481B-B6B4-7DACFEEEE8BB} = {EAD7FB7F-9F16-4834-8394-14F5D659E481}
+		{AA5C40CF-A688-474C-866F-B355B17A8B3B} = {25AD9ACD-3497-46B1-8FDB-306880344953}
+		{8008E3FC-BDE3-4246-AC4A-5F27D4EC0C39} = {25AD9ACD-3497-46B1-8FDB-306880344953}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EC514A87-9B40-4AB3-A606-F2A2A58C4FB7}

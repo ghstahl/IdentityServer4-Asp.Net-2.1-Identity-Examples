@@ -16,25 +16,25 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
     {
         protected abstract TFactor CreateTestFactor();
 
-        private IMultiFactorTest<TFactor> _multiFactorTest;
+        private INeo4jTest _neo4jtest;
         private IUserStore<TUser> _userStore;
         private IMultiFactorUserStore<TUser, TFactor> _multiFactorUserStore;
 
         public UnitTestMultiFactorStore(
             IUserStore<TUser> userStore,
             IMultiFactorUserStore<TUser,TFactor> multiFactorUserStore,
-            IMultiFactorTest<TFactor> multiFactorTest)
+            INeo4jTest neo4jtest)
         {
             _userStore = userStore;
             _multiFactorUserStore = multiFactorUserStore;
-            _multiFactorTest = multiFactorTest;
+            _neo4jtest = neo4jtest;
 
         }
 
         [TestInitialize]
         public async Task Initialize()
         {
-            await _multiFactorTest.DropDatabaseAsync();
+            await _neo4jtest.DropDatabaseAsync();
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace AspNetCore.Identity.MultiFactor.Test.Core.Stores
         {
             _userStore.ShouldNotBeNull();
             _multiFactorUserStore.ShouldNotBeNull();
-            _multiFactorTest.ShouldNotBeNull();
+            _neo4jtest.ShouldNotBeNull();
         }
 
         [TestMethod]

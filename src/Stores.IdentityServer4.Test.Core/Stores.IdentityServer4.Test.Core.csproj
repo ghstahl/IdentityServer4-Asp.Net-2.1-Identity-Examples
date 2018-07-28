@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MSTest.TestAdapter" Version="1.3.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
+    <PackageReference Include="Shouldly" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AspNetCore.Identity.Neo4jExtras\AspNetCore.Identity.Neo4jExtras.csproj" />
+    <ProjectReference Include="..\AspNetCore.Identity.Neo4j\AspNetCore.Identity.Neo4j.csproj" />
+  </ItemGroup>
+
+</Project>

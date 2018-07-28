@@ -1,9 +1,18 @@
 ﻿using Neo4jExtras;
 using System;
+using IdentityServer4.Models;
 using IdentityServer4Extras;
 
 namespace Stores.IdentityServer4.Neo4j
 {
+    /// <summary>
+    /// Represents an IdentityServer4 Client Secret
+    /// </summary>
+    [Neo4jLabel(Neo4jConstants.Labels.IdentityServer4ClientSecret)]
+    public class Neo4jIdentityServer4ClientSecret : Secret
+    {
+    }
+
     /// <summary>
     /// Represents an IdentityServer4 Client
     /// </summary>
@@ -11,7 +20,7 @@ namespace Stores.IdentityServer4.Neo4j
     public class Neo4jIdentityServer4Client : ClientExtra
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="Neo4jIdentityRole"/>.
+        /// Initializes a new instance of <see cref="Neo4jIdentityServer4Client"/>.
         /// </summary>
         /// <remarks>
         /// The Id property is initialized to form a new GUID string value.

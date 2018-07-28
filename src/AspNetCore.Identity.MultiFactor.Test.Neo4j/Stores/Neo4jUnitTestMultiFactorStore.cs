@@ -15,7 +15,7 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
         public Neo4jUnitTestMultiFactorStore() : base(
             HostContainer.ServiceProvider.GetService<IUserStore<TestUser>>(),
             HostContainer.ServiceProvider.GetService<IMultiFactorUserStore<TestUser, TestFactor>>(),
-            HostContainer.ServiceProvider.GetService<IMultiFactorTest<TestFactor>>())
+            HostContainer.ServiceProvider.GetService<INeo4jTest>())
         {
         }
 

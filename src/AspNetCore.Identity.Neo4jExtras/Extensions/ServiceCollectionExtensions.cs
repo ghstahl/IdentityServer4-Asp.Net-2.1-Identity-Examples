@@ -10,9 +10,12 @@ namespace AspNetCore.Identity.Neo4j
             where TUser : Neo4jIdentityUser
             where TFactor : ChallengeFactor
         {
-        
             serviceCollection.AddScoped<IMultiFactorUserStore<TUser,TFactor>, Neo4jMultiFactorStore<TUser,TFactor>>();
-            serviceCollection.AddScoped<IMultiFactorTest<TFactor>, Neo4jMultiFactorStore<TUser, TFactor>>();
+        }
+
+        public static void AddNeo4jTest(this IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddScoped<INeo4jTest, Neo4jTest>();
         }
     }
 }
