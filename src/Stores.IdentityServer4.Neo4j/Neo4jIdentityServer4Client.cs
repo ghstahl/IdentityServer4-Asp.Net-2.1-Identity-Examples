@@ -14,6 +14,11 @@ namespace Stores.IdentityServer4.Neo4j
     {
     }
 
+    [Neo4jLabel(Neo4jConstants.Labels.IdentityServer4ClientGrantType)]
+    public class Neo4jIdentityServer4ClientGrantType : ClientGrantType
+    {
+    }
+    
     /// <summary>
     /// Represents an IdentityServer4 Client
     /// </summary>

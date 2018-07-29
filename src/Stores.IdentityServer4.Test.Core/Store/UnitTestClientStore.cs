@@ -10,28 +10,33 @@ using Stores.IdentityServer4.Neo4j.Entities;
 
 namespace Stores.IdentityServer4.Test.Core.Store
 {
-    public abstract class UnitTestClientStore<TUser, TClient>
+    public abstract class UnitTestClientStore<TUser, TClient,TGrantType>
         where TUser : Neo4jIdentityUser
         where TClient : ClientRoot
+    where TGrantType:ClientGrantType
     {
         private INeo4jTest _neo4jtest;
         private IUserStore<TUser> _userStore;
-        private IIdentityServer4ClientUserStore<TUser, TClient> _clientUserStore;
+        private IIdentityServer4ClientUserStore<TUser, TClient, TGrantType> _clientUserStore;
 
         public UnitTestClientStore(
             IUserStore<TUser> userStore,
-            IIdentityServer4ClientUserStore<TUser, TClient> clientUserStore,
+            IIdentityServer4ClientUserStore<TUser, TClient, TGrantType> clientUserStore,
             INeo4jTest neo4jtest)
         {
             _userStore = userStore;
             _clientUserStore = clientUserStore;
             _neo4jtest = neo4jtest;
         }
+        protected abstract TClient CreateTestClient();
+        protected abstract TUser CreateTestUser();
+        protected abstract TGrantType CreateTestGrantType();
 
         [TestInitialize]
         public async Task Initialize()
         {
             await _neo4jtest.DropDatabaseAsync();
+            await _clientUserStore.CreateConstraintsAsync();
         }
 
         [TestMethod]
@@ -41,25 +46,169 @@ namespace Stores.IdentityServer4.Test.Core.Store
             _neo4jtest.ShouldNotBeNull();
         }
 
-        protected abstract TClient CreateTestClient();
-
         [TestMethod]
-        public async Task Create_Client()
+        public async Task Create_Client_Assure_Unique()
         {
             var challenge = Unique.S;
             var challengeResponse = Unique.S;
-            TClient client = CreateTestClient();
-            var result = await _clientUserStore.CreateAsync(client, CancellationToken.None);
+            var client = CreateTestClient();
+            var result = await _clientUserStore.CreateAsync(client);
 
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
             var findResult =
-                await _clientUserStore.FindByClientIdAsync(client.ClientId, CancellationToken.None);
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
             findResult.ShouldNotBeNull();
             findResult.ClientId.ShouldBe(client.ClientId);
 
+            // do it again, but this time it should fail
+            result = await _clientUserStore.CreateAsync(client);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeFalse();
         }
+
+        [TestMethod]
+        public async Task Create_Client_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            TClient client = CreateTestClient();
+            var result = await _clientUserStore.CreateAsync(client);
+
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
+            findResult.ShouldNotBeNull();
+            findResult.ClientId.ShouldBe(client.ClientId);
+
+            result = await _clientUserStore.DeleteAsync(client);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            findResult =
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
+            findResult.ShouldBeNull(); 
+
+        }
+        [TestMethod]
+        public async Task Create_Client_Redundant_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            TClient client = CreateTestClient();
+            var result = await _clientUserStore.CreateAsync(client);
+
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
+            findResult.ShouldNotBeNull();
+            findResult.ClientId.ShouldBe(client.ClientId);
+
+            result = await _clientUserStore.DeleteAsync(client);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            findResult =
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
+            findResult.ShouldBeNull();
+
+            result = await _clientUserStore.DeleteAsync(client);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+        }
+
+
+        [TestMethod]
+        public async Task Create_GrantType_Assure_Unique()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            var grantType = CreateTestGrantType();
+
+            var result = await _clientUserStore.CreateAsync(grantType);
+
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
+            findResult.ShouldNotBeNull();
+            findResult.GrantType.ShouldBe(grantType.GrantType);
+
+            // do it again, but this time it should fail
+            result = await _clientUserStore.CreateAsync(grantType);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public async Task Create_GrantType_Update()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            var grantType = CreateTestGrantType();
+
+            var result = await _clientUserStore.CreateAsync(grantType);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
+            findResult.ShouldNotBeNull();
+            findResult.GrantType.ShouldBe(grantType.GrantType);
+
+            var grantTypeNew = CreateTestGrantType();
+
+            result = await _clientUserStore.UpdateAsync(grantType, grantTypeNew);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            findResult =
+                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
+            findResult.ShouldBeNull(); 
+
+            findResult =
+                await _clientUserStore.FindGrantTypeAsync(grantTypeNew.GrantType);
+            findResult.ShouldNotBeNull();
+            findResult.GrantType.ShouldBe(grantTypeNew.GrantType);
+        }
+        [TestMethod]
+        public async Task Create_GrantType_Redundant_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            var grantType = CreateTestGrantType();
+
+            var result = await _clientUserStore.CreateAsync(grantType);
+
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
+            findResult.ShouldNotBeNull();
+            findResult.GrantType.ShouldBe(grantType.GrantType);
+
+            // delete it
+            result = await _clientUserStore.DeleteAsync(grantType);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            findResult =
+                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
+            findResult.ShouldBeNull();
+
+            // delete it
+            result = await _clientUserStore.DeleteAsync(grantType);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+        }
+
         [TestMethod]
         public async Task Create_User_Client_update()
         {
@@ -69,12 +218,12 @@ namespace Stores.IdentityServer4.Test.Core.Store
 
             var client = CreateTestClient();
             var identityResult = await _clientUserStore.AddToClientAsync(
-                testUser, client, CancellationToken.None);
+                testUser, client);
             identityResult.ShouldNotBeNull();
             identityResult.Succeeded.ShouldBeTrue();
 
             var findResult =
-                await _clientUserStore.FindByClientIdAsync(client.ClientId, CancellationToken.None);
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
             findResult.ShouldNotBeNull();
             findResult.ClientId.ShouldBe(client.ClientId);
             findResult.ClientName.ShouldBe(client.ClientName);
@@ -88,7 +237,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             identityResult.Succeeded.ShouldBeTrue();
 
             findResult =
-                await _clientUserStore.FindByClientIdAsync(client.ClientId, CancellationToken.None);
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
             findResult.ShouldNotBeNull();
             findResult.ClientId.ShouldBe(client.ClientId);
             findResult.ClientName.ShouldBe(client.ClientName);
@@ -101,24 +250,90 @@ namespace Stores.IdentityServer4.Test.Core.Store
             var challengeResponse = Unique.S;
             TClient client = CreateTestClient();
 
-            var result = await _clientUserStore.CreateAsync(client, CancellationToken.None);
+            var result = await _clientUserStore.CreateAsync(client);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
             var findResult =
-                await _clientUserStore.FindByClientIdAsync(client.ClientId, CancellationToken.None);
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
             findResult.ShouldNotBeNull();
             findResult.ClientId.ShouldBe(client.ClientId);
 
-            result = await _clientUserStore.DeleteAsync(client, CancellationToken.None);
+            result = await _clientUserStore.DeleteAsync(client);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
             findResult =
-                await _clientUserStore.FindByClientIdAsync(client.ClientId, CancellationToken.None);
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
             findResult.ShouldBeNull();
 
         }
-        protected abstract TUser CreateTestUser();
+
+        [TestMethod]
+        public async Task Create_User_Client_CreatGrantType_AddAllowedGrantType()
+        {
+            var testUser = CreateTestUser();
+
+            var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
+
+            var client = CreateTestClient();
+            var identityResult = await _clientUserStore.AddToClientAsync(
+                testUser, client);
+            identityResult.ShouldNotBeNull();
+            identityResult.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
+            findResult.ShouldNotBeNull();
+            findResult.ClientId.ShouldBe(client.ClientId);
+            findResult.ClientName.ShouldBe(client.ClientName);
+
+            var grantType = CreateTestGrantType();
+            identityResult = await _clientUserStore.CreateAsync(grantType);
+            identityResult.ShouldNotBeNull();
+            identityResult.Succeeded.ShouldBeTrue();
+
+            var addResult =
+                await _clientUserStore.AddAllowedGrantTypeToClientAsync(client, grantType);
+            addResult.ShouldNotBeNull();
+            addResult.Succeeded.ShouldBeTrue();
+
+            var grantTypes = await _clientUserStore.GetAllowedGrantTypesAsync(client);
+            grantTypes.ShouldNotBeNull();
+            grantTypes.Count.ShouldBe(1);
+
+        }
+        [TestMethod]
+        public async Task Create_User_Client_NoGrantType_AddAllowedGrantType()
+        {
+            var testUser = CreateTestUser();
+
+            var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
+
+            var client = CreateTestClient();
+            var identityResult = await _clientUserStore.AddToClientAsync(
+                testUser, client);
+            identityResult.ShouldNotBeNull();
+            identityResult.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
+            findResult.ShouldNotBeNull();
+            findResult.ClientId.ShouldBe(client.ClientId);
+            findResult.ClientName.ShouldBe(client.ClientName);
+
+            var grantType = CreateTestGrantType();
+
+            var addResult =
+                await _clientUserStore.AddAllowedGrantTypeToClientAsync(client, grantType);
+            addResult.ShouldNotBeNull();
+            addResult.Succeeded.ShouldBeTrue();
+
+            var grantTypes = await _clientUserStore.GetAllowedGrantTypesAsync(client);
+            grantTypes.ShouldNotBeNull();
+            grantTypes.Count.ShouldBe(1);
+
+        }
+
     }
 }

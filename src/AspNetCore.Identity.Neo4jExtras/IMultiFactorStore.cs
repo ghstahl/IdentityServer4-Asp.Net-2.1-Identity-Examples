@@ -20,6 +20,7 @@ namespace AspNetCore.Identity.Neo4j
     public interface INeo4jTest 
     {
         Task DropDatabaseAsync();
+        Task InitializeDatabaseAsync();
     }
     public interface IMultiFactorStore<TFactor>: 
         IDisposable where TFactor:class

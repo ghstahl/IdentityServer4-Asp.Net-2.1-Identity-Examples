@@ -28,5 +28,10 @@ namespace AspNetCore.Identity.Neo4jExtras
             await Session.RunAsync(cypher);
 
         }
+
+        public async Task InitializeDatabaseAsync()
+        {
+          
+        }
     }
 }

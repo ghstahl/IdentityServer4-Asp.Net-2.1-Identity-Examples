@@ -14,7 +14,11 @@ using Stores.IdentityServer4.Test.Core.Store;
 namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
 {
     [TestClass]
-    public class Neo4jUnitTestMultiFactorStore : UnitTestClientStore<TestUser, Neo4jIdentityServer4Client>
+    public class Neo4jUnitTestMultiFactorStore : 
+        UnitTestClientStore<
+            TestUser, 
+            Neo4jIdentityServer4Client,
+            Neo4jIdentityServer4ClientGrantType>
     {
 
         protected override TestUser CreateTestUser()
@@ -25,6 +29,15 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
                 Email = Unique.Email
             };
         }
+
+        protected override Neo4jIdentityServer4ClientGrantType CreateTestGrantType()
+        {
+            return new Neo4jIdentityServer4ClientGrantType()
+            {
+                GrantType = Unique.S
+            };
+        }
+
         protected override Neo4jIdentityServer4Client CreateTestClient()
         {
             return new Neo4jIdentityServer4Client()
@@ -71,7 +84,7 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
         public Neo4jUnitTestMultiFactorStore() : 
             base(
                 HostContainer.ServiceProvider.GetService<IUserStore<TestUser>>(),
-                HostContainer.ServiceProvider.GetService<IIdentityServer4ClientUserStore<TestUser, Neo4jIdentityServer4Client>>(),
+                HostContainer.ServiceProvider.GetService<IIdentityServer4ClientUserStore<TestUser, Neo4jIdentityServer4Client, Neo4jIdentityServer4ClientGrantType>>(),
                 HostContainer.ServiceProvider.GetService<INeo4jTest>())
         {
         }
