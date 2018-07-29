@@ -11,19 +11,59 @@ using Stores.IdentityServer4.Neo4j.Entities;
 
 namespace Stores.IdentityServer4.Test.Core.Store
 {
-    public abstract class UnitTestClientStore<TUser,TClient, TSecret,TGrantType>
+    public abstract class UnitTestClientStore<
+        TUser, 
+        TClient,
+        TSecret,
+        TGrantType,
+        TClaim,
+        TCorsOrigin,
+        TScope,
+        TIdPRestriction,
+        TProperty,
+        TPostLogoutRedirectUri,
+        TRedirectUri>
         where TUser : Neo4jIdentityUser
         where TClient : ClientRoot
         where TSecret : Secret
         where TGrantType : ClientGrantType
+        where TClaim : ClientClaim
+        where TCorsOrigin : ClientCorsOrigin
+        where TScope : ClientScope
+        where TIdPRestriction : ClientIdPRestriction
+        where TProperty : ClientProperty
+        where TPostLogoutRedirectUri : ClientPostLogoutRedirectUri
+        where TRedirectUri : ClientRedirectUri
     {
         private INeo4jTest _neo4jtest;
         private IUserStore<TUser> _userStore;
-        private IIdentityServer4ClientUserStore<TUser, TClient, TSecret, TGrantType> _clientUserStore;
+        private IIdentityServer4ClientUserStore<
+            TUser, 
+            TClient,
+            TSecret,
+            TGrantType,
+            TClaim,
+            TCorsOrigin,
+            TScope,
+            TIdPRestriction,
+            TProperty,
+            TPostLogoutRedirectUri,
+            TRedirectUri> _clientUserStore;
 
         public UnitTestClientStore(
             IUserStore<TUser> userStore,
-            IIdentityServer4ClientUserStore<TUser, TClient, TSecret, TGrantType> clientUserStore,
+            IIdentityServer4ClientUserStore<
+                TUser, 
+                TClient,
+                TSecret,
+                TGrantType,
+                TClaim,
+                TCorsOrigin,
+                TScope,
+                TIdPRestriction,
+                TProperty,
+                TPostLogoutRedirectUri,
+                TRedirectUri> clientUserStore,
             INeo4jTest neo4jtest)
         {
             _userStore = userStore;

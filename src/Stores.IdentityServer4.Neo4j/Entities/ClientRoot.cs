@@ -6,6 +6,36 @@ using IdentityServer4.Models;
 
 namespace Stores.IdentityServer4.Neo4j.Entities
 {
+    public class ClientClaim
+    {
+        public string Type { get; set; }
+        public string Value { get; set; }
+    }
+    public class ClientCorsOrigin
+    {
+        public string Origin { get; set; }
+    }
+    public class ClientScope
+    {
+        public string Scope { get; set; }
+    }
+    public class ClientIdPRestriction
+    {
+        public string Provider { get; set; }
+    }
+    public class ClientProperty
+    {
+        public string Key { get; set; }
+        public string Value { get; set; }
+    }
+    public class ClientPostLogoutRedirectUri
+    {
+        public string PostLogoutRedirectUri { get; set; }
+    }
+    public class ClientRedirectUri
+    {
+        public string RedirectUri { get; set; }
+    }
     public class ClientGrantType
     {
         public string GrantType { get; set; }

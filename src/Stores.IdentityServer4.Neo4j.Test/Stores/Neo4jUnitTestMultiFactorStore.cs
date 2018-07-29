@@ -15,12 +15,19 @@ using Stores.IdentityServer4.Test.Core.Store;
 namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
 {
     [TestClass]
-    public class Neo4jUnitTestMultiFactorStore : 
+    public class Neo4jUnitTestMultiFactorStore :
         UnitTestClientStore<
             TestUser,
             Neo4jIdentityServer4Client,
             Neo4jIdentityServer4ClientSecret,
-            Neo4jIdentityServer4ClientGrantType>
+            Neo4jIdentityServer4ClientGrantType,
+            Neo4jIdentityServer4ClientClaim,
+            Neo4jIdentityServer4ClientCorsOrigin,
+            Neo4jIdentityServer4ClientScope,
+            Neo4jIdentityServer4ClientIdPRestriction,
+            Neo4jIdentityServer4ClientProperty,
+            Neo4jIdentityServer4ClientPostLogoutRedirectUri,
+            Neo4jIdentityServer4ClientRedirectUri>
     {
 
         protected override TestUser CreateTestUser()
@@ -94,14 +101,26 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
                 UpdateAccessTokenClaimsOnRefresh = true
             };
         }
- 
-        public Neo4jUnitTestMultiFactorStore() : 
+
+        public Neo4jUnitTestMultiFactorStore() :
             base(
                 HostContainer.ServiceProvider.GetService<IUserStore<TestUser>>(),
-                HostContainer.ServiceProvider.GetService<IIdentityServer4ClientUserStore<TestUser, Neo4jIdentityServer4Client, Neo4jIdentityServer4ClientSecret, Neo4jIdentityServer4ClientGrantType >>(),
+                HostContainer.ServiceProvider.GetService<
+                    IIdentityServer4ClientUserStore<
+                        TestUser,
+                        Neo4jIdentityServer4Client,
+                        Neo4jIdentityServer4ClientSecret,
+                        Neo4jIdentityServer4ClientGrantType,
+                        Neo4jIdentityServer4ClientClaim,
+                        Neo4jIdentityServer4ClientCorsOrigin,
+                        Neo4jIdentityServer4ClientScope,
+                        Neo4jIdentityServer4ClientIdPRestriction,
+                        Neo4jIdentityServer4ClientProperty,
+                        Neo4jIdentityServer4ClientPostLogoutRedirectUri,
+                        Neo4jIdentityServer4ClientRedirectUri>>(),
                 HostContainer.ServiceProvider.GetService<INeo4jTest>())
         {
         }
-        
+
     }
 }
