@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AspNetCore.Identity.Neo4j;
@@ -16,8 +17,9 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
     [TestClass]
     public class Neo4jUnitTestMultiFactorStore : 
         UnitTestClientStore<
-            TestUser, 
+            TestUser,
             Neo4jIdentityServer4Client,
+            Neo4jIdentityServer4ClientSecret,
             Neo4jIdentityServer4ClientGrantType>
     {
 
@@ -35,6 +37,18 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
             return new Neo4jIdentityServer4ClientGrantType()
             {
                 GrantType = Unique.S
+            };
+        }
+
+        protected override Neo4jIdentityServer4ClientSecret CreateTestSecret()
+        {
+            return new Neo4jIdentityServer4ClientSecret()
+            {
+                Value = Unique.S.Sha256(),
+                Description = Unique.S,
+
+                Expiration = DateTime.Now.AddDays(1),
+                Type = IdentityServerConstants.SecretTypes.SharedSecret
             };
         }
 
@@ -80,13 +94,14 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
                 UpdateAccessTokenClaimsOnRefresh = true
             };
         }
-
+ 
         public Neo4jUnitTestMultiFactorStore() : 
             base(
                 HostContainer.ServiceProvider.GetService<IUserStore<TestUser>>(),
-                HostContainer.ServiceProvider.GetService<IIdentityServer4ClientUserStore<TestUser, Neo4jIdentityServer4Client, Neo4jIdentityServer4ClientGrantType>>(),
+                HostContainer.ServiceProvider.GetService<IIdentityServer4ClientUserStore<TestUser, Neo4jIdentityServer4Client, Neo4jIdentityServer4ClientSecret, Neo4jIdentityServer4ClientGrantType >>(),
                 HostContainer.ServiceProvider.GetService<INeo4jTest>())
         {
         }
+        
     }
 }

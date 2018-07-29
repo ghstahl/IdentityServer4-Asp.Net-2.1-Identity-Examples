@@ -10,7 +10,11 @@ namespace Stores.IdentityServer4.Neo4j
             where TUser : Neo4jIdentityUser
         {
             serviceCollection
-                .AddScoped<IIdentityServer4ClientUserStore<TUser, Neo4jIdentityServer4Client,Neo4jIdentityServer4ClientGrantType>, Neo4jIdentityServer4ClientUserStore<TUser>>();
+                .AddScoped<IIdentityServer4ClientUserStore<
+                    TUser, 
+                    Neo4jIdentityServer4Client,
+                    Neo4jIdentityServer4ClientSecret,
+                    Neo4jIdentityServer4ClientGrantType>, Neo4jIdentityServer4ClientUserStore<TUser>>();
         }
     }
 }

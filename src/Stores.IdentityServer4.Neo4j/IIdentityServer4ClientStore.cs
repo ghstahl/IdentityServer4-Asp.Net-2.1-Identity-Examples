@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
+using IdentityServer4.Models;
 using IdentityServer4Extras;
 using Microsoft.AspNetCore.Identity;
 using Neo4j.Driver.V1;
@@ -24,17 +25,20 @@ namespace Stores.IdentityServer4.Neo4j
         Task<IdentityResult> DeleteAsync(TGrantType grantType,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<Neo4jIdentityServer4ClientGrantType> FindGrantTypeAsync(string grantType,
+        Task<TGrantType> FindGrantTypeAsync(string grantType,
             CancellationToken cancellationToken = default(CancellationToken));
     }
 
-    public interface IIdentityServer4ClientStore<TClient, TGrantType> :
+ 
+
+    public interface IIdentityServer4ClientStore<TClient, TSecret, TGrantType> :
         IIdentityServer4GrantTypeStore<TGrantType>,
         IDisposable
         where TClient : ClientRoot
+        where TSecret : Secret
         where TGrantType : ClientGrantType
     {
-        Task<IdentityResult> CreateAsync(TClient client,
+        Task<IdentityResult> CreateClientAsync(TClient client,
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IdentityResult> UpdateAsync(TClient client,
@@ -45,11 +49,23 @@ namespace Stores.IdentityServer4.Neo4j
 
         Task<Neo4jIdentityServer4Client> FindClientByClientIdAsync(string clientId,
             CancellationToken cancellationToken = default(CancellationToken));
-        
+
         Task<IdentityResult> AddSecretToClientAsync(TClient client,
-            Neo4jIdentityServer4ClientSecret secret,
+            TSecret secret,
             CancellationToken cancellationToken = default(CancellationToken));
-      
+        Task<IdentityResult> UpdateSecretAsync(TClient client,TSecret secret,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IdentityResult> DeleteSecretAsync(TClient client, TSecret secret,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<TSecret> FindSecretAsync(TClient client, TSecret secret,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IList<TSecret>> GetSecretsAsync(TClient client,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+
 
         Task<IdentityResult> AddAllowedGrantTypeToClientAsync(TClient client,
             TGrantType grantType,
@@ -59,11 +75,12 @@ namespace Stores.IdentityServer4.Neo4j
             CancellationToken cancellationToken = default(CancellationToken));
     }
 
-    public interface IIdentityServer4ClientUserStore<TUser, TClient, TGrantType> :
-        IIdentityServer4ClientStore<TClient, TGrantType>,
+    public interface IIdentityServer4ClientUserStore<TUser, TClient, TSecret, TGrantType> :
+        IIdentityServer4ClientStore<TClient, TSecret, TGrantType>,
         IDisposable
         where TUser : class
         where TClient : ClientRoot
+        where TSecret : Secret
         where TGrantType : ClientGrantType
 
     {
@@ -77,9 +94,14 @@ namespace Stores.IdentityServer4.Neo4j
     }
 
     public class Neo4jIdentityServer4ClientUserStore<TUser> :
-        IIdentityServer4ClientUserStore<TUser, Neo4jIdentityServer4Client, Neo4jIdentityServer4ClientGrantType>
+        IIdentityServer4ClientUserStore<
+            TUser, 
+            Neo4jIdentityServer4Client, 
+            Neo4jIdentityServer4ClientSecret,
+            Neo4jIdentityServer4ClientGrantType>
         where TUser : Neo4jIdentityUser
     {
+ 
         private bool _disposed;
 
         /// <summary>
@@ -115,6 +137,7 @@ namespace Stores.IdentityServer4.Neo4j
             IdentityServer4Client = typeof(Neo4jIdentityServer4Client).GetNeo4jLabelName();
             IdentityServer4ClientSecret = typeof(Neo4jIdentityServer4ClientSecret).GetNeo4jLabelName();
             IdentityServer4ClientGrantType = typeof(Neo4jIdentityServer4ClientGrantType).GetNeo4jLabelName();
+
         }
 
         public async Task CreateConstraintsAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -130,7 +153,7 @@ namespace Stores.IdentityServer4.Neo4j
             Session = session;
         }
 
-        public async Task<IdentityResult> CreateAsync(Neo4jIdentityServer4Client client,
+        public async Task<IdentityResult> CreateClientAsync(Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -185,9 +208,10 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (r:{IdentityServer4Client})
-                WHERE r.ClientId = $p0
-                DETACH DELETE r";
+                MATCH (c:{IdentityServer4Client})
+                OPTIONAL MATCH (c)-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{IdentityServer4ClientSecret})
+                WHERE c.ClientId = $p0
+                DETACH DELETE s,c";
 
                 await Session.RunAsync(cypher, Params.Create(client.ClientId));
                 return IdentityResult.Success;
@@ -208,15 +232,14 @@ namespace Stores.IdentityServer4.Neo4j
             clientId.ThrowIfNull(nameof(clientId));
 
             var cypher = $@"
-                MATCH (r:{IdentityServer4Client})
-                WHERE r.ClientId = $p0
-                RETURN r {{ .* }}";
+                MATCH (c:{IdentityServer4Client})
+                WHERE c.ClientId = $p0
+                RETURN c {{ .* }}";
 
             var result = await Session.RunAsync(cypher, Params.Create(clientId));
-            var factor = await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4Client>("r"));
+            var factor = await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4Client>("c"));
             return factor;
         }
-
         public async Task<IdentityResult> AddSecretToClientAsync(Neo4jIdentityServer4Client client,
             Neo4jIdentityServer4ClientSecret secret,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -228,9 +251,9 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (u:{IdentityServer4Client} {{ClientId: $p0}})
-                MERGE (l:{IdentityServer4ClientSecret} {"$p1".AsMapFor<Neo4jIdentityServer4ClientSecret>()})
-                MERGE (u)-[:{Neo4jConstants.Relationships.HasSecret}]->(l)";
+                MATCH (c:{IdentityServer4Client} {{ClientId: $p0}})
+                MERGE (s:{IdentityServer4ClientSecret} {"$p1".AsMapFor<Neo4jIdentityServer4ClientSecret>()})
+                MERGE (c)-[:{Neo4jConstants.Relationships.HasSecret}]->(s)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, secret));
                 return IdentityResult.Success;
@@ -243,6 +266,114 @@ namespace Stores.IdentityServer4.Neo4j
                 });
             }
         }
+
+        public async Task<IdentityResult> UpdateSecretAsync(
+            Neo4jIdentityServer4Client client, 
+            Neo4jIdentityServer4ClientSecret secret,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            try
+            {
+                var cypher = $@"
+                MATCH (c:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{IdentityServer4ClientSecret})
+                WHERE c.ClientId = $p0 AND s.Value = $p1
+                SET s = $p2";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId,
+                        secret.Value,
+                        secret.ConvertToMap()));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
+        }
+
+        public async Task<IdentityResult> DeleteSecretAsync(
+            Neo4jIdentityServer4Client client, 
+            Neo4jIdentityServer4ClientSecret secret,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            try
+            {
+                var cypher = $@"
+                MATCH (c:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{IdentityServer4ClientSecret})
+                WHERE c.ClientId = $p0 AND s.Value = $p1
+                DETACH DELETE s"; 
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId,
+                        secret.Value));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
+        }
+
+        public async Task<Neo4jIdentityServer4ClientSecret> FindSecretAsync(Neo4jIdentityServer4Client client,
+            Neo4jIdentityServer4ClientSecret secret,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+
+            var cypher = $@"
+                MATCH (c:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{
+                    IdentityServer4ClientSecret
+                })
+                WHERE c.ClientId = $p0 AND s.Value = $p1
+                RETURN s{{ .* }}";
+
+            var result = await Session.RunAsync(cypher,
+                Params.Create(
+                    client.ClientId,
+                    secret.Value));
+
+            var neo4jIdentityServer4ClientSecret =
+                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientSecret>("s"));
+
+            return neo4jIdentityServer4ClientSecret;
+        }
+
+        public async Task<IList<Neo4jIdentityServer4ClientSecret>> GetSecretsAsync(Neo4jIdentityServer4Client client,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+
+            var cypher = $@"
+                MATCH (c:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{
+                    IdentityServer4ClientSecret
+                })
+                WHERE c.ClientId = $p0
+                RETURN s{{ .* }}";
+
+            var result = await Session.RunAsync(cypher, Params.Create(client.ClientId));
+
+            var secrets = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ClientSecret>("s"));
+            return secrets;
+        }
+
 
         public async Task<IdentityResult> AddAllowedGrantTypeToClientAsync(
             Neo4jIdentityServer4Client client,
@@ -294,11 +425,6 @@ namespace Stores.IdentityServer4.Neo4j
         }
 
 
-
-        
-
-
-
         public async Task<IdentityResult> AddToClientAsync(TUser user, Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -340,8 +466,8 @@ namespace Stores.IdentityServer4.Neo4j
 
             var result = await Session.RunAsync(cypher, Params.Create(user.Id));
 
-            var factors = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4Client>("r"));
-            return factors;
+            var clientsResult = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4Client>("r"));
+            return clientsResult;
         }
 
 
@@ -433,5 +559,9 @@ namespace Stores.IdentityServer4.Neo4j
             var grantTypeRecord = await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientGrantType>("r"));
             return grantTypeRecord;
         }
+
+ 
+
+ 
     }
 }
