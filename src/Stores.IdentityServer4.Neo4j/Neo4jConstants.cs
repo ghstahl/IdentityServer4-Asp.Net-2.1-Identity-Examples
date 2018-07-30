@@ -4,16 +4,16 @@ namespace Stores.IdentityServer4.Neo4j
     {
         internal static class Labels
         {
-            public const string IdentityServer4Client = "IdentityServer4Client";
-            public const string IdentityServer4ClientSecret = "IdentityServer4ClientSecret";
-            public const string IdentityServer4ClientGrantType = "IdentityServer4ClientGrantType";
-            public const string IdentityServer4ClientRedirectUri = "IdentityServer4ClientRedirectUri";
-            public const string IdentityServer4ClientPostLogoutRedirectUri = "IdentityServer4ClientPostLogoutRedirectUri";
-            public const string IdentityServer4ClientScope = "IdentityServer4ClientScope";
-            public const string IdentityServer4ClientIdPRestriction = "IdentityServer4ClientIdPRestriction";
-            public const string IdentityServer4ClientClaim = "IdentityServer4ClientClaim";
-            public const string IdentityServer4ClientCorsOrigin = "IdentityServer4ClientCorsOrigin";
-            public const string IdentityServer4ClientProperty = "IdentityServer4ClientProperty";
+            public const string Client = "IdSrv4Client";
+            public const string Secret = "IdSrv4ClientSecret";
+            public const string GrantType = "IdSrv4ClientGrantType";
+            public const string RedirectUri = "IdSrv4ClientRedirectUri";
+            public const string PostLogoutRedirectUri = "IdSrv4ClientPostLogoutRedirectUri";
+            public const string Scope = "IdSrv4ClientScope";
+            public const string IDPRestriction = "IdSrv4ClientIDPRestriction";
+            public const string Claim = "IdSrv4ClientClaim";
+            public const string CorsOrigin = "IdSrv4ClientCorsOrigin";
+            public const string Property = "IdSrv4ClientProperty";
 
         }
 

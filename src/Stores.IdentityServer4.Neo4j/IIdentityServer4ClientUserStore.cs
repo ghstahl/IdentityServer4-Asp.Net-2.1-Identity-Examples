@@ -39,7 +39,7 @@ namespace Stores.IdentityServer4.Neo4j
         where TClaim : ClientClaim
         where TCorsOrigin : ClientCorsOrigin
         where TScope : ClientScope
-        where TIdPRestriction : ClientIdPRestriction
+        where TIdPRestriction : ClientIDPRestriction
         where TProperty : ClientProperty
         where TPostLogoutRedirectUri : ClientPostLogoutRedirectUri
         where TRedirectUri : ClientRedirectUri

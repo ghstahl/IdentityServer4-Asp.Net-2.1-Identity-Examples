@@ -9,8 +9,7 @@ using Stores.IdentityServer4.Neo4j.Entities;
 
 namespace Stores.IdentityServer4.Neo4j
 {
-    public interface IIdentityServer4ClientStore<
-        TClient,
+    public interface IIdentityServer4ClientStore<in TClient,
         TSecret,
         TGrantType,
         TClaim,
@@ -28,7 +27,7 @@ namespace Stores.IdentityServer4.Neo4j
         where TClaim : ClientClaim
         where TCorsOrigin : ClientCorsOrigin
         where TScope : ClientScope
-        where TIdPRestriction : ClientIdPRestriction
+        where TIdPRestriction : ClientIDPRestriction
         where TProperty : ClientProperty
         where TPostLogoutRedirectUri : ClientPostLogoutRedirectUri
         where TRedirectUri : ClientRedirectUri

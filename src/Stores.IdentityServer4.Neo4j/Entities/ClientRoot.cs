@@ -44,7 +44,7 @@ namespace Stores.IdentityServer4.Neo4j.Entities
         public int RefreshTokenExpiration { get; set; } = (int)TokenExpiration.Absolute;
         public int AccessTokenType { get; set; } = (int)0; // AccessTokenType.Jwt;
         public bool EnableLocalLogin { get; set; } = true;
-  //    public List<ClientIdPRestriction> IdentityProviderRestrictions { get; set; }
+  //    public List<ClientIDPRestriction> IdentityProviderRestrictions { get; set; }
         public bool IncludeJwtId { get; set; }
   //    public List<ClientClaim> Claims { get; set; }
         public bool AlwaysSendClientClaims { get; set; }

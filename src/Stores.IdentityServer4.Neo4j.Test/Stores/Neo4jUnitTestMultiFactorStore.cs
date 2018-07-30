@@ -24,7 +24,7 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
             Neo4jIdentityServer4ClientClaim,
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope,
-            Neo4jIdentityServer4ClientIdPRestriction,
+            Neo4jIdentityServer4ClientIDPRestriction,
             Neo4jIdentityServer4ClientProperty,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri,
             Neo4jIdentityServer4ClientRedirectUri>
@@ -109,9 +109,9 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
            };
         }
 
-        protected override Neo4jIdentityServer4ClientIdPRestriction CreateTestIdpRestriction()
+        protected override Neo4jIdentityServer4ClientIDPRestriction CreateTestIdpRestriction()
         {
-           return new Neo4jIdentityServer4ClientIdPRestriction()
+           return new Neo4jIdentityServer4ClientIDPRestriction()
            {
                Provider = Unique.S
            };
@@ -172,7 +172,7 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
                         Neo4jIdentityServer4ClientClaim,
                         Neo4jIdentityServer4ClientCorsOrigin,
                         Neo4jIdentityServer4ClientScope,
-                        Neo4jIdentityServer4ClientIdPRestriction,
+                        Neo4jIdentityServer4ClientIDPRestriction,
                         Neo4jIdentityServer4ClientProperty,
                         Neo4jIdentityServer4ClientPostLogoutRedirectUri,
                         Neo4jIdentityServer4ClientRedirectUri>>(),

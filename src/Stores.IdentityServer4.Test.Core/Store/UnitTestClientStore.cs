@@ -30,7 +30,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
         where TClaim : ClientClaim
         where TCorsOrigin : ClientCorsOrigin
         where TScope : ClientScope
-        where TIdPRestriction : ClientIdPRestriction
+        where TIdPRestriction : ClientIDPRestriction
         where TProperty : ClientProperty
         where TPostLogoutRedirectUri : ClientPostLogoutRedirectUri
         where TRedirectUri : ClientRedirectUri

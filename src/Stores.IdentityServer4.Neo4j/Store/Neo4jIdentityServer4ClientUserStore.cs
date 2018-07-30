@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Neo4j.Driver.V1;
 using Neo4jExtras;
 using Neo4jExtras.Extensions;
+using Stores.IdentityServer4.Neo4j;
 
 namespace Stores.IdentityServer4.Neo4j
 {
@@ -19,7 +20,7 @@ namespace Stores.IdentityServer4.Neo4j
             Neo4jIdentityServer4ClientClaim,
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope,
-            Neo4jIdentityServer4ClientIdPRestriction,
+            Neo4jIdentityServer4ClientIDPRestriction,
             Neo4jIdentityServer4ClientProperty,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri,
             Neo4jIdentityServer4ClientRedirectUri>
@@ -51,39 +52,39 @@ namespace Stores.IdentityServer4.Neo4j
         /// </summary>
         public ISession Session { get; }
 
-        private static readonly string IdentityServer4Client;
-        private static readonly string IdentityServer4ClientSecret;
-        private static readonly string IdentityServer4ClientGrantType;
-        private static readonly string IdentityServer4ClientClaim;
-        private static readonly string IdentityServer4ClientCorsOrigin;
-        private static readonly string IdentityServer4ClientScope;
-        private static readonly string IdentityServer4ClientIdPRestriction;
-        private static readonly string IdentityServer4ClientProperty;
-        private static readonly string IdentityServer4ClientPostLogoutRedirectUri;
-        private static readonly string IdentityServer4ClientRedirectUri;
+        private static readonly string IdSrv4Client;
+        private static readonly string IdSrv4ClientSecret;
+        private static readonly string IdSrv4ClientGrantType;
+        private static readonly string IdSrv4ClientClaim;
+        private static readonly string IdSrv4ClientCorsOrigin;
+        private static readonly string IdSrv4ClientScope;
+        private static readonly string IdSrv4ClientIdPRestriction;
+        private static readonly string IdSrv4ClientProperty;
+        private static readonly string IdSrv4ClientPostLogoutRedirectUri;
+        private static readonly string IdSrv4ClientRedirectUri;
 
 
         static Neo4jIdentityServer4ClientUserStore()
         {
             User = typeof(TUser).GetNeo4jLabelName();
-            IdentityServer4Client = typeof(Neo4jIdentityServer4Client).GetNeo4jLabelName();
-            IdentityServer4ClientSecret = typeof(Neo4jIdentityServer4ClientSecret).GetNeo4jLabelName();
-            IdentityServer4ClientGrantType = typeof(Neo4jIdentityServer4ClientGrantType).GetNeo4jLabelName();
-            IdentityServer4ClientClaim = typeof(Neo4jIdentityServer4ClientClaim).GetNeo4jLabelName();
-            IdentityServer4ClientCorsOrigin = typeof(Neo4jIdentityServer4ClientCorsOrigin).GetNeo4jLabelName();
-            IdentityServer4ClientScope = typeof(Neo4jIdentityServer4ClientScope).GetNeo4jLabelName();
-            IdentityServer4ClientIdPRestriction = typeof(Neo4jIdentityServer4ClientIdPRestriction).GetNeo4jLabelName();
-            IdentityServer4ClientProperty = typeof(Neo4jIdentityServer4ClientProperty).GetNeo4jLabelName();
-            IdentityServer4ClientPostLogoutRedirectUri = typeof(Neo4jIdentityServer4ClientPostLogoutRedirectUri).GetNeo4jLabelName();
-            IdentityServer4ClientRedirectUri = typeof(Neo4jIdentityServer4ClientRedirectUri).GetNeo4jLabelName();
+            IdSrv4Client = typeof(Neo4jIdentityServer4Client).GetNeo4jLabelName();
+            IdSrv4ClientSecret = typeof(Neo4jIdentityServer4ClientSecret).GetNeo4jLabelName();
+            IdSrv4ClientGrantType = typeof(Neo4jIdentityServer4ClientGrantType).GetNeo4jLabelName();
+            IdSrv4ClientClaim = typeof(Neo4jIdentityServer4ClientClaim).GetNeo4jLabelName();
+            IdSrv4ClientCorsOrigin = typeof(Neo4jIdentityServer4ClientCorsOrigin).GetNeo4jLabelName();
+            IdSrv4ClientScope = typeof(Neo4jIdentityServer4ClientScope).GetNeo4jLabelName();
+            IdSrv4ClientIdPRestriction = typeof(Neo4jIdentityServer4ClientIDPRestriction).GetNeo4jLabelName();
+            IdSrv4ClientProperty = typeof(Neo4jIdentityServer4ClientProperty).GetNeo4jLabelName();
+            IdSrv4ClientPostLogoutRedirectUri = typeof(Neo4jIdentityServer4ClientPostLogoutRedirectUri).GetNeo4jLabelName();
+            IdSrv4ClientRedirectUri = typeof(Neo4jIdentityServer4ClientRedirectUri).GetNeo4jLabelName();
         }
 
 
         public async Task CreateConstraintsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var cypher = $@"CREATE CONSTRAINT ON (r:{IdentityServer4Client}) ASSERT r.ClientId IS UNIQUE";
+            var cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4Client}) ASSERT r.ClientId IS UNIQUE";
             await Session.RunAsync(cypher);
-            cypher = $@"CREATE CONSTRAINT ON (r:{IdentityServer4ClientGrantType}) ASSERT r.GrantType IS UNIQUE";
+            cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4ClientGrantType}) ASSERT r.GrantType IS UNIQUE";
             await Session.RunAsync(cypher);
         }
 
@@ -100,16 +101,13 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
             try
             {
-                var cypher = $@"CREATE (r:{IdentityServer4Client} $p0)";
+                var cypher = $@"CREATE (r:{IdSrv4Client} $p0)";
                 await Session.RunAsync(cypher, Params.Create(client.ConvertToMap()));
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -122,7 +120,7 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (r:{IdentityServer4Client})
+                MATCH (r:{IdSrv4Client})
                 WHERE r.ClientId = $p0
                 SET r = $p1";
 
@@ -131,10 +129,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -156,7 +151,7 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (c:{IdentityServer4Client})
+                MATCH (c:{IdSrv4Client})
                 WHERE c.ClientId = $p0
                 DETACH DELETE c";
 
@@ -165,10 +160,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -180,7 +172,7 @@ namespace Stores.IdentityServer4.Neo4j
             clientId.ThrowIfNull(nameof(clientId));
 
             var cypher = $@"
-                MATCH (c:{IdentityServer4Client})
+                MATCH (c:{IdSrv4Client})
                 WHERE c.ClientId = $p0
                 RETURN c {{ .* }}";
 
@@ -200,8 +192,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (c:{IdentityServer4Client} {{ClientId: $p0}})
-                MERGE (s:{IdentityServer4ClientSecret} {"$p1".AsMapFor<Neo4jIdentityServer4ClientSecret>()})
+                MATCH (c:{IdSrv4Client} {{ClientId: $p0}})
+                MERGE (s:{IdSrv4ClientSecret} {"$p1".AsMapFor<Neo4jIdentityServer4ClientSecret>()})
                 MERGE (c)-[:{Neo4jConstants.Relationships.HasSecret}]->(s)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, secret));
@@ -209,10 +201,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -228,8 +217,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (c:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{
-                        IdentityServer4ClientSecret
+                MATCH (c:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{
+                        IdSrv4ClientSecret
                     })
                 WHERE c.ClientId = $p0 AND s.Value = $p1
                 SET s = $p2";
@@ -243,10 +232,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -262,8 +248,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (c:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{
-                        IdentityServer4ClientSecret
+                MATCH (c:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{
+                        IdSrv4ClientSecret
                     })
                 WHERE c.ClientId = $p0 AND s.Value = $p1
                 DETACH DELETE s";
@@ -276,10 +262,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -293,8 +276,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (c:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{
-                        IdentityServer4ClientSecret
+                MATCH (c:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{
+                        IdSrv4ClientSecret
                     })
                 WHERE c.ClientId = $p0 
                 DETACH DELETE s";
@@ -306,10 +289,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -323,8 +303,8 @@ namespace Stores.IdentityServer4.Neo4j
             secret.ThrowIfNull(nameof(secret));
 
             var cypher = $@"
-                MATCH (c:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{
-                    IdentityServer4ClientSecret
+                MATCH (c:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{
+                    IdSrv4ClientSecret
                 })
                 WHERE c.ClientId = $p0 AND s.Value = $p1
                 RETURN s{{ .* }}";
@@ -348,8 +328,8 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
 
             var cypher = $@"
-                MATCH (c:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{
-                    IdentityServer4ClientSecret
+                MATCH (c:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{
+                    IdSrv4ClientSecret
                 })
                 WHERE c.ClientId = $p0
                 RETURN s{{ .* }}";
@@ -373,8 +353,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (u:{IdentityServer4Client} {{ClientId: $p0}})
-                MERGE (l:{IdentityServer4ClientGrantType} {"$p1".AsMapFor<Neo4jIdentityServer4ClientGrantType>()})
+                MATCH (u:{IdSrv4Client} {{ClientId: $p0}})
+                MERGE (l:{IdSrv4ClientGrantType} {"$p1".AsMapFor<Neo4jIdentityServer4ClientGrantType>()})
                 MERGE (u)-[:{Neo4jConstants.Relationships.HasGrantType}]->(l)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, grantType));
@@ -382,10 +362,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -397,8 +374,8 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
 
             var cypher = $@"
-                MATCH (c:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasGrantType}]->(g:{
-                    IdentityServer4ClientGrantType
+                MATCH (c:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasGrantType}]->(g:{
+                    IdSrv4ClientGrantType
                 })
                 WHERE c.ClientId = $p0
                 RETURN g{{ .* }}";
@@ -421,8 +398,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client} {{ClientId: $p0}})
-                MERGE (claim:{IdentityServer4ClientClaim} {"$p1".AsMapFor<Neo4jIdentityServer4ClientClaim>()})
+                MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
+                MERGE (claim:{IdSrv4ClientClaim} {"$p1".AsMapFor<Neo4jIdentityServer4ClientClaim>()})
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasClaim}]->(claim)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, claim));
@@ -430,10 +407,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -449,8 +423,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasClaim}]->(claim:{
-                        IdentityServer4ClientClaim
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasClaim}]->(claim:{
+                        IdSrv4ClientClaim
                     })
                 WHERE client.ClientId = $p0 AND claim.Type = $p1 AND claim.Value = $p2
                 DETACH DELETE claim";
@@ -465,10 +439,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -482,8 +453,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasClaim}]->(claim:{
-                        IdentityServer4ClientClaim
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasClaim}]->(claim:{
+                        IdSrv4ClientClaim
                     })
                 WHERE client.ClientId = $p0  
                 DETACH DELETE claim";
@@ -496,10 +467,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -512,8 +480,8 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
             claim.ThrowIfNull(nameof(claim));
             var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasClaim}]->(claim:{
-                    IdentityServer4ClientClaim
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasClaim}]->(claim:{
+                    IdSrv4ClientClaim
                 })
                 WHERE client.ClientId = $p0 AND claim.Type = $p1 AND claim.Value = $p2
                 RETURN claim{{ .* }}";
@@ -540,8 +508,8 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
 
             var cypher = $@"
-                 MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasClaim}]->(claim:{
-                    IdentityServer4ClientClaim
+                 MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasClaim}]->(claim:{
+                    IdSrv4ClientClaim
                 })
                 WHERE client.ClientId = $p0
                 RETURN claim{{ .* }}";
@@ -563,8 +531,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client} {{ClientId: $p0}})
-                MERGE (corsOrigin:{IdentityServer4ClientCorsOrigin} {"$p1".AsMapFor<Neo4jIdentityServer4ClientCorsOrigin>()})
+                MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
+                MERGE (corsOrigin:{IdSrv4ClientCorsOrigin} {"$p1".AsMapFor<Neo4jIdentityServer4ClientCorsOrigin>()})
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, corsOrigin));
@@ -572,10 +540,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -589,8 +554,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin:{
-                        IdentityServer4ClientCorsOrigin
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin:{
+                        IdSrv4ClientCorsOrigin
                     })
                 WHERE client.ClientId = $p0 AND corsOrigin.Origin = $p1 
                 DETACH DELETE corsOrigin";
@@ -604,10 +569,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -621,8 +583,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin:{
-                        IdentityServer4ClientCorsOrigin
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin:{
+                        IdSrv4ClientCorsOrigin
                     })
                 WHERE client.ClientId = $p0 
                 DETACH DELETE corsOrigin";
@@ -635,10 +597,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -651,8 +610,8 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
             corsOrigin.ThrowIfNull(nameof(corsOrigin));
             var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin:{
-                    IdentityServer4ClientCorsOrigin
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin:{
+                    IdSrv4ClientCorsOrigin
                 })
                 WHERE client.ClientId = $p0 AND corsOrigin.Origin = $p1 
                 RETURN corsOrigin{{ .* }}";
@@ -677,8 +636,8 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
 
             var cypher = $@"
-                 MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin:{
-                    IdentityServer4ClientCorsOrigin
+                 MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin:{
+                    IdSrv4ClientCorsOrigin
                 })
                 WHERE client.ClientId = $p0
                 RETURN corsOrigin{{ .* }}";
@@ -699,8 +658,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client} {{ClientId: $p0}})
-                MERGE (scope:{IdentityServer4ClientScope} {"$p1".AsMapFor<Neo4jIdentityServer4ClientScope>()})
+                MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
+                MERGE (scope:{IdSrv4ClientScope} {"$p1".AsMapFor<Neo4jIdentityServer4ClientScope>()})
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasScope}]->(scope)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, scope));
@@ -708,10 +667,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -725,8 +681,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasScope}]->(scope:{
-                        IdentityServer4ClientScope
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasScope}]->(scope:{
+                        IdSrv4ClientScope
                     })
                 WHERE client.ClientId = $p0 AND scope.Scope = $p1 
                 DETACH DELETE scope";
@@ -740,10 +696,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -757,8 +710,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasScope}]->(scope:{
-                        IdentityServer4ClientScope
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasScope}]->(scope:{
+                        IdSrv4ClientScope
                     })
                 WHERE client.ClientId = $p0
                 DETACH DELETE scope";
@@ -771,10 +724,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -786,8 +736,8 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
             scope.ThrowIfNull(nameof(scope));
             var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasScope}]->(scope:{
-                    IdentityServer4ClientScope
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasScope}]->(scope:{
+                    IdSrv4ClientScope
                 })
                 WHERE client.ClientId = $p0 AND scope.Scope = $p1  
                 RETURN scope{{ .* }}";
@@ -812,8 +762,8 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
 
             var cypher = $@"
-                 MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasScope}]->(scope:{
-                    IdentityServer4ClientScope
+                 MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasScope}]->(scope:{
+                    IdSrv4ClientScope
                 })
                 WHERE client.ClientId = $p0
                 RETURN scope{{ .* }}";
@@ -825,45 +775,42 @@ namespace Stores.IdentityServer4.Neo4j
         }
 
         public async Task<IdentityResult> AddIdPRestrictionToClientAsync(Neo4jIdentityServer4Client client,
-            Neo4jIdentityServer4ClientIdPRestriction idPRestriction,
+            Neo4jIdentityServer4ClientIDPRestriction idpRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             client.ThrowIfNull(nameof(client));
-            idPRestriction.ThrowIfNull(nameof(idPRestriction));
+            idpRestriction.ThrowIfNull(nameof(idpRestriction));
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client} {{ClientId: $p0}})
-                MERGE (idp:{IdentityServer4ClientIdPRestriction} {"$p1".AsMapFor<Neo4jIdentityServer4ClientIdPRestriction>()})
+                MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
+                MERGE (idp:{IdSrv4ClientIdPRestriction} {"$p1".AsMapFor<Neo4jIdentityServer4ClientIDPRestriction>()})
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp)";
 
-                var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, idPRestriction));
+                var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, idpRestriction));
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
         public async Task<IdentityResult> DeleteIdPRestrictionAsync(Neo4jIdentityServer4Client client,
-            Neo4jIdentityServer4ClientIdPRestriction idPRestriction,
+            Neo4jIdentityServer4ClientIDPRestriction idpRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             client.ThrowIfNull(nameof(client));
-            idPRestriction.ThrowIfNull(nameof(idPRestriction));
+            idpRestriction.ThrowIfNull(nameof(idpRestriction));
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
-                        IdentityServer4ClientIdPRestriction
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
+                        IdSrv4ClientIdPRestriction
                     })
                 WHERE client.ClientId = $p0 AND idp.Provider = $p1 
                 DETACH DELETE idp";
@@ -871,16 +818,13 @@ namespace Stores.IdentityServer4.Neo4j
                 await Session.RunAsync(cypher,
                     Params.Create(
                         client.ClientId,
-                        idPRestriction.Provider
+                        idpRestriction.Provider
                     ));
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -893,8 +837,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
-                        IdentityServer4ClientIdPRestriction
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
+                        IdSrv4ClientIdPRestriction
                     })
                 WHERE client.ClientId = $p0 
                 DETACH DELETE idp";
@@ -907,24 +851,21 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
-        public async Task<Neo4jIdentityServer4ClientIdPRestriction> FindIdPRestrictionAsync(Neo4jIdentityServer4Client client, 
-            Neo4jIdentityServer4ClientIdPRestriction idPRestriction,
+        public async Task<Neo4jIdentityServer4ClientIDPRestriction> FindIdPRestrictionAsync(Neo4jIdentityServer4Client client, 
+            Neo4jIdentityServer4ClientIDPRestriction idpRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             client.ThrowIfNull(nameof(client));
-            idPRestriction.ThrowIfNull(nameof(idPRestriction));
+            idpRestriction.ThrowIfNull(nameof(idpRestriction));
             var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
-                    IdentityServer4ClientIdPRestriction
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
+                    IdSrv4ClientIdPRestriction
                 })
                 WHERE client.ClientId = $p0 AND idp.Provider = $p1  
                 RETURN idp{{ .* }}";
@@ -932,16 +873,16 @@ namespace Stores.IdentityServer4.Neo4j
             var result = await Session.RunAsync(cypher,
                 Params.Create(
                     client.ClientId,
-                    idPRestriction.Provider
+                    idpRestriction.Provider
                 ));
 
             var foundRecord =
-                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientIdPRestriction>("idp"));
+                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientIDPRestriction>("idp"));
 
             return foundRecord;
         }
 
-        public async Task<IList<Neo4jIdentityServer4ClientIdPRestriction>> GetIdPRestrictionsAsync(Neo4jIdentityServer4Client client,
+        public async Task<IList<Neo4jIdentityServer4ClientIDPRestriction>> GetIdPRestrictionsAsync(Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -949,15 +890,15 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
 
             var cypher = $@"
-                 MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
-                    IdentityServer4ClientIdPRestriction
+                 MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
+                    IdSrv4ClientIdPRestriction
                 })
                 WHERE client.ClientId = $p0
                 RETURN idp{{ .* }}";
 
             var result = await Session.RunAsync(cypher, Params.Create(client.ClientId));
 
-            var ipds = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ClientIdPRestriction>("idp"));
+            var ipds = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ClientIDPRestriction>("idp"));
             return ipds;
         }
 
@@ -972,8 +913,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client} {{ClientId: $p0}})
-                MERGE (property:{IdentityServer4ClientProperty} {"$p1".AsMapFor<Neo4jIdentityServer4ClientProperty>()})
+                MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
+                MERGE (property:{IdSrv4ClientProperty} {"$p1".AsMapFor<Neo4jIdentityServer4ClientProperty>()})
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasProperty}]->(property)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, property));
@@ -981,10 +922,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -999,8 +937,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasProperty}]->(property:{
-                        IdentityServer4ClientProperty
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasProperty}]->(property:{
+                        IdSrv4ClientProperty
                     })
                 WHERE client.ClientId = $p0 AND property.Key = $p1 AND property.Value = $p2 
                 DETACH DELETE property";
@@ -1015,10 +953,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -1032,8 +967,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasProperty}]->(property:{
-                        IdentityServer4ClientProperty
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasProperty}]->(property:{
+                        IdSrv4ClientProperty
                     })
                 WHERE client.ClientId = $p0  
                 DETACH DELETE property";
@@ -1046,10 +981,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -1062,8 +994,8 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
             property.ThrowIfNull(nameof(property));
             var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasProperty}]->(property:{
-                    IdentityServer4ClientProperty
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasProperty}]->(property:{
+                    IdSrv4ClientProperty
                 })
                 WHERE client.ClientId = $p0 AND property.Key = $p1 AND property.Value = $p2  
                 RETURN property{{ .* }}";
@@ -1090,8 +1022,8 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
 
             var cypher = $@"
-                 MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasProperty}]->(property:{
-                    IdentityServer4ClientProperty
+                 MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasProperty}]->(property:{
+                    IdSrv4ClientProperty
                 })
                 WHERE client.ClientId = $p0
                 RETURN property{{ .* }}";
@@ -1113,8 +1045,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client} {{ClientId: $p0}})
-                MERGE (postLogoutRedirectUri:{IdentityServer4ClientPostLogoutRedirectUri} {"$p1".AsMapFor<Neo4jIdentityServer4ClientPostLogoutRedirectUri>()})
+                MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
+                MERGE (postLogoutRedirectUri:{IdSrv4ClientPostLogoutRedirectUri} {"$p1".AsMapFor<Neo4jIdentityServer4ClientPostLogoutRedirectUri>()})
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(postLogoutRedirectUri)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, postLogoutRedirectUri));
@@ -1122,10 +1054,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -1140,8 +1069,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(postLogoutRedirectUri:{
-                        IdentityServer4ClientPostLogoutRedirectUri
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(postLogoutRedirectUri:{
+                        IdSrv4ClientPostLogoutRedirectUri
                     })
                 WHERE client.ClientId = $p0 AND postLogoutRedirectUri.PostLogoutRedirectUri = $p1  
                 DETACH DELETE postLogoutRedirectUri";
@@ -1155,10 +1084,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -1172,8 +1098,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(p:{
-                        IdentityServer4ClientPostLogoutRedirectUri
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(p:{
+                        IdSrv4ClientPostLogoutRedirectUri
                     })
                 WHERE client.ClientId = $p0  
                 DETACH DELETE p";
@@ -1186,10 +1112,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -1202,8 +1125,8 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
             postLogoutRedirectUri.ThrowIfNull(nameof(postLogoutRedirectUri));
             var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(postLogoutRedirectUri:{
-                    IdentityServer4ClientPostLogoutRedirectUri
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(postLogoutRedirectUri:{
+                    IdSrv4ClientPostLogoutRedirectUri
                 })
                 WHERE client.ClientId = $p0 AND postLogoutRedirectUri.PostLogoutRedirectUri = $p1  
                 RETURN postLogoutRedirectUri{{ .* }}";
@@ -1229,8 +1152,8 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
 
             var cypher = $@"
-                 MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(post:{
-                    IdentityServer4ClientPostLogoutRedirectUri
+                 MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(post:{
+                    IdSrv4ClientPostLogoutRedirectUri
                 })
                 WHERE client.ClientId = $p0
                 RETURN post{{ .* }}";
@@ -1252,8 +1175,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client} {{ClientId: $p0}})
-                MERGE (redirectUri:{IdentityServer4ClientRedirectUri} {"$p1".AsMapFor<Neo4jIdentityServer4ClientRedirectUri>()})
+                MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
+                MERGE (redirectUri:{IdSrv4ClientRedirectUri} {"$p1".AsMapFor<Neo4jIdentityServer4ClientRedirectUri>()})
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(redirectUri)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, redirectUri));
@@ -1261,10 +1184,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -1279,8 +1199,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(redirectUri:{
-                        IdentityServer4ClientRedirectUri
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(redirectUri:{
+                        IdSrv4ClientRedirectUri
                     })
                 WHERE client.ClientId = $p0 AND redirectUri.RedirectUri = $p1  
                 DETACH DELETE redirectUri";
@@ -1294,10 +1214,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -1311,8 +1228,8 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(redirectUri:{
-                        IdentityServer4ClientRedirectUri
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(redirectUri:{
+                        IdSrv4ClientRedirectUri
                     })
                 WHERE client.ClientId = $p0  
                 DETACH DELETE redirectUri";
@@ -1325,10 +1242,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -1341,8 +1255,8 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
             redirectUri.ThrowIfNull(nameof(redirectUri));
             var cypher = $@"
-                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(redirectUri:{
-                    IdentityServer4ClientRedirectUri
+                MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(redirectUri:{
+                    IdSrv4ClientRedirectUri
                 })
                 WHERE client.ClientId = $p0 AND redirectUri.RedirectUri = $p1  
                 RETURN redirectUri{{ .* }}";
@@ -1368,8 +1282,8 @@ namespace Stores.IdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
 
             var cypher = $@"
-                 MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(red:{
-                    IdentityServer4ClientRedirectUri
+                 MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(red:{
+                    IdSrv4ClientRedirectUri
                 })
                 WHERE client.ClientId = $p0
                 RETURN red{{ .* }}";
@@ -1392,7 +1306,7 @@ namespace Stores.IdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH (u:{User} {{Id: $p0}})
-                MERGE (l:{IdentityServer4Client} {"$p1".AsMapFor<Neo4jIdentityServer4Client>()})
+                MERGE (l:{IdSrv4Client} {"$p1".AsMapFor<Neo4jIdentityServer4Client>()})
                 MERGE (u)-[:{Neo4jConstants.Relationships.HasClient}]->(l)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(user.Id, client));
@@ -1400,10 +1314,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -1416,7 +1327,7 @@ namespace Stores.IdentityServer4.Neo4j
 
 
             var cypher = $@"
-                MATCH (u:{User})-[:{Neo4jConstants.Relationships.HasClient}]->(r:{IdentityServer4Client})
+                MATCH (u:{User})-[:{Neo4jConstants.Relationships.HasClient}]->(r:{IdSrv4Client})
                 WHERE u.Id = $p0
                 RETURN r{{ .* }}";
 
@@ -1435,16 +1346,13 @@ namespace Stores.IdentityServer4.Neo4j
             grantType.ThrowIfNull(nameof(grantType));
             try
             {
-                var cypher = $@"CREATE (r:{IdentityServer4ClientGrantType} $p0)";
+                var cypher = $@"CREATE (r:{IdSrv4ClientGrantType} $p0)";
                 await Session.RunAsync(cypher, Params.Create(grantType.ConvertToMap()));
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -1459,7 +1367,7 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (r:{IdentityServer4ClientGrantType})
+                MATCH (r:{IdSrv4ClientGrantType})
                 WHERE r.GrantType = $p0
                 SET r = $p1";
 
@@ -1468,10 +1376,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -1484,7 +1389,7 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (r:{IdentityServer4ClientGrantType})
+                MATCH (r:{IdSrv4ClientGrantType})
                 WHERE r.GrantType = $p0
                 DETACH DELETE r";
 
@@ -1493,10 +1398,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -1508,7 +1410,7 @@ namespace Stores.IdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (r:{IdentityServer4ClientGrantType})
+                MATCH (r:{IdSrv4ClientGrantType})
                 DETACH DELETE r";
 
                 await Session.RunAsync(cypher);
@@ -1516,10 +1418,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
             catch (ClientException ex)
             {
-                return IdentityResult.Failed(new IdentityError[]
-                {
-                    new IdentityError() {Code = ex.Code, Description = ex.Message}
-                });
+                return ex.ToIdentityResult();
             }
         }
 
@@ -1531,7 +1430,7 @@ namespace Stores.IdentityServer4.Neo4j
             grantType.ThrowIfNull(nameof(grantType));
 
             var cypher = $@"
-                MATCH (r:{IdentityServer4ClientGrantType})
+                MATCH (r:{IdSrv4ClientGrantType})
                 WHERE r.GrantType = $p0
                 RETURN r {{ .* }}";
 
