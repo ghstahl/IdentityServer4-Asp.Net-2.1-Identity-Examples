@@ -37,7 +37,7 @@ namespace Stores.IdentityServer4.Neo4j
         Task<IdentityResult> CreateClientAsync(TClient client,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> UpdateAsync(TClient client,
+        Task<IdentityResult> UpdateClientAsync(TClient client,
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IdentityResult> DeleteClientAsync(TClient client,

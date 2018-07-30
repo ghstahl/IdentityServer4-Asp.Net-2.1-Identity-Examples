@@ -767,7 +767,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             var client2 = CreateTestClient();
             client.ClientName = client2.ClientName;
 
-            identityResult = await _clientUserStore.UpdateAsync(client,
+            identityResult = await _clientUserStore.UpdateClientAsync(client,
                 CancellationToken.None);
             identityResult.ShouldNotBeNull();
             identityResult.Succeeded.ShouldBeTrue();
