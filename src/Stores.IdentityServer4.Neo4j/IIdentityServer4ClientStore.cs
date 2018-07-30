@@ -122,9 +122,6 @@ namespace Stores.IdentityServer4.Neo4j
             TCorsOrigin corsOrigin,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> UpdateCorsOriginAsync(TClient client, TCorsOrigin corsOrigin,
-            CancellationToken cancellationToken = default(CancellationToken));
-
         Task<IdentityResult> DeleteCorsOriginAsync(TClient client, TCorsOrigin corsOrigin,
             CancellationToken cancellationToken = default(CancellationToken));
 
@@ -755,34 +752,110 @@ namespace Stores.IdentityServer4.Neo4j
             return claims;
         }
 
-        public async Task<IdentityResult> AddCorsOriginToClientAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientCorsOrigin corsOrigin,
+        public async Task<IdentityResult> AddCorsOriginToClientAsync(Neo4jIdentityServer4Client client, 
+            Neo4jIdentityServer4ClientCorsOrigin corsOrigin,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
-        }
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            corsOrigin.ThrowIfNull(nameof(corsOrigin));
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client} {{ClientId: $p0}})
+                MERGE (corsOrigin:{IdentityServer4ClientCorsOrigin} {"$p1".AsMapFor<Neo4jIdentityServer4ClientCorsOrigin>()})
+                MERGE (client)-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin)";
 
-        public async Task<IdentityResult> UpdateCorsOriginAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientCorsOrigin corsOrigin,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
+                var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, corsOrigin));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
         }
 
         public async Task<IdentityResult> DeleteCorsOriginAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientCorsOrigin corsOrigin,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            corsOrigin.ThrowIfNull(nameof(corsOrigin));
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin:{
+                        IdentityServer4ClientCorsOrigin
+                    })
+                WHERE client.ClientId = $p0 AND corsOrigin.Origin = $p1 
+                DETACH DELETE corsOrigin";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId,
+                        corsOrigin.Origin
+                    ));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
         }
 
-        public async Task<Neo4jIdentityServer4ClientCorsOrigin> FindCorsOriginAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientCorsOrigin corsOrigin,
+        public async Task<Neo4jIdentityServer4ClientCorsOrigin> FindCorsOriginAsync(Neo4jIdentityServer4Client client, 
+            Neo4jIdentityServer4ClientCorsOrigin corsOrigin,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            corsOrigin.ThrowIfNull(nameof(corsOrigin));
+            var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin:{
+                    IdentityServer4ClientCorsOrigin
+                })
+                WHERE client.ClientId = $p0 AND corsOrigin.Origin = $p1 
+                RETURN corsOrigin{{ .* }}";
+
+            var result = await Session.RunAsync(cypher,
+                Params.Create(
+                    client.ClientId,
+                    corsOrigin.Origin
+                ));
+
+            var foundRecord =
+                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientCorsOrigin>("corsOrigin"));
+
+            return foundRecord;
         }
 
         public async Task<IList<Neo4jIdentityServer4ClientCorsOrigin>> GetCorsOriginsAsync(Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+
+            var cypher = $@"
+                 MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin:{
+                    IdentityServer4ClientCorsOrigin
+                })
+                WHERE client.ClientId = $p0
+                RETURN corsOrigin{{ .* }}";
+
+            var result = await Session.RunAsync(cypher, Params.Create(client.ClientId));
+
+            var corsOrigins = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ClientCorsOrigin>("corsOrigin"));
+            return corsOrigins;
         }
 
         public async Task<IdentityResult> AddScopeToClientAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientScope scope,

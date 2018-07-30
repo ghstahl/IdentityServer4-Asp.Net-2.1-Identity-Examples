@@ -76,6 +76,14 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
             };
         }
 
+        protected override Neo4jIdentityServer4ClientCorsOrigin CreateTestCorsOrigin()
+        {
+           return new Neo4jIdentityServer4ClientCorsOrigin()
+           {
+               Origin = Unique.Url
+           };
+        }
+
         protected override Neo4jIdentityServer4Client CreateTestClient()
         {
             return new Neo4jIdentityServer4Client()

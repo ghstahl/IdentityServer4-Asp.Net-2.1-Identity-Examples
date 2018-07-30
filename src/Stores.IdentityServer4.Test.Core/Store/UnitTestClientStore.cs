@@ -77,6 +77,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
         protected abstract TSecret CreateTestSecret();
         protected abstract TClaim CreateTestClaim();
         protected abstract TScope CreateTestScope();
+        protected abstract TCorsOrigin CreateTestCorsOrigin();
         [TestInitialize]
         public async Task Initialize()
         {
@@ -202,6 +203,25 @@ namespace Stores.IdentityServer4.Test.Core.Store
             var scopes = await _clientUserStore.GetScopesAsync(client);
             scopes.ShouldNotBeNull();
             scopes.Count.ShouldBe(count);
+
+            TCorsOrigin corsOrigin = null;
+          
+            for (int i = 0; i < count; ++i)
+            {
+                corsOrigin = CreateTestCorsOrigin();
+                var resultCors = await _clientUserStore.AddCorsOriginToClientAsync(client, corsOrigin);
+                resultCors.ShouldNotBeNull();
+                resultCors.Succeeded.ShouldBeTrue();
+            }
+
+            var corsOrigins = await _clientUserStore.GetCorsOriginsAsync(client);
+            corsOrigins.ShouldNotBeNull();
+            corsOrigins.Count.ShouldBe(count);
+
+
+
+
+
 
             result = await _clientUserStore.DeleteClientAsync(client);
             result.ShouldNotBeNull();
@@ -336,6 +356,46 @@ namespace Stores.IdentityServer4.Test.Core.Store
             result3.Succeeded.ShouldBeTrue();
 
             result2 = await _clientUserStore.FindScopeAsync(client, scope);
+            result2.ShouldBeNull();
+
+        }
+
+        [TestMethod]
+        public async Task Create_Client_Cors_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            TClient client = CreateTestClient();
+
+            await _clientUserStore.CreateClientAsync(client);
+
+            TCorsOrigin corsOrigin = null;
+            var count = 10;
+            for (int i = 0; i < count; ++i)
+            {
+                corsOrigin = CreateTestCorsOrigin();
+                var result = await _clientUserStore.AddCorsOriginToClientAsync(client, corsOrigin);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+            }
+
+
+            var corsOrigins = await _clientUserStore.GetCorsOriginsAsync(client);
+            corsOrigins.ShouldNotBeNull();
+            corsOrigins.Count.ShouldBe(count);
+
+            corsOrigin = corsOrigins[0];
+
+            var result2 = await _clientUserStore.FindCorsOriginAsync(client, corsOrigin);
+            result2.ShouldNotBeNull();
+            result2.Origin.ShouldBe(corsOrigin.Origin);
+
+
+            var result3 = await _clientUserStore.DeleteCorsOriginAsync(client, corsOrigin);
+            result3.ShouldNotBeNull();
+            result3.Succeeded.ShouldBeTrue();
+
+            result2 = await _clientUserStore.FindCorsOriginAsync(client, corsOrigin);
             result2.ShouldBeNull();
 
         }
