@@ -84,6 +84,31 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
            };
         }
 
+        protected override Neo4jIdentityServer4ClientPostLogoutRedirectUri CreatePostLogoutRedirectUri()
+        {
+            return new Neo4jIdentityServer4ClientPostLogoutRedirectUri()
+            {
+                PostLogoutRedirectUri = Unique.Url
+            };
+        }
+
+        protected override Neo4jIdentityServer4ClientRedirectUri CreateTestRedirectUri()
+        {
+            return new Neo4jIdentityServer4ClientRedirectUri()
+            {
+                RedirectUri = Unique.Url
+            };
+        }
+
+        protected override Neo4jIdentityServer4ClientProperty CreateTestProperty()
+        {
+           return new Neo4jIdentityServer4ClientProperty()
+           {
+               Key = Unique.S,
+               Value = Unique.S
+           };
+        }
+
         protected override Neo4jIdentityServer4ClientIdPRestriction CreateTestIdpRestriction()
         {
            return new Neo4jIdentityServer4ClientIdPRestriction()

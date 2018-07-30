@@ -78,6 +78,11 @@ namespace Stores.IdentityServer4.Test.Core.Store
         protected abstract TClaim CreateTestClaim();
         protected abstract TScope CreateTestScope();
         protected abstract TCorsOrigin CreateTestCorsOrigin();
+        protected abstract TPostLogoutRedirectUri CreatePostLogoutRedirectUri();
+        protected abstract TRedirectUri CreateTestRedirectUri();
+        protected abstract TProperty CreateTestProperty();
+        protected abstract TIdPRestriction CreateTestIdpRestriction();
+
         [TestInitialize]
         public async Task Initialize()
         {
@@ -233,8 +238,52 @@ namespace Stores.IdentityServer4.Test.Core.Store
             idps.ShouldNotBeNull();
             idps.Count.ShouldBe(count);
 
+            TPostLogoutRedirectUri postLogoutRedirectUri = null;
+           
+            for (int i = 0; i < count; ++i)
+            {
+                postLogoutRedirectUri = CreatePostLogoutRedirectUri();
+                var resultpostLogoutRedirectUri = await _clientUserStore.AddPostLogoutRedirectUriToClientAsync(client, postLogoutRedirectUri);
+                resultpostLogoutRedirectUri.ShouldNotBeNull();
+                resultpostLogoutRedirectUri.Succeeded.ShouldBeTrue();
+            }
 
 
+            var postLogoutRedirectUris = await _clientUserStore.GetPostLogoutRedirectUrisAsync(client);
+            postLogoutRedirectUris.ShouldNotBeNull();
+            postLogoutRedirectUris.Count.ShouldBe(count);
+
+            TRedirectUri redirectUri = null;
+             
+            for (int i = 0; i < count; ++i)
+            {
+                redirectUri = CreateTestRedirectUri();
+                var resultredirectUri = await _clientUserStore.AddRedirectUriToClientAsync(client, redirectUri);
+                resultredirectUri.ShouldNotBeNull();
+                resultredirectUri.Succeeded.ShouldBeTrue();
+            }
+
+
+            var resultredirectUris = await _clientUserStore.GetRedirectUrisAsync(client);
+            resultredirectUris.ShouldNotBeNull();
+            resultredirectUris.Count.ShouldBe(count);
+
+            TProperty property = null;
+          
+            for (int i = 0; i < count; ++i)
+            {
+                property = CreateTestProperty();
+                var resultproperty = await _clientUserStore.AddPropertyToClientAsync(client, property);
+                resultproperty.ShouldNotBeNull();
+                resultproperty.Succeeded.ShouldBeTrue();
+            }
+
+
+            var properties = await _clientUserStore.GetPropertiesAsync(client);
+            properties.ShouldNotBeNull();
+            properties.Count.ShouldBe(count);
+
+            /////////////////////////////////////////////////////////////
 
             result = await _clientUserStore.DeleteClientAsync(client);
             result.ShouldNotBeNull();
@@ -373,6 +422,128 @@ namespace Stores.IdentityServer4.Test.Core.Store
 
         }
         [TestMethod]
+        public async Task Create_Client_postlogout_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            TClient client = CreateTestClient();
+
+            await _clientUserStore.CreateClientAsync(client);
+
+            TPostLogoutRedirectUri record = null;
+            var count = 10;
+            for (int i = 0; i < count; ++i)
+            {
+                record = CreatePostLogoutRedirectUri();
+                var result = await _clientUserStore.AddPostLogoutRedirectUriToClientAsync(client, record);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+            }
+
+
+            var records = await _clientUserStore.GetPostLogoutRedirectUrisAsync(client);
+            records.ShouldNotBeNull();
+            records.Count.ShouldBe(count);
+
+            record = records[0];
+
+            var result2 = await _clientUserStore.FindPostLogoutRedirectUriAsync(client, record);
+            result2.ShouldNotBeNull();
+            result2.PostLogoutRedirectUri.ShouldBe(record.PostLogoutRedirectUri);
+
+
+            var result3 = await _clientUserStore.DeletePostLogoutRedirectUriAsync(client, record);
+            result3.ShouldNotBeNull();
+            result3.Succeeded.ShouldBeTrue();
+
+            result2 = await _clientUserStore.FindPostLogoutRedirectUriAsync(client, record);
+            result2.ShouldBeNull();
+
+        }
+
+        [TestMethod]
+        public async Task Create_Client_redirecturi_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            TClient client = CreateTestClient();
+
+            await _clientUserStore.CreateClientAsync(client);
+
+            TRedirectUri record = null;
+            var count = 10;
+            for (int i = 0; i < count; ++i)
+            {
+                record = CreateTestRedirectUri();
+                var result = await _clientUserStore.AddRedirectUriToClientAsync(client, record);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+            }
+
+
+            var records = await _clientUserStore.GetRedirectUrisAsync(client);
+            records.ShouldNotBeNull();
+            records.Count.ShouldBe(count);
+
+            record = records[0];
+
+            var result2 = await _clientUserStore.FindRedirectUriAsync(client, record);
+            result2.ShouldNotBeNull();
+            result2.RedirectUri.ShouldBe(record.RedirectUri);
+
+
+            var result3 = await _clientUserStore.DeleteRedirectUriAsync(client, record);
+            result3.ShouldNotBeNull();
+            result3.Succeeded.ShouldBeTrue();
+
+            result2 = await _clientUserStore.FindRedirectUriAsync(client, record);
+            result2.ShouldBeNull();
+
+        }
+
+        [TestMethod]
+        public async Task Create_Client_properties_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            TClient client = CreateTestClient();
+
+            await _clientUserStore.CreateClientAsync(client);
+
+            TProperty record = null;
+            var count = 10;
+            for (int i = 0; i < count; ++i)
+            {
+                record = CreateTestProperty();
+                var result = await _clientUserStore.AddPropertyToClientAsync(client, record);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+            }
+
+
+            var records = await _clientUserStore.GetPropertiesAsync(client);
+            records.ShouldNotBeNull();
+            records.Count.ShouldBe(count);
+
+            record = records[0];
+
+            var result2 = await _clientUserStore.FindPropertyAsync(client, record);
+            result2.ShouldNotBeNull();
+            result2.Key.ShouldBe(record.Key);
+            result2.Value.ShouldBe(record.Value);
+
+            var result3 = await _clientUserStore.DeletePropertyAsync(client, record);
+            result3.ShouldNotBeNull();
+            result3.Succeeded.ShouldBeTrue();
+
+            result2 = await _clientUserStore.FindPropertyAsync(client, record);
+            result2.ShouldBeNull();
+
+        }
+
+       
+
+        [TestMethod]
         public async Task Create_Client_idp_restrictions_Delete()
         {
             var challenge = Unique.S;
@@ -412,7 +583,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
 
         }
 
-        protected abstract TIdPRestriction CreateTestIdpRestriction();
+
 
         [TestMethod]
         public async Task Create_Client_Cors_Delete()

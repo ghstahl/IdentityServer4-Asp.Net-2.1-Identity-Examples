@@ -25,7 +25,8 @@ namespace Stores.IdentityServer4.Neo4j
 
         Task<IdentityResult> DeleteGrantTypeAsync(TGrantType grantType,
             CancellationToken cancellationToken = default(CancellationToken));
-
+        Task<IdentityResult> DeleteGrantTypesAsync(
+            CancellationToken cancellationToken = default(CancellationToken));
         Task<TGrantType> FindGrantTypeAsync(string grantType,
             CancellationToken cancellationToken = default(CancellationToken));
     }
@@ -82,7 +83,8 @@ namespace Stores.IdentityServer4.Neo4j
 
         Task<IdentityResult> DeleteSecretAsync(TClient client, TSecret secret,
             CancellationToken cancellationToken = default(CancellationToken));
-
+        Task<IdentityResult> DeleteSecretsAsync(TClient client,  
+            CancellationToken cancellationToken = default(CancellationToken));
         Task<TSecret> FindSecretAsync(TClient client, TSecret secret,
             CancellationToken cancellationToken = default(CancellationToken));
 
@@ -108,7 +110,8 @@ namespace Stores.IdentityServer4.Neo4j
 
         Task<IdentityResult> DeleteClaimAsync(TClient client, TClaim claim,
             CancellationToken cancellationToken = default(CancellationToken));
-
+        Task<IdentityResult> DeleteClaimsAsync(TClient client, 
+            CancellationToken cancellationToken = default(CancellationToken));
         Task<TClaim> FindClaimAsync(TClient client, TClaim claim,
             CancellationToken cancellationToken = default(CancellationToken));
 
@@ -123,6 +126,8 @@ namespace Stores.IdentityServer4.Neo4j
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IdentityResult> DeleteCorsOriginAsync(TClient client, TCorsOrigin corsOrigin,
+            CancellationToken cancellationToken = default(CancellationToken));
+        Task<IdentityResult> DeleteCorsOriginsAsync(TClient client, 
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<TCorsOrigin> FindCorsOriginAsync(TClient client, TCorsOrigin corsOrigin,
@@ -140,7 +145,8 @@ namespace Stores.IdentityServer4.Neo4j
 
         Task<IdentityResult> DeleteScopeAsync(TClient client, TScope scope,
             CancellationToken cancellationToken = default(CancellationToken));
-
+        Task<IdentityResult> DeleteScopesAsync(TClient client,  
+            CancellationToken cancellationToken = default(CancellationToken));
         Task<TScope> FindScopeAsync(TClient client, TScope scope,
             CancellationToken cancellationToken = default(CancellationToken));
 
@@ -156,7 +162,8 @@ namespace Stores.IdentityServer4.Neo4j
 
         Task<IdentityResult> DeleteIdPRestrictionAsync(TClient client, TIdPRestriction idPRestriction,
             CancellationToken cancellationToken = default(CancellationToken));
-
+        Task<IdentityResult> DeleteIdPRestrictionsAsync(TClient client, 
+            CancellationToken cancellationToken = default(CancellationToken));
         Task<TIdPRestriction> FindIdPRestrictionAsync(TClient client, TIdPRestriction idPRestriction,
             CancellationToken cancellationToken = default(CancellationToken));
 
@@ -170,16 +177,15 @@ namespace Stores.IdentityServer4.Neo4j
             TProperty property,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> UpdatePropertyAsync(TClient client, TProperty property,
-            CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IdentityResult> DeletePropertyAsync(TClient client, TProperty property,
             CancellationToken cancellationToken = default(CancellationToken));
-
+        Task<IdentityResult> DeletePropertiesAsync(TClient client, 
+            CancellationToken cancellationToken = default(CancellationToken));
         Task<TProperty> FindPropertyAsync(TClient client, TProperty property,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IList<TProperty>> GetPropertysAsync(TClient client,
+        Task<IList<TProperty>> GetPropertiesAsync(TClient client,
             CancellationToken cancellationToken = default(CancellationToken));
 
         #endregion
@@ -189,10 +195,10 @@ namespace Stores.IdentityServer4.Neo4j
             TPostLogoutRedirectUri postLogoutRedirectUri,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> UpdatePostLogoutRedirectUriAsync(TClient client, TPostLogoutRedirectUri postLogoutRedirectUri,
+        Task<IdentityResult> DeletePostLogoutRedirectUriAsync(TClient client, TPostLogoutRedirectUri postLogoutRedirectUri,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> DeletePostLogoutRedirectUriAsync(TClient client, TPostLogoutRedirectUri postLogoutRedirectUri,
+        Task<IdentityResult> DeletePostLogoutRedirectUrisAsync(TClient client,  
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<TPostLogoutRedirectUri> FindPostLogoutRedirectUriAsync(TClient client, TPostLogoutRedirectUri postLogoutRedirectUri,
@@ -208,12 +214,10 @@ namespace Stores.IdentityServer4.Neo4j
             TRedirectUri redirectUri,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> UpdateRedirectUriAsync(TClient client, TRedirectUri redirectUri,
-            CancellationToken cancellationToken = default(CancellationToken));
-
         Task<IdentityResult> DeleteRedirectUriAsync(TClient client, TRedirectUri redirectUri,
             CancellationToken cancellationToken = default(CancellationToken));
-
+        Task<IdentityResult> DeleteRedirectUrisAsync(TClient client,  
+            CancellationToken cancellationToken = default(CancellationToken));
         Task<TRedirectUri> FindRedirectUriAsync(TClient client, TRedirectUri redirectUri,
             CancellationToken cancellationToken = default(CancellationToken));
 
@@ -403,22 +407,23 @@ namespace Stores.IdentityServer4.Neo4j
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             client.ThrowIfNull(nameof(client));
+            await DeleteRedirectUrisAsync(client);
+            await DeletePostLogoutRedirectUrisAsync(client);
+            await DeleteClaimsAsync(client);
+            await DeleteCorsOriginsAsync(client);
+            await DeleteIdPRestrictionsAsync(client);
+            await DeletePropertiesAsync(client);
+            await DeleteScopesAsync(client);
+            await DeleteSecretsAsync(client);
+
             try
             {
                 var cypher = $@"
                 MATCH (c:{IdentityServer4Client})
-                OPTIONAL MATCH (c)-[:{Neo4jConstants.Relationships.HasSecret}]->(scr:{IdentityServer4ClientSecret})
-                OPTIONAL MATCH (c)-[:{Neo4jConstants.Relationships.HasClaim}]->(clm:{IdentityServer4ClientClaim})
-                OPTIONAL MATCH (c)-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(crs:{IdentityServer4ClientCorsOrigin})
-                OPTIONAL MATCH (c)-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{IdentityServer4ClientIdPRestriction})
-                OPTIONAL MATCH (c)-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(pst:{IdentityServer4ClientPostLogoutRedirectUri})
-                OPTIONAL MATCH (c)-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(red:{IdentityServer4ClientRedirectUri})
-                OPTIONAL MATCH (c)-[:{Neo4jConstants.Relationships.HasProperty}]->(prp:{IdentityServer4ClientProperty})
-                OPTIONAL MATCH (c)-[:{Neo4jConstants.Relationships.HasScope}]->(scp:{IdentityServer4ClientScope})
                 WHERE c.ClientId = $p0
-                DETACH DELETE scp,prp,red,pst,idp,crs,clm,scr,c";
+                DETACH DELETE c";
 
-                await Session.RunAsync(cypher, Params.Create(client.ClientId));
+                var result = await Session.RunAsync(cypher, Params.Create(client.ClientId));
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -530,6 +535,36 @@ namespace Stores.IdentityServer4.Neo4j
                     Params.Create(
                         client.ClientId,
                         secret.Value));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
+        }
+
+        public async Task<IdentityResult> DeleteSecretsAsync(Neo4jIdentityServer4Client client,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+         
+            try
+            {
+                var cypher = $@"
+                MATCH (c:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{
+                        IdentityServer4ClientSecret
+                    })
+                WHERE c.ClientId = $p0 
+                DETACH DELETE s";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId));
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -700,6 +735,37 @@ namespace Stores.IdentityServer4.Neo4j
             }
         }
 
+        public async Task<IdentityResult> DeleteClaimsAsync(Neo4jIdentityServer4Client client,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+          
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasClaim}]->(claim:{
+                        IdentityServer4ClientClaim
+                    })
+                WHERE client.ClientId = $p0  
+                DETACH DELETE claim";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId
+                    ));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
+        }
+
         public async Task<Neo4jIdentityServer4ClientClaim> FindClaimAsync(Neo4jIdentityServer4Client client, 
             Neo4jIdentityServer4ClientClaim claim,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -808,6 +874,37 @@ namespace Stores.IdentityServer4.Neo4j
             }
         }
 
+        public async Task<IdentityResult> DeleteCorsOriginsAsync(Neo4jIdentityServer4Client client,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+          
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin:{
+                        IdentityServer4ClientCorsOrigin
+                    })
+                WHERE client.ClientId = $p0 
+                DETACH DELETE corsOrigin";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId
+                    ));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
+        }
+
         public async Task<Neo4jIdentityServer4ClientCorsOrigin> FindCorsOriginAsync(Neo4jIdentityServer4Client client, 
             Neo4jIdentityServer4ClientCorsOrigin corsOrigin,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -901,6 +998,37 @@ namespace Stores.IdentityServer4.Neo4j
                     Params.Create(
                         client.ClientId,
                         scope.Scope
+                    ));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
+        }
+
+        public async  Task<IdentityResult> DeleteScopesAsync(Neo4jIdentityServer4Client client,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasScope}]->(scope:{
+                        IdentityServer4ClientScope
+                    })
+                WHERE client.ClientId = $p0
+                DETACH DELETE scope";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId
                     ));
                 return IdentityResult.Success;
             }
@@ -1019,6 +1147,36 @@ namespace Stores.IdentityServer4.Neo4j
             }
         }
 
+        public async Task<IdentityResult> DeleteIdPRestrictionsAsync(Neo4jIdentityServer4Client client,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
+                        IdentityServer4ClientIdPRestriction
+                    })
+                WHERE client.ClientId = $p0 
+                DETACH DELETE idp";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId
+                    ));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
+        }
+
         public async Task<Neo4jIdentityServer4ClientIdPRestriction> FindIdPRestrictionAsync(Neo4jIdentityServer4Client client, 
             Neo4jIdentityServer4ClientIdPRestriction idPRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -1066,98 +1224,423 @@ namespace Stores.IdentityServer4.Neo4j
             return ipds;
         }
 
-        public async Task<IdentityResult> AddPropertyToClientAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientProperty property,
+        public async Task<IdentityResult> AddPropertyToClientAsync(Neo4jIdentityServer4Client client, 
+            Neo4jIdentityServer4ClientProperty property,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            property.ThrowIfNull(nameof(property));
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client} {{ClientId: $p0}})
+                MERGE (property:{IdentityServer4ClientProperty} {"$p1".AsMapFor<Neo4jIdentityServer4ClientProperty>()})
+                MERGE (client)-[:{Neo4jConstants.Relationships.HasProperty}]->(property)";
+
+                var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, property));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
         }
 
-        public async Task<IdentityResult> UpdatePropertyAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientProperty property,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<IdentityResult> DeletePropertyAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientProperty property,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            property.ThrowIfNull(nameof(property));
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasProperty}]->(property:{
+                        IdentityServer4ClientProperty
+                    })
+                WHERE client.ClientId = $p0 AND property.Key = $p1 AND property.Value = $p2 
+                DETACH DELETE property";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId,
+                        property.Key,
+                        property.Value
+                    ));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
         }
 
-        public async Task<Neo4jIdentityServer4ClientProperty> FindPropertyAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientProperty property,
+        public async Task<IdentityResult> DeletePropertiesAsync(Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+          
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasProperty}]->(property:{
+                        IdentityServer4ClientProperty
+                    })
+                WHERE client.ClientId = $p0  
+                DETACH DELETE property";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId
+                    ));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
         }
 
-        public async Task<IList<Neo4jIdentityServer4ClientProperty>> GetPropertysAsync(Neo4jIdentityServer4Client client,
+        public async Task<Neo4jIdentityServer4ClientProperty> FindPropertyAsync(Neo4jIdentityServer4Client client, 
+            Neo4jIdentityServer4ClientProperty property,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            property.ThrowIfNull(nameof(property));
+            var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasProperty}]->(property:{
+                    IdentityServer4ClientProperty
+                })
+                WHERE client.ClientId = $p0 AND property.Key = $p1 AND property.Value = $p2  
+                RETURN property{{ .* }}";
+
+            var result = await Session.RunAsync(cypher,
+                Params.Create(
+                    client.ClientId,
+                    property.Key,
+                    property.Value
+
+                ));
+
+            var foundRecord =
+                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientProperty>("property"));
+
+            return foundRecord;
+        }
+
+        public async Task<IList<Neo4jIdentityServer4ClientProperty>> GetPropertiesAsync(Neo4jIdentityServer4Client client,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+
+            var cypher = $@"
+                 MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasProperty}]->(property:{
+                    IdentityServer4ClientProperty
+                })
+                WHERE client.ClientId = $p0
+                RETURN property{{ .* }}";
+
+            var result = await Session.RunAsync(cypher, Params.Create(client.ClientId));
+
+            var records = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ClientProperty>("property"));
+            return records;
         }
 
         public async Task<IdentityResult> AddPostLogoutRedirectUriToClientAsync(Neo4jIdentityServer4Client client,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri postLogoutRedirectUri,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
-        }
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            postLogoutRedirectUri.ThrowIfNull(nameof(postLogoutRedirectUri));
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client} {{ClientId: $p0}})
+                MERGE (postLogoutRedirectUri:{IdentityServer4ClientPostLogoutRedirectUri} {"$p1".AsMapFor<Neo4jIdentityServer4ClientPostLogoutRedirectUri>()})
+                MERGE (client)-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(postLogoutRedirectUri)";
 
-        public async Task<IdentityResult> UpdatePostLogoutRedirectUriAsync(Neo4jIdentityServer4Client client,
-            Neo4jIdentityServer4ClientPostLogoutRedirectUri postLogoutRedirectUri,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
+                var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, postLogoutRedirectUri));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
         }
 
         public async Task<IdentityResult> DeletePostLogoutRedirectUriAsync(Neo4jIdentityServer4Client client,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri postLogoutRedirectUri,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            postLogoutRedirectUri.ThrowIfNull(nameof(postLogoutRedirectUri));
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(postLogoutRedirectUri:{
+                        IdentityServer4ClientPostLogoutRedirectUri
+                    })
+                WHERE client.ClientId = $p0 AND postLogoutRedirectUri.PostLogoutRedirectUri = $p1  
+                DETACH DELETE postLogoutRedirectUri";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId,
+                        postLogoutRedirectUri.PostLogoutRedirectUri
+                    ));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
+        }
+
+        public async Task<IdentityResult> DeletePostLogoutRedirectUrisAsync(Neo4jIdentityServer4Client client,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(p:{
+                        IdentityServer4ClientPostLogoutRedirectUri
+                    })
+                WHERE client.ClientId = $p0  
+                DETACH DELETE p";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId
+                    ));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
         }
 
         public async Task<Neo4jIdentityServer4ClientPostLogoutRedirectUri> FindPostLogoutRedirectUriAsync(Neo4jIdentityServer4Client client,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri postLogoutRedirectUri,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            postLogoutRedirectUri.ThrowIfNull(nameof(postLogoutRedirectUri));
+            var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(postLogoutRedirectUri:{
+                    IdentityServer4ClientPostLogoutRedirectUri
+                })
+                WHERE client.ClientId = $p0 AND postLogoutRedirectUri.PostLogoutRedirectUri = $p1  
+                RETURN postLogoutRedirectUri{{ .* }}";
+
+            var result = await Session.RunAsync(cypher,
+                Params.Create(
+                    client.ClientId,
+                    postLogoutRedirectUri.PostLogoutRedirectUri
+
+                ));
+
+            var foundRecord =
+                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientPostLogoutRedirectUri>("postLogoutRedirectUri"));
+
+            return foundRecord;
         }
 
         public async Task<IList<Neo4jIdentityServer4ClientPostLogoutRedirectUri>> GetPostLogoutRedirectUrisAsync(Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+
+            var cypher = $@"
+                 MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(post:{
+                    IdentityServer4ClientPostLogoutRedirectUri
+                })
+                WHERE client.ClientId = $p0
+                RETURN post{{ .* }}";
+
+            var result = await Session.RunAsync(cypher, Params.Create(client.ClientId));
+
+            var records = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ClientPostLogoutRedirectUri>("post"));
+            return records;
         }
 
-        public async Task<IdentityResult> AddRedirectUriToClientAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientRedirectUri redirectUri,
+        public async Task<IdentityResult> AddRedirectUriToClientAsync(Neo4jIdentityServer4Client client, 
+            Neo4jIdentityServer4ClientRedirectUri redirectUri,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            redirectUri.ThrowIfNull(nameof(redirectUri));
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client} {{ClientId: $p0}})
+                MERGE (redirectUri:{IdentityServer4ClientRedirectUri} {"$p1".AsMapFor<Neo4jIdentityServer4ClientRedirectUri>()})
+                MERGE (client)-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(redirectUri)";
+
+                var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, redirectUri));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
         }
 
-        public async Task<IdentityResult> UpdateRedirectUriAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientRedirectUri redirectUri,
+        public async Task<IdentityResult> DeleteRedirectUriAsync(Neo4jIdentityServer4Client client, 
+            Neo4jIdentityServer4ClientRedirectUri redirectUri,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            redirectUri.ThrowIfNull(nameof(redirectUri));
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(redirectUri:{
+                        IdentityServer4ClientRedirectUri
+                    })
+                WHERE client.ClientId = $p0 AND redirectUri.RedirectUri = $p1  
+                DETACH DELETE redirectUri";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId,
+                        redirectUri.RedirectUri
+                    ));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
         }
 
-        public async Task<IdentityResult> DeleteRedirectUriAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientRedirectUri redirectUri,
+        public async Task<IdentityResult> DeleteRedirectUrisAsync(Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+       
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(redirectUri:{
+                        IdentityServer4ClientRedirectUri
+                    })
+                WHERE client.ClientId = $p0  
+                DETACH DELETE redirectUri";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId
+                    ));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
         }
 
-        public async Task<Neo4jIdentityServer4ClientRedirectUri> FindRedirectUriAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientRedirectUri redirectUri,
+        public async Task<Neo4jIdentityServer4ClientRedirectUri> FindRedirectUriAsync(Neo4jIdentityServer4Client client, 
+            Neo4jIdentityServer4ClientRedirectUri redirectUri,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            redirectUri.ThrowIfNull(nameof(redirectUri));
+            var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(redirectUri:{
+                    IdentityServer4ClientRedirectUri
+                })
+                WHERE client.ClientId = $p0 AND redirectUri.RedirectUri = $p1  
+                RETURN redirectUri{{ .* }}";
+
+            var result = await Session.RunAsync(cypher,
+                Params.Create(
+                    client.ClientId,
+                    redirectUri.RedirectUri
+
+                ));
+
+            var foundRecord =
+                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientRedirectUri>("redirectUri"));
+
+            return foundRecord;
         }
 
         public async Task<IList<Neo4jIdentityServer4ClientRedirectUri>> GetRedirectUrisAsync(Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+
+            var cypher = $@"
+                 MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(red:{
+                    IdentityServer4ClientRedirectUri
+                })
+                WHERE client.ClientId = $p0
+                RETURN red{{ .* }}";
+
+            var result = await Session.RunAsync(cypher, Params.Create(client.ClientId));
+
+            var records = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ClientRedirectUri>("red"));
+            return records;
         }
 
 
@@ -1280,6 +1763,29 @@ namespace Stores.IdentityServer4.Neo4j
             }
         }
 
+        public async Task<IdentityResult> DeleteGrantTypesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+         
+            try
+            {
+                var cypher = $@"
+                MATCH (r:{IdentityServer4ClientGrantType})
+                DETACH DELETE r";
+
+                await Session.RunAsync(cypher);
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
+        }
+
         public async Task<Neo4jIdentityServer4ClientGrantType> FindGrantTypeAsync(string grantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -1297,9 +1803,6 @@ namespace Stores.IdentityServer4.Neo4j
                 await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientGrantType>("r"));
             return grantTypeRecord;
         }
-
-
-
 
     }
 }
