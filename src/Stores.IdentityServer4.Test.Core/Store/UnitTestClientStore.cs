@@ -75,6 +75,8 @@ namespace Stores.IdentityServer4.Test.Core.Store
         protected abstract TUser CreateTestUser();
         protected abstract TGrantType CreateTestGrantType();
         protected abstract TSecret CreateTestSecret();
+        protected abstract TClaim CreateTestClaim();
+
         [TestInitialize]
         public async Task Initialize()
         {
@@ -127,7 +129,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             findResult.ShouldNotBeNull();
             findResult.ClientId.ShouldBe(client.ClientId);
 
-            result = await _clientUserStore.DeleteAsync(client);
+            result = await _clientUserStore.DeleteClientAsync(client);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
@@ -137,7 +139,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
 
         }
         [TestMethod]
-        public async Task Create_Client_ManySecrets_Delete()
+        public async Task Create_Client_ManyRelationships_Delete()
         {
             var challenge = Unique.S;
             var challengeResponse = Unique.S;
@@ -169,11 +171,21 @@ namespace Stores.IdentityServer4.Test.Core.Store
                 addResult.ShouldNotBeNull();
                 addResult.Succeeded.ShouldBeTrue();
             }
+            for (int i = 0; i < count; ++i)
+            {
+                var claim = CreateTestClaim();
+
+                var addResult =
+                    await _clientUserStore.AddClaimToClientAsync(client, claim);
+                addResult.ShouldNotBeNull();
+                addResult.Succeeded.ShouldBeTrue();
+            }
+
             var secrets = await _clientUserStore.GetSecretsAsync(client);
             secrets.ShouldNotBeNull();
             secrets.Count.ShouldBe(count);
 
-            result = await _clientUserStore.DeleteAsync(client);
+            result = await _clientUserStore.DeleteClientAsync(client);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
@@ -232,7 +244,39 @@ namespace Stores.IdentityServer4.Test.Core.Store
 
         }
 
+        [TestMethod]
+        public async Task Create_Client_Claim_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            TClient client = CreateTestClient();
 
+            var result = await _clientUserStore.CreateClientAsync(client);
+
+            TClaim claim = CreateTestClaim();
+            result = await _clientUserStore.AddClaimToClientAsync(client, claim);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var claims = await _clientUserStore.GetClaimsAsync(client);
+            claims.ShouldNotBeNull();
+            claims.Count.ShouldBe(1);
+
+            var claimResult = await _clientUserStore.FindClaimAsync(client, claim);
+            claimResult.ShouldNotBeNull();
+            claimResult.Value.ShouldBe(claim.Value);
+            claimResult.Type.ShouldBe(claim.Type);
+
+            result = await _clientUserStore.DeleteClaimAsync(client, claim);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            claimResult = await _clientUserStore.FindClaimAsync(client, claim);
+            claimResult.ShouldBeNull();
+
+        }
+
+       
 
         [TestMethod]
         public async Task Create_Client_Redundant_Delete()
@@ -250,7 +294,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             findResult.ShouldNotBeNull();
             findResult.ClientId.ShouldBe(client.ClientId);
 
-            result = await _clientUserStore.DeleteAsync(client);
+            result = await _clientUserStore.DeleteClientAsync(client);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
@@ -258,7 +302,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
                 await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
             findResult.ShouldBeNull();
 
-            result = await _clientUserStore.DeleteAsync(client);
+            result = await _clientUserStore.DeleteClientAsync(client);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
         }
@@ -401,7 +445,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             findResult.ShouldNotBeNull();
             findResult.ClientId.ShouldBe(client.ClientId);
 
-            result = await _clientUserStore.DeleteAsync(client);
+            result = await _clientUserStore.DeleteClientAsync(client);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
