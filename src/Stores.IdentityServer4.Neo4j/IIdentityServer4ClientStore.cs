@@ -17,13 +17,13 @@ namespace Stores.IdentityServer4.Neo4j
         IDisposable
         where TGrantType : ClientGrantType
     {
-        Task<IdentityResult> CreateAsync(TGrantType grantType,
+        Task<IdentityResult> CreateGrantTypeAsync(TGrantType grantType,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> UpdateAsync(TGrantType originalGrantType, TGrantType grantType,
+        Task<IdentityResult> UpdateGrantTypeAsync(TGrantType originalGrantType, TGrantType grantType,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> DeleteAsync(TGrantType grantType,
+        Task<IdentityResult> DeleteGrantTypeAsync(TGrantType grantType,
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<TGrantType> FindGrantTypeAsync(string grantType,
@@ -154,9 +154,6 @@ namespace Stores.IdentityServer4.Neo4j
             TIdPRestriction idPRestriction,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> UpdateIdPRestrictionAsync(TClient client, TIdPRestriction idPRestriction,
-            CancellationToken cancellationToken = default(CancellationToken));
-
         Task<IdentityResult> DeleteIdPRestrictionAsync(TClient client, TIdPRestriction idPRestriction,
             CancellationToken cancellationToken = default(CancellationToken));
 
@@ -265,7 +262,7 @@ namespace Stores.IdentityServer4.Neo4j
     {
         Task CreateConstraintsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> AddToClientAsync(TUser user, TClient client,
+        Task<IdentityResult> AddClientToUserAsync(TUser user, TClient client,
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IList<TClient>> GetClientsAsync(TUser user,
@@ -966,33 +963,107 @@ namespace Stores.IdentityServer4.Neo4j
             Neo4jIdentityServer4ClientIdPRestriction idPRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
-        }
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            idPRestriction.ThrowIfNull(nameof(idPRestriction));
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client} {{ClientId: $p0}})
+                MERGE (idp:{IdentityServer4ClientIdPRestriction} {"$p1".AsMapFor<Neo4jIdentityServer4ClientIdPRestriction>()})
+                MERGE (client)-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp)";
 
-        public async Task<IdentityResult> UpdateIdPRestrictionAsync(Neo4jIdentityServer4Client client,
-            Neo4jIdentityServer4ClientIdPRestriction idPRestriction,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
+                var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, idPRestriction));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
         }
 
         public async Task<IdentityResult> DeleteIdPRestrictionAsync(Neo4jIdentityServer4Client client,
             Neo4jIdentityServer4ClientIdPRestriction idPRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            idPRestriction.ThrowIfNull(nameof(idPRestriction));
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
+                        IdentityServer4ClientIdPRestriction
+                    })
+                WHERE client.ClientId = $p0 AND idp.Provider = $p1 
+                DETACH DELETE idp";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId,
+                        idPRestriction.Provider
+                    ));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
         }
 
-        public async Task<Neo4jIdentityServer4ClientIdPRestriction> FindIdPRestrictionAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientIdPRestriction idPRestriction,
+        public async Task<Neo4jIdentityServer4ClientIdPRestriction> FindIdPRestrictionAsync(Neo4jIdentityServer4Client client, 
+            Neo4jIdentityServer4ClientIdPRestriction idPRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            idPRestriction.ThrowIfNull(nameof(idPRestriction));
+            var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
+                    IdentityServer4ClientIdPRestriction
+                })
+                WHERE client.ClientId = $p0 AND idp.Provider = $p1  
+                RETURN idp{{ .* }}";
+
+            var result = await Session.RunAsync(cypher,
+                Params.Create(
+                    client.ClientId,
+                    idPRestriction.Provider
+                ));
+
+            var foundRecord =
+                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientIdPRestriction>("idp"));
+
+            return foundRecord;
         }
 
         public async Task<IList<Neo4jIdentityServer4ClientIdPRestriction>> GetIdPRestrictionsAsync(Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+
+            var cypher = $@"
+                 MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
+                    IdentityServer4ClientIdPRestriction
+                })
+                WHERE client.ClientId = $p0
+                RETURN idp{{ .* }}";
+
+            var result = await Session.RunAsync(cypher, Params.Create(client.ClientId));
+
+            var ipds = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ClientIdPRestriction>("idp"));
+            return ipds;
         }
 
         public async Task<IdentityResult> AddPropertyToClientAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientProperty property,
@@ -1090,7 +1161,7 @@ namespace Stores.IdentityServer4.Neo4j
         }
 
 
-        public async Task<IdentityResult> AddToClientAsync(TUser user, Neo4jIdentityServer4Client client,
+        public async Task<IdentityResult> AddClientToUserAsync(TUser user, Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -1136,7 +1207,7 @@ namespace Stores.IdentityServer4.Neo4j
         }
 
 
-        public async Task<IdentityResult> CreateAsync(Neo4jIdentityServer4ClientGrantType grantType,
+        public async Task<IdentityResult> CreateGrantTypeAsync(Neo4jIdentityServer4ClientGrantType grantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -1157,7 +1228,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
         }
 
-        public async Task<IdentityResult> UpdateAsync(
+        public async Task<IdentityResult> UpdateGrantTypeAsync(
             Neo4jIdentityServer4ClientGrantType originalGrantType,
             Neo4jIdentityServer4ClientGrantType grantType,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -1184,7 +1255,7 @@ namespace Stores.IdentityServer4.Neo4j
             }
         }
 
-        public async Task<IdentityResult> DeleteAsync(Neo4jIdentityServer4ClientGrantType grantType,
+        public async Task<IdentityResult> DeleteGrantTypeAsync(Neo4jIdentityServer4ClientGrantType grantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();

@@ -218,7 +218,20 @@ namespace Stores.IdentityServer4.Test.Core.Store
             corsOrigins.ShouldNotBeNull();
             corsOrigins.Count.ShouldBe(count);
 
+            TIdPRestriction idp = null;
+           
+            for (int i = 0; i < count; ++i)
+            {
+                idp = CreateTestIdpRestriction();
+                var resultIdp = await _clientUserStore.AddIdPRestrictionToClientAsync(client, idp);
+                resultIdp.ShouldNotBeNull();
+                resultIdp.Succeeded.ShouldBeTrue();
+            }
 
+
+            var idps = await _clientUserStore.GetIdPRestrictionsAsync(client);
+            idps.ShouldNotBeNull();
+            idps.Count.ShouldBe(count);
 
 
 
@@ -359,6 +372,47 @@ namespace Stores.IdentityServer4.Test.Core.Store
             result2.ShouldBeNull();
 
         }
+        [TestMethod]
+        public async Task Create_Client_idp_restrictions_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            TClient client = CreateTestClient();
+
+            await _clientUserStore.CreateClientAsync(client);
+
+            TIdPRestriction idp = null;
+            var count = 10;
+            for (int i = 0; i < count; ++i)
+            {
+                idp = CreateTestIdpRestriction();
+                var result = await _clientUserStore.AddIdPRestrictionToClientAsync(client, idp);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+            }
+
+
+            var idps = await _clientUserStore.GetIdPRestrictionsAsync(client);
+            idps.ShouldNotBeNull();
+            idps.Count.ShouldBe(count);
+
+            idp = idps[0];
+
+            var result2 = await _clientUserStore.FindIdPRestrictionAsync(client, idp);
+            result2.ShouldNotBeNull();
+            result2.Provider.ShouldBe(idp.Provider);
+
+
+            var result3 = await _clientUserStore.DeleteIdPRestrictionAsync(client, idp);
+            result3.ShouldNotBeNull();
+            result3.Succeeded.ShouldBeTrue();
+
+            result2 = await _clientUserStore.FindIdPRestrictionAsync(client, idp);
+            result2.ShouldBeNull();
+
+        }
+
+        protected abstract TIdPRestriction CreateTestIdpRestriction();
 
         [TestMethod]
         public async Task Create_Client_Cors_Delete()
@@ -440,7 +494,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             var challengeResponse = Unique.S;
             var grantType = CreateTestGrantType();
 
-            var result = await _clientUserStore.CreateAsync(grantType);
+            var result = await _clientUserStore.CreateGrantTypeAsync(grantType);
 
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
@@ -451,7 +505,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             findResult.GrantType.ShouldBe(grantType.GrantType);
 
             // do it again, but this time it should fail
-            result = await _clientUserStore.CreateAsync(grantType);
+            result = await _clientUserStore.CreateGrantTypeAsync(grantType);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeFalse();
         }
@@ -463,7 +517,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             var challengeResponse = Unique.S;
             var grantType = CreateTestGrantType();
 
-            var result = await _clientUserStore.CreateAsync(grantType);
+            var result = await _clientUserStore.CreateGrantTypeAsync(grantType);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
@@ -474,7 +528,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
 
             var grantTypeNew = CreateTestGrantType();
 
-            result = await _clientUserStore.UpdateAsync(grantType, grantTypeNew);
+            result = await _clientUserStore.UpdateGrantTypeAsync(grantType, grantTypeNew);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
@@ -495,7 +549,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             var challengeResponse = Unique.S;
             var grantType = CreateTestGrantType();
 
-            var result = await _clientUserStore.CreateAsync(grantType);
+            var result = await _clientUserStore.CreateGrantTypeAsync(grantType);
 
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
@@ -506,7 +560,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             findResult.GrantType.ShouldBe(grantType.GrantType);
 
             // delete it
-            result = await _clientUserStore.DeleteAsync(grantType);
+            result = await _clientUserStore.DeleteGrantTypeAsync(grantType);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
@@ -515,7 +569,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             findResult.ShouldBeNull();
 
             // delete it
-            result = await _clientUserStore.DeleteAsync(grantType);
+            result = await _clientUserStore.DeleteGrantTypeAsync(grantType);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
         }
@@ -528,7 +582,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
 
             var client = CreateTestClient();
-            var identityResult = await _clientUserStore.AddToClientAsync(
+            var identityResult = await _clientUserStore.AddClientToUserAsync(
                 testUser, client);
             identityResult.ShouldNotBeNull();
             identityResult.Succeeded.ShouldBeTrue();
@@ -588,7 +642,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
 
             var client = CreateTestClient();
-            var identityResult = await _clientUserStore.AddToClientAsync(
+            var identityResult = await _clientUserStore.AddClientToUserAsync(
                 testUser, client);
             identityResult.ShouldNotBeNull();
             identityResult.Succeeded.ShouldBeTrue();
@@ -603,7 +657,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             for (int i = 0; i < count; ++i)
             {
                 var grantType = CreateTestGrantType();
-                identityResult = await _clientUserStore.CreateAsync(grantType);
+                identityResult = await _clientUserStore.CreateGrantTypeAsync(grantType);
                 identityResult.ShouldNotBeNull();
                 identityResult.Succeeded.ShouldBeTrue();
 
@@ -627,7 +681,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
 
             var client = CreateTestClient();
-            var identityResult = await _clientUserStore.AddToClientAsync(
+            var identityResult = await _clientUserStore.AddClientToUserAsync(
                 testUser, client);
             identityResult.ShouldNotBeNull();
             identityResult.Succeeded.ShouldBeTrue();

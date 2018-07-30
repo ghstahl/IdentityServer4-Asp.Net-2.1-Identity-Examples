@@ -84,6 +84,14 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
            };
         }
 
+        protected override Neo4jIdentityServer4ClientIdPRestriction CreateTestIdpRestriction()
+        {
+           return new Neo4jIdentityServer4ClientIdPRestriction()
+           {
+               Provider = Unique.S
+           };
+        }
+
         protected override Neo4jIdentityServer4Client CreateTestClient()
         {
             return new Neo4jIdentityServer4Client()
