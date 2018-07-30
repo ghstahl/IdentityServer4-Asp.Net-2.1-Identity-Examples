@@ -76,7 +76,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
         protected abstract TGrantType CreateTestGrantType();
         protected abstract TSecret CreateTestSecret();
         protected abstract TClaim CreateTestClaim();
-
+        protected abstract TScope CreateTestScope();
         [TestInitialize]
         public async Task Initialize()
         {
@@ -161,7 +161,10 @@ namespace Stores.IdentityServer4.Test.Core.Store
                 result.ShouldNotBeNull();
                 result.Succeeded.ShouldBeTrue();
             }
-           
+            var secrets = await _clientUserStore.GetSecretsAsync(client);
+            secrets.ShouldNotBeNull();
+            secrets.Count.ShouldBe(count);
+
             for (int i = 0; i < count; ++i)
             {
                 var grantType = CreateTestGrantType();
@@ -171,6 +174,10 @@ namespace Stores.IdentityServer4.Test.Core.Store
                 addResult.ShouldNotBeNull();
                 addResult.Succeeded.ShouldBeTrue();
             }
+            var grants = await _clientUserStore.GetAllowedGrantTypesAsync(client);
+            grants.ShouldNotBeNull();
+            grants.Count.ShouldBe(count);
+
             for (int i = 0; i < count; ++i)
             {
                 var claim = CreateTestClaim();
@@ -181,9 +188,20 @@ namespace Stores.IdentityServer4.Test.Core.Store
                 addResult.Succeeded.ShouldBeTrue();
             }
 
-            var secrets = await _clientUserStore.GetSecretsAsync(client);
-            secrets.ShouldNotBeNull();
-            secrets.Count.ShouldBe(count);
+            var claims = await _clientUserStore.GetClaimsAsync(client);
+            claims.ShouldNotBeNull();
+            claims.Count.ShouldBe(count);
+
+            for (int i = 0; i < count; ++i)
+            {
+                var scope = CreateTestScope();
+                var scopResult = await _clientUserStore.AddScopeToClientAsync(client, scope);
+                scopResult.ShouldNotBeNull();
+                scopResult.Succeeded.ShouldBeTrue();
+            }
+            var scopes = await _clientUserStore.GetScopesAsync(client);
+            scopes.ShouldNotBeNull();
+            scopes.Count.ShouldBe(count);
 
             result = await _clientUserStore.DeleteClientAsync(client);
             result.ShouldNotBeNull();
@@ -253,14 +271,21 @@ namespace Stores.IdentityServer4.Test.Core.Store
 
             var result = await _clientUserStore.CreateClientAsync(client);
 
-            TClaim claim = CreateTestClaim();
-            result = await _clientUserStore.AddClaimToClientAsync(client, claim);
-            result.ShouldNotBeNull();
-            result.Succeeded.ShouldBeTrue();
+            TClaim claim = null;
+            var count = 10;
+            for (int i = 0; i < count; ++i)
+            {
+                claim = CreateTestClaim();
+                result = await _clientUserStore.AddClaimToClientAsync(client, claim);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+            }
 
             var claims = await _clientUserStore.GetClaimsAsync(client);
             claims.ShouldNotBeNull();
-            claims.Count.ShouldBe(1);
+            claims.Count.ShouldBe(count);
+
+            claim = claims[0];
 
             var claimResult = await _clientUserStore.FindClaimAsync(client, claim);
             claimResult.ShouldNotBeNull();
@@ -275,8 +300,48 @@ namespace Stores.IdentityServer4.Test.Core.Store
             claimResult.ShouldBeNull();
 
         }
+        [TestMethod]
+        public async Task Create_Client_Scope_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            TClient client = CreateTestClient();
+
+            await _clientUserStore.CreateClientAsync(client);
+
+            TScope scope = null;
+            var count = 10;
+            for (int i = 0; i < count; ++i)
+            {
+                scope = CreateTestScope();
+                var result = await _clientUserStore.AddScopeToClientAsync(client, scope);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+            }
+            
+
+            var scopes = await _clientUserStore.GetScopesAsync(client);
+            scopes.ShouldNotBeNull();
+            scopes.Count.ShouldBe(count);
+
+            scope = scopes[0];
+
+            var result2 = await _clientUserStore.FindScopeAsync(client, scope);
+            result2.ShouldNotBeNull();
+            result2.Scope.ShouldBe(scope.Scope);
+            
+
+            var result3 = await _clientUserStore.DeleteScopeAsync(client, scope);
+            result3.ShouldNotBeNull();
+            result3.Succeeded.ShouldBeTrue();
+
+            result2 = await _clientUserStore.FindScopeAsync(client, scope);
+            result2.ShouldBeNull();
+
+        }
 
        
+
 
         [TestMethod]
         public async Task Create_Client_Redundant_Delete()

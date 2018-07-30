@@ -68,6 +68,14 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
             };
         }
 
+        protected override Neo4jIdentityServer4ClientScope CreateTestScope()
+        {
+            return new Neo4jIdentityServer4ClientScope()
+            {
+                Scope = Unique.S
+            };
+        }
+
         protected override Neo4jIdentityServer4Client CreateTestClient()
         {
             return new Neo4jIdentityServer4Client()

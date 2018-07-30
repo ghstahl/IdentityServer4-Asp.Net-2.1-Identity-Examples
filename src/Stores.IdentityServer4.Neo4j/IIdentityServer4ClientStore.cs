@@ -141,9 +141,6 @@ namespace Stores.IdentityServer4.Neo4j
             TScope scope,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> UpdateScopeAsync(TClient client, TScope scope,
-            CancellationToken cancellationToken = default(CancellationToken));
-
         Task<IdentityResult> DeleteScopeAsync(TClient client, TScope scope,
             CancellationToken cancellationToken = default(CancellationToken));
 
@@ -491,6 +488,7 @@ namespace Stores.IdentityServer4.Neo4j
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             client.ThrowIfNull(nameof(client));
+            secret.ThrowIfNull(nameof(secret));
             try
             {
                 var cypher = $@"
@@ -524,6 +522,7 @@ namespace Stores.IdentityServer4.Neo4j
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             client.ThrowIfNull(nameof(client));
+            secret.ThrowIfNull(nameof(secret));
             try
             {
                 var cypher = $@"
@@ -555,6 +554,7 @@ namespace Stores.IdentityServer4.Neo4j
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             client.ThrowIfNull(nameof(client));
+            secret.ThrowIfNull(nameof(secret));
 
             var cypher = $@"
                 MATCH (c:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasSecret}]->(s:{
@@ -568,10 +568,10 @@ namespace Stores.IdentityServer4.Neo4j
                     client.ClientId,
                     secret.Value));
 
-            var neo4jIdentityServer4ClientSecret =
+            var foundRecord =
                 await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientSecret>("s"));
 
-            return neo4jIdentityServer4ClientSecret;
+            return foundRecord;
         }
 
         public async Task<IList<Neo4jIdentityServer4ClientSecret>> GetSecretsAsync(Neo4jIdentityServer4Client client,
@@ -713,7 +713,7 @@ namespace Stores.IdentityServer4.Neo4j
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             client.ThrowIfNull(nameof(client));
-            client.ThrowIfNull(nameof(claim));
+            claim.ThrowIfNull(nameof(claim));
             var cypher = $@"
                 MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasClaim}]->(claim:{
                     IdentityServer4ClientClaim
@@ -728,10 +728,10 @@ namespace Stores.IdentityServer4.Neo4j
                     claim.Value
                 ));
 
-            var neo4jIdentityServer4ClientClaim =
+            var foundRecord =
                 await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientClaim>("claim"));
 
-            return neo4jIdentityServer4ClientClaim;
+            return foundRecord;
         }
 
         public async Task<IList<Neo4jIdentityServer4ClientClaim>> GetClaimsAsync(
@@ -788,31 +788,105 @@ namespace Stores.IdentityServer4.Neo4j
         public async Task<IdentityResult> AddScopeToClientAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientScope scope,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
-        }
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            scope.ThrowIfNull(nameof(scope));
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client} {{ClientId: $p0}})
+                MERGE (scope:{IdentityServer4ClientScope} {"$p1".AsMapFor<Neo4jIdentityServer4ClientScope>()})
+                MERGE (client)-[:{Neo4jConstants.Relationships.HasScope}]->(scope)";
 
-        public async Task<IdentityResult> UpdateScopeAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientScope scope,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
+                var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, scope));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
         }
 
         public async Task<IdentityResult> DeleteScopeAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientScope scope,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            scope.ThrowIfNull(nameof(scope));
+            try
+            {
+                var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasScope}]->(scope:{
+                        IdentityServer4ClientScope
+                    })
+                WHERE client.ClientId = $p0 AND scope.Scope = $p1 
+                DETACH DELETE scope";
+
+                await Session.RunAsync(cypher,
+                    Params.Create(
+                        client.ClientId,
+                        scope.Scope
+                    ));
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return IdentityResult.Failed(new IdentityError[]
+                {
+                    new IdentityError() {Code = ex.Code, Description = ex.Message}
+                });
+            }
         }
 
         public async Task<Neo4jIdentityServer4ClientScope> FindScopeAsync(Neo4jIdentityServer4Client client, Neo4jIdentityServer4ClientScope scope,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            scope.ThrowIfNull(nameof(scope));
+            var cypher = $@"
+                MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasScope}]->(scope:{
+                    IdentityServer4ClientScope
+                })
+                WHERE client.ClientId = $p0 AND scope.Scope = $p1  
+                RETURN scope{{ .* }}";
+
+            var result = await Session.RunAsync(cypher,
+                Params.Create(
+                    client.ClientId,
+                    scope.Scope
+                ));
+
+            var foundRecord =
+                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientScope>("scope"));
+
+            return foundRecord;
         }
 
         public async Task<IList<Neo4jIdentityServer4ClientScope>> GetScopesAsync(Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+
+            var cypher = $@"
+                 MATCH (client:{IdentityServer4Client})-[:{Neo4jConstants.Relationships.HasScope}]->(scope:{
+                    IdentityServer4ClientScope
+                })
+                WHERE client.ClientId = $p0
+                RETURN scope{{ .* }}";
+
+            var result = await Session.RunAsync(cypher, Params.Create(client.ClientId));
+
+            var scopes = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ClientScope>("scope"));
+            return scopes;
         }
 
         public async Task<IdentityResult> AddIdPRestrictionToClientAsync(Neo4jIdentityServer4Client client,
