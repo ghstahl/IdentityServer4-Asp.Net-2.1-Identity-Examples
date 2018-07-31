@@ -1,6 +1,8 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
+using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4Extras;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +13,50 @@ using Stores.IdentityServer4.Neo4j.Entities;
 
 namespace Stores.IdentityServer4.Test.Core.Store
 {
+    public abstract class UnitTestClientStore2<
+        TUser,
+        TClient,
+        TGrantType>
+        where TUser : Neo4jIdentityUser
+        where TClient : ClientRoot
+        where TGrantType : ClientGrantType
+    {
+        private INeo4jTest _neo4jtest;
+        private IUserStore<TUser> _userStore;
+
+        private IIdentityServer4ClientUserStore2<
+            TUser,
+            TClient,
+            TGrantType
+        > _clientUserStore;
+        public UnitTestClientStore2(
+            IUserStore<TUser> userStore,
+            IIdentityServer4ClientUserStore2<
+                TUser,
+                TClient,
+                TGrantType
+            > clientUserStore,
+            INeo4jTest neo4jtest)
+        {
+            _userStore = userStore;
+            _clientUserStore = clientUserStore;
+            _neo4jtest = neo4jtest;
+        }
+        [TestInitialize]
+        public async Task Initialize()
+        {
+            await _neo4jtest.DropDatabaseAsync();
+            await _clientUserStore.CreateConstraintsAsync();
+        }
+
+        [TestMethod]
+        public async Task Valid_DI()
+        {
+            _userStore.ShouldNotBeNull();
+            _neo4jtest.ShouldNotBeNull();
+        }
+    }
+
     public abstract class UnitTestClientStore<
         TUser, 
         TClient,
@@ -150,7 +196,14 @@ namespace Stores.IdentityServer4.Test.Core.Store
             var challenge = Unique.S;
             var challengeResponse = Unique.S;
             TClient client = CreateTestClient();
-
+            client.ClientSecrets = new List<Secret>()
+            {
+                new Secret()
+                {
+                    Type = IdentityServerConstants.SecretTypes.SharedSecret,
+                    Value = Unique.S
+                }
+            };
             var result = await _clientUserStore.CreateClientAsync(client);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
@@ -813,6 +866,15 @@ namespace Stores.IdentityServer4.Test.Core.Store
             var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
 
             var client = CreateTestClient();
+            client.ClientSecrets = new List<Secret>()
+            {
+                new Secret()
+                {
+                    Type = IdentityServerConstants.SecretTypes.SharedSecret,
+                    Value = Unique.S
+                }
+            };
+
             var identityResult = await _clientUserStore.AddClientToUserAsync(
                 testUser, client);
             identityResult.ShouldNotBeNull();

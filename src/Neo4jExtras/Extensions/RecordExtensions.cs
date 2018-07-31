@@ -8,7 +8,10 @@ namespace Neo4jExtras.Extensions
     {
         public static T MapTo<T>(this IRecord record, string alias)
         {
-            return JObject.FromObject(record[alias]).ToObject<T>();
+            var aliasObj = record[alias];
+            var jObj = JObject.FromObject(aliasObj);
+            var obj = jObj.ToObject<T>();
+            return obj;
         }
 
         /// <summary>

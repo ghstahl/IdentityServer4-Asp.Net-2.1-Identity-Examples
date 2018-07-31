@@ -1,5 +1,7 @@
-﻿using System.Reflection;
+﻿using System.Linq;
+using System.Reflection;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Neo4jExtras.Extensions
 {
@@ -10,8 +12,10 @@ namespace Neo4jExtras.Extensions
             var builder = new StringBuilder();
 
             builder.Append('{');
+            var runtimeProperties = typeof(T).GetRuntimeProperties()
+                .Where(pi => !pi.GetCustomAttributes<JsonIgnoreAttribute>(true).Any());
 
-            foreach (var runtimeProperty in typeof(T).GetRuntimeProperties())
+            foreach (var runtimeProperty in runtimeProperties)
             {
                 builder.AppendFormat("{0}: {1}.{0}", runtimeProperty.Name, paramName);
                 builder.Append(", ");

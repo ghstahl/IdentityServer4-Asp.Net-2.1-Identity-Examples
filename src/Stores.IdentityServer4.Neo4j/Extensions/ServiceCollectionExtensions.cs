@@ -22,6 +22,11 @@ namespace Stores.IdentityServer4.Neo4j
                     Neo4jIdentityServer4ClientProperty,
                     Neo4jIdentityServer4ClientPostLogoutRedirectUri,
                     Neo4jIdentityServer4ClientRedirectUri>, Neo4jIdentityServer4ClientUserStore<TUser>>();
+            serviceCollection
+                .AddScoped<IIdentityServer4ClientUserStore2<
+                    TUser,
+                    Neo4jIdentityServer4Client,
+                    Neo4jIdentityServer4ClientGrantType>, Neo4jIdentityServer4Store<TUser>>();
         }
     }
 }

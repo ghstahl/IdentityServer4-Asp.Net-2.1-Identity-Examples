@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
-using Microsoft.AspNetCore.Identity;
 using Neo4j.Driver.V1;
-using Neo4jExtras;
 using Neo4jExtras.Extensions;
 using Stores.IdentityServer4.Neo4j;
+using Stores.IdentityServer4.Neo4j.Entities;
 
 namespace Stores.IdentityServer4.Neo4j
 {
