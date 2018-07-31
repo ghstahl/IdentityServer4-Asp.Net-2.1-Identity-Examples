@@ -38,15 +38,27 @@ namespace Stores.IdentityServer4.Neo4j.Entities
         public bool Enabled { get; set; } = true;
         public string ClientId { get; set; }
         public string ProtocolType { get; set; } = IdentityServerConstants.ProtocolTypes.OpenIdConnect;
-
+        private List<Secret> _clientSecrets;
         public string ClientSecretsJson
         {
-            get => JsonConvert.SerializeObject(ClientSecrets);
+            get
+            {
+                var val = JsonConvert.SerializeObject(ClientSecrets);
+                return val;
+            }
             set => ClientSecrets = JsonConvert.DeserializeObject<List<Secret>>(value);
         }
+
         [JsonIgnore]
-        public List<Secret> ClientSecrets { get; set; }
-        
+        public List<Secret> ClientSecrets
+        {
+            get => _clientSecrets ?? (_clientSecrets = new List<Secret>());
+            set
+            {
+                _clientSecrets = value;
+            }
+        }
+
         public bool RequireClientSecret { get; set; } = true;
         public string ClientName { get; set; }
         public string Description { get; set; }

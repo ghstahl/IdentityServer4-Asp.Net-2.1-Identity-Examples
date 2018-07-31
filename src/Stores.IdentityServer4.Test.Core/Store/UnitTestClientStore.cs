@@ -29,6 +29,10 @@ namespace Stores.IdentityServer4.Test.Core.Store
             TClient,
             TGrantType
         > _clientUserStore;
+
+        protected abstract TUser CreateTestUser();
+        protected abstract TClient CreateTestClient();
+
         public UnitTestClientStore2(
             IUserStore<TUser> userStore,
             IIdentityServer4ClientUserStore2<
@@ -42,6 +46,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             _clientUserStore = clientUserStore;
             _neo4jtest = neo4jtest;
         }
+
         [TestInitialize]
         public async Task Initialize()
         {
@@ -54,6 +59,111 @@ namespace Stores.IdentityServer4.Test.Core.Store
         {
             _userStore.ShouldNotBeNull();
             _neo4jtest.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public async Task Create_User_Client_update()
+        {
+            var testUser = CreateTestUser();
+
+            var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
+
+            var client = CreateTestClient();
+            var identityResult = await _clientUserStore.AddClientToUserAsync(
+                testUser, client);
+            identityResult.ShouldNotBeNull();
+            identityResult.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
+            findResult.ShouldNotBeNull();
+            findResult.ClientId.ShouldBe(client.ClientId);
+            findResult.ClientName.ShouldBe(client.ClientName);
+
+            var client2 = CreateTestClient();
+            client.ClientName = client2.ClientName;
+            await _clientUserStore.AddSecretAsync(client, new Secret()
+            {
+                Type = IdentityServerConstants.SecretTypes.SharedSecret,
+                Value = Unique.S
+            });
+
+            identityResult = await _clientUserStore.UpdateClientAsync(client,
+                CancellationToken.None);
+            identityResult.ShouldNotBeNull();
+            identityResult.Succeeded.ShouldBeTrue();
+
+            findResult =
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
+            findResult.ShouldNotBeNull();
+            findResult.ClientId.ShouldBe(client.ClientId);
+            findResult.ClientName.ShouldBe(client.ClientName);
+            findResult.ClientSecrets.Count.ShouldBe(0);
+        }
+
+        [TestMethod]
+        public async Task Create_User_Client_Secret()
+        {
+            var testUser = CreateTestUser();
+
+            var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
+
+            var client = CreateTestClient();
+            var identityResult = await _clientUserStore.AddClientToUserAsync(
+                testUser, client);
+            identityResult.ShouldNotBeNull();
+            identityResult.Succeeded.ShouldBeTrue();
+
+            var foundClient =
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
+            foundClient.ShouldNotBeNull();
+            foundClient.ClientId.ShouldBe(client.ClientId);
+            foundClient.ClientName.ShouldBe(client.ClientName);
+
+            var secret = new Secret()
+            {
+                Type = IdentityServerConstants.SecretTypes.SharedSecret,
+                Value = Unique.S
+            };
+            await _clientUserStore.AddSecretAsync(foundClient, secret);
+
+            identityResult = await _clientUserStore.UpdateClientAsync(foundClient,
+                CancellationToken.None);
+            identityResult.ShouldNotBeNull();
+            identityResult.Succeeded.ShouldBeTrue();
+
+            foundClient =
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
+            foundClient.ShouldNotBeNull();
+            foundClient.ClientId.ShouldBe(client.ClientId);
+
+            var foundSecret = await _clientUserStore.GetSecretAsync(foundClient, secret);
+            foundSecret.ShouldNotBeNull();
+            foundSecret.Type.ShouldBe(secret.Type);
+            foundSecret.Value.ShouldBe(secret.Value);
+
+            var secrets = await _clientUserStore.GetSecretsAsync(foundClient);
+            secrets.ShouldNotBeNull();
+            secrets.Count.ShouldBe(1);
+
+            identityResult = await _clientUserStore.RemoveSecretAsync(foundClient, secret);
+            identityResult.ShouldNotBeNull();
+            identityResult.Succeeded.ShouldBeTrue();
+
+            identityResult = await _clientUserStore.UpdateClientAsync(foundClient,
+                CancellationToken.None);
+            identityResult.ShouldNotBeNull();
+            identityResult.Succeeded.ShouldBeTrue();
+
+            foundClient =
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
+            foundClient.ShouldNotBeNull();
+            foundClient.ClientId.ShouldBe(client.ClientId);
+            foundClient.ClientSecrets.Count.ShouldBe(0);
+
+            secrets = await _clientUserStore.GetSecretsAsync(client);
+            secrets.ShouldNotBeNull();
+            secrets.Count.ShouldBe(0);
         }
     }
 

@@ -33,6 +33,57 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
         {
         }
 
+        protected override TestUser CreateTestUser()
+        {
+            return new TestUser()
+            {
+                UserName = Unique.S,
+                Email = Unique.Email
+            };
+        }
+
+        protected override Neo4jIdentityServer4Client CreateTestClient()
+        {
+            return new Neo4jIdentityServer4Client()
+            {
+                ClientId = Unique.G,
+                ClientName = Unique.S,
+                AllowOfflineAccess = true,
+                RequireClientSecret = true,
+                AllowArbitraryLocalRedirectUris = true,
+                AbsoluteRefreshTokenLifetime = 3600,
+                AccessTokenLifetime = 3600,
+                AccessTokenType = (int)AccessTokenType.Jwt,
+                AllowAccessTokensViaBrowser = true,
+                AllowPlainTextPkce = true,
+                AllowRememberConsent = true,
+                AlwaysIncludeUserClaimsInIdToken = true,
+                AlwaysSendClientClaims = true,
+                AuthorizationCodeLifetime = 3600,
+                BackChannelLogoutSessionRequired = true,
+                BackChannelLogoutUri = Unique.Url,
+                ClientClaimsPrefix = Unique.S,
+                ClientUri = Unique.Url,
+                ConsentLifetime = 3600,
+                Description = Unique.S,
+                EnableLocalLogin = true,
+                Enabled = true,
+                FrontChannelLogoutSessionRequired = true,
+                FrontChannelLogoutUri = Unique.Url,
+                IdentityTokenLifetime = 3600,
+                IncludeJwtId = true,
+                LogoUri = Unique.Url,
+                PairWiseSubjectSalt = Unique.S,
+                ProtocolType = IdentityServerConstants.ProtocolTypes.OpenIdConnect,
+                RefreshTokenExpiration = 3600,
+                RefreshTokenUsage = (int)TokenUsage.OneTimeOnly,
+                RequireConsent = true,
+                RequirePkce = true,
+                RequireRefreshClientSecret = true,
+                SlidingRefreshTokenLifetime = 3600,
+                UpdateAccessTokenClaimsOnRefresh = true
+            };
+        }
     }
 
     [TestClass]
