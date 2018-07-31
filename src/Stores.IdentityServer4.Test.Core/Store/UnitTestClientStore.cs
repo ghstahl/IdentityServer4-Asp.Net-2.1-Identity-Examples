@@ -32,7 +32,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
 
         protected abstract TUser CreateTestUser();
         protected abstract TClient CreateTestClient();
-
+        protected abstract TGrantType CreateTestGrantType();
         public UnitTestClientStore2(
             IUserStore<TUser> userStore,
             IIdentityServer4ClientUserStore2<
@@ -165,6 +165,96 @@ namespace Stores.IdentityServer4.Test.Core.Store
             secrets.ShouldNotBeNull();
             secrets.Count.ShouldBe(0);
         }
+
+        [TestMethod]
+        public async Task Create_GrantType_Assure_Unique()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            var grantType = CreateTestGrantType();
+
+            var result = await _clientUserStore.CreateGrantTypeAsync(grantType);
+
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
+            findResult.ShouldNotBeNull();
+            findResult.GrantType.ShouldBe(grantType.GrantType);
+
+            // do it again, but this time it should fail
+            result = await _clientUserStore.CreateGrantTypeAsync(grantType);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public async Task Create_GrantType_Update()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            var grantType = CreateTestGrantType();
+
+            var result = await _clientUserStore.CreateGrantTypeAsync(grantType);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
+            findResult.ShouldNotBeNull();
+            findResult.GrantType.ShouldBe(grantType.GrantType);
+
+            var grantTypeNew = CreateTestGrantType();
+
+            result = await _clientUserStore.UpdateGrantTypeAsync(grantType, grantTypeNew);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            findResult =
+                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
+            findResult.ShouldBeNull();
+
+            findResult =
+                await _clientUserStore.FindGrantTypeAsync(grantTypeNew.GrantType);
+            findResult.ShouldNotBeNull();
+            findResult.GrantType.ShouldBe(grantTypeNew.GrantType);
+        }
+
+     
+
+        [TestMethod]
+        public async Task Create_GrantType_Redundant_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            var grantType = CreateTestGrantType();
+
+            var result = await _clientUserStore.CreateGrantTypeAsync(grantType);
+
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
+            findResult.ShouldNotBeNull();
+            findResult.GrantType.ShouldBe(grantType.GrantType);
+
+            // delete it
+            result = await _clientUserStore.DeleteGrantTypeAsync(grantType);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            findResult =
+                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
+            findResult.ShouldBeNull();
+
+            // delete it
+            result = await _clientUserStore.DeleteGrantTypeAsync(grantType);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+        }
+
     }
 
     public abstract class UnitTestClientStore<

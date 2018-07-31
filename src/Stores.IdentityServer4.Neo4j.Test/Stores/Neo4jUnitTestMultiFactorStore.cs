@@ -84,6 +84,14 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
                 UpdateAccessTokenClaimsOnRefresh = true
             };
         }
+
+        protected override Neo4jIdentityServer4ClientGrantType CreateTestGrantType()
+        {
+            return new Neo4jIdentityServer4ClientGrantType()
+            {
+                GrantType = Unique.S
+            };
+        }
     }
 
     [TestClass]
