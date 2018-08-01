@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Stores.IdentityServer4.Neo4j
+namespace StoresIdentityServer4.Neo4j
 {
     /// <summary>
     ///     Represents the result of an identity operation

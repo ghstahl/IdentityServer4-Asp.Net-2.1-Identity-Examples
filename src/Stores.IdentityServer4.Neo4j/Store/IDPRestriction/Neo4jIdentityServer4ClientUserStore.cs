@@ -9,7 +9,7 @@ using Neo4j.Driver.V1;
 using Neo4jExtras;
 using Neo4jExtras.Extensions;
 
-namespace Stores.IdentityServer4.Neo4j
+namespace StoresIdentityServer4.Neo4j
 {
     public partial class Neo4jIdentityServer4ClientUserStore<TUser> where TUser : Neo4jIdentityUser
     {

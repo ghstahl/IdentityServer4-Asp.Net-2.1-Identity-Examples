@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Neo4j.Driver.V1;
 
-namespace Stores.IdentityServer4.Neo4j
+namespace StoresIdentityServer4.Neo4j
 {
     public static class ClientExceptionExtensions
     {

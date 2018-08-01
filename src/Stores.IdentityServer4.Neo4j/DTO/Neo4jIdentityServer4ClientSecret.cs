@@ -1,7 +1,7 @@
 ﻿using Neo4jExtras;
 using IdentityServer4.Models;
 
-namespace Stores.IdentityServer4.Neo4j
+namespace StoresIdentityServer4.Neo4j
 {
     /// <summary>
     /// Represents an IdentityServer4 Client Secret

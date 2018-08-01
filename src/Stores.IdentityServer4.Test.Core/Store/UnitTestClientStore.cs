@@ -8,255 +8,13 @@ using IdentityServer4Extras;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using Stores.IdentityServer4.Neo4j;
-using Stores.IdentityServer4.Neo4j.Entities;
+using StoresIdentityServer4.Neo4j;
+using StoresIdentityServer4.Neo4j.Entities;
+using StoresIdentityServer4.Neo4j.Mappers;
+using Client = StoresIdentityServer4.Neo4j.Entities.Client;
 
-namespace Stores.IdentityServer4.Test.Core.Store
+namespace StoresIdentityServer4.Test.Core.Store
 {
-    public abstract class UnitTestClientStore2<
-        TUser,
-        TClient,
-        TGrantType>
-        where TUser : Neo4jIdentityUser
-        where TClient : ClientRoot
-        where TGrantType : ClientGrantType
-    {
-        private INeo4jTest _neo4jtest;
-        private IUserStore<TUser> _userStore;
-
-        private IIdentityServer4ClientUserStore2<
-            TUser,
-            TClient,
-            TGrantType
-        > _clientUserStore;
-
-        protected abstract TUser CreateTestUser();
-        protected abstract TClient CreateTestClient();
-        protected abstract TGrantType CreateTestGrantType();
-        public UnitTestClientStore2(
-            IUserStore<TUser> userStore,
-            IIdentityServer4ClientUserStore2<
-                TUser,
-                TClient,
-                TGrantType
-            > clientUserStore,
-            INeo4jTest neo4jtest)
-        {
-            _userStore = userStore;
-            _clientUserStore = clientUserStore;
-            _neo4jtest = neo4jtest;
-        }
-
-        [TestInitialize]
-        public async Task Initialize()
-        {
-            await _neo4jtest.DropDatabaseAsync();
-            await _clientUserStore.CreateConstraintsAsync();
-        }
-
-        [TestMethod]
-        public async Task Valid_DI()
-        {
-            _userStore.ShouldNotBeNull();
-            _neo4jtest.ShouldNotBeNull();
-        }
-
-        [TestMethod]
-        public async Task Create_User_Client_update()
-        {
-            var testUser = CreateTestUser();
-
-            var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
-
-            var client = CreateTestClient();
-            var identityResult = await _clientUserStore.AddClientToUserAsync(
-                testUser, client);
-            identityResult.ShouldNotBeNull();
-            identityResult.Succeeded.ShouldBeTrue();
-
-            var findResult =
-                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
-            findResult.ShouldNotBeNull();
-            findResult.ClientId.ShouldBe(client.ClientId);
-            findResult.ClientName.ShouldBe(client.ClientName);
-
-            var client2 = CreateTestClient();
-            client.ClientName = client2.ClientName;
-            await _clientUserStore.AddSecretAsync(client, new Secret()
-            {
-                Type = IdentityServerConstants.SecretTypes.SharedSecret,
-                Value = Unique.S
-            });
-
-            identityResult = await _clientUserStore.UpdateClientAsync(client,
-                CancellationToken.None);
-            identityResult.ShouldNotBeNull();
-            identityResult.Succeeded.ShouldBeTrue();
-
-            findResult =
-                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
-            findResult.ShouldNotBeNull();
-            findResult.ClientId.ShouldBe(client.ClientId);
-            findResult.ClientName.ShouldBe(client.ClientName);
-            findResult.ClientSecrets.Count.ShouldBe(0);
-        }
-
-        [TestMethod]
-        public async Task Create_User_Client_Secret()
-        {
-            var testUser = CreateTestUser();
-
-            var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
-
-            var client = CreateTestClient();
-            var identityResult = await _clientUserStore.AddClientToUserAsync(
-                testUser, client);
-            identityResult.ShouldNotBeNull();
-            identityResult.Succeeded.ShouldBeTrue();
-
-            var foundClient =
-                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
-            foundClient.ShouldNotBeNull();
-            foundClient.ClientId.ShouldBe(client.ClientId);
-            foundClient.ClientName.ShouldBe(client.ClientName);
-
-            var secret = new Secret()
-            {
-                Type = IdentityServerConstants.SecretTypes.SharedSecret,
-                Value = Unique.S
-            };
-            await _clientUserStore.AddSecretAsync(foundClient, secret);
-
-            identityResult = await _clientUserStore.UpdateClientAsync(foundClient,
-                CancellationToken.None);
-            identityResult.ShouldNotBeNull();
-            identityResult.Succeeded.ShouldBeTrue();
-
-            foundClient =
-                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
-            foundClient.ShouldNotBeNull();
-            foundClient.ClientId.ShouldBe(client.ClientId);
-
-            var foundSecret = await _clientUserStore.GetSecretAsync(foundClient, secret);
-            foundSecret.ShouldNotBeNull();
-            foundSecret.Type.ShouldBe(secret.Type);
-            foundSecret.Value.ShouldBe(secret.Value);
-
-            var secrets = await _clientUserStore.GetSecretsAsync(foundClient);
-            secrets.ShouldNotBeNull();
-            secrets.Count.ShouldBe(1);
-
-            identityResult = await _clientUserStore.RemoveSecretAsync(foundClient, secret);
-            identityResult.ShouldNotBeNull();
-            identityResult.Succeeded.ShouldBeTrue();
-
-            identityResult = await _clientUserStore.UpdateClientAsync(foundClient,
-                CancellationToken.None);
-            identityResult.ShouldNotBeNull();
-            identityResult.Succeeded.ShouldBeTrue();
-
-            foundClient =
-                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
-            foundClient.ShouldNotBeNull();
-            foundClient.ClientId.ShouldBe(client.ClientId);
-            foundClient.ClientSecrets.Count.ShouldBe(0);
-
-            secrets = await _clientUserStore.GetSecretsAsync(client);
-            secrets.ShouldNotBeNull();
-            secrets.Count.ShouldBe(0);
-        }
-
-        [TestMethod]
-        public async Task Create_GrantType_Assure_Unique()
-        {
-            var challenge = Unique.S;
-            var challengeResponse = Unique.S;
-            var grantType = CreateTestGrantType();
-
-            var result = await _clientUserStore.CreateGrantTypeAsync(grantType);
-
-            result.ShouldNotBeNull();
-            result.Succeeded.ShouldBeTrue();
-
-            var findResult =
-                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
-            findResult.ShouldNotBeNull();
-            findResult.GrantType.ShouldBe(grantType.GrantType);
-
-            // do it again, but this time it should fail
-            result = await _clientUserStore.CreateGrantTypeAsync(grantType);
-            result.ShouldNotBeNull();
-            result.Succeeded.ShouldBeFalse();
-        }
-
-        [TestMethod]
-        public async Task Create_GrantType_Update()
-        {
-            var challenge = Unique.S;
-            var challengeResponse = Unique.S;
-            var grantType = CreateTestGrantType();
-
-            var result = await _clientUserStore.CreateGrantTypeAsync(grantType);
-            result.ShouldNotBeNull();
-            result.Succeeded.ShouldBeTrue();
-
-            var findResult =
-                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
-            findResult.ShouldNotBeNull();
-            findResult.GrantType.ShouldBe(grantType.GrantType);
-
-            var grantTypeNew = CreateTestGrantType();
-
-            result = await _clientUserStore.UpdateGrantTypeAsync(grantType, grantTypeNew);
-            result.ShouldNotBeNull();
-            result.Succeeded.ShouldBeTrue();
-
-            findResult =
-                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
-            findResult.ShouldBeNull();
-
-            findResult =
-                await _clientUserStore.FindGrantTypeAsync(grantTypeNew.GrantType);
-            findResult.ShouldNotBeNull();
-            findResult.GrantType.ShouldBe(grantTypeNew.GrantType);
-        }
-
-     
-
-        [TestMethod]
-        public async Task Create_GrantType_Redundant_Delete()
-        {
-            var challenge = Unique.S;
-            var challengeResponse = Unique.S;
-            var grantType = CreateTestGrantType();
-
-            var result = await _clientUserStore.CreateGrantTypeAsync(grantType);
-
-            result.ShouldNotBeNull();
-            result.Succeeded.ShouldBeTrue();
-
-            var findResult =
-                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
-            findResult.ShouldNotBeNull();
-            findResult.GrantType.ShouldBe(grantType.GrantType);
-
-            // delete it
-            result = await _clientUserStore.DeleteGrantTypeAsync(grantType);
-            result.ShouldNotBeNull();
-            result.Succeeded.ShouldBeTrue();
-
-            findResult =
-                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
-            findResult.ShouldBeNull();
-
-            // delete it
-            result = await _clientUserStore.DeleteGrantTypeAsync(grantType);
-            result.ShouldNotBeNull();
-            result.Succeeded.ShouldBeTrue();
-        }
-
-    }
-
     public abstract class UnitTestClientStore<
         TUser, 
         TClient,
@@ -270,7 +28,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
         TPostLogoutRedirectUri,
         TRedirectUri>
         where TUser : Neo4jIdentityUser
-        where TClient : ClientRoot
+        where TClient : Client
         where TSecret : Secret
         where TGrantType : ClientGrantType
         where TClaim : ClientClaim
@@ -337,6 +95,19 @@ namespace Stores.IdentityServer4.Test.Core.Store
         }
 
         [TestMethod]
+        public void Map_Client()
+        {
+            var entityOriginal = CreateTestClient();
+            var model = ClientMappers.ToModel(entityOriginal);
+            var entity = ClientMappers.ToEntity(model);
+ 
+            // Assert
+            entity.ShouldNotBeNull();
+            model.ShouldNotBeNull();
+           
+        }
+
+        [TestMethod]
         public async Task Valid_DI()
         {
             _userStore.ShouldNotBeNull();
@@ -390,30 +161,12 @@ namespace Stores.IdentityServer4.Test.Core.Store
             findResult.ShouldBeNull();
 
         }
-        [TestMethod]
-        public async Task Create_Client_ManyRelationships_Delete()
+
+
+        public async Task PopulateManyRelationships(TClient client,int nCount)
         {
-            var challenge = Unique.S;
-            var challengeResponse = Unique.S;
-            TClient client = CreateTestClient();
-            client.ClientSecrets = new List<Secret>()
-            {
-                new Secret()
-                {
-                    Type = IdentityServerConstants.SecretTypes.SharedSecret,
-                    Value = Unique.S
-                }
-            };
-            var result = await _clientUserStore.CreateClientAsync(client);
-            result.ShouldNotBeNull();
-            result.Succeeded.ShouldBeTrue();
-
-            var findResult =
-                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
-            findResult.ShouldNotBeNull();
-            findResult.ClientId.ShouldBe(client.ClientId);
-
-            var count = 10;
+            IdentityResult result;
+            var count = nCount;
             for (int i = 0; i < count; ++i)
             {
                 result = await _clientUserStore.AddSecretToClientAsync(client, CreateTestSecret());
@@ -463,7 +216,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             scopes.Count.ShouldBe(count);
 
             TCorsOrigin corsOrigin = null;
-          
+
             for (int i = 0; i < count; ++i)
             {
                 corsOrigin = CreateTestCorsOrigin();
@@ -477,7 +230,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             corsOrigins.Count.ShouldBe(count);
 
             TIdPRestriction idp = null;
-           
+
             for (int i = 0; i < count; ++i)
             {
                 idp = CreateTestIdpRestriction();
@@ -492,7 +245,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             idps.Count.ShouldBe(count);
 
             TPostLogoutRedirectUri postLogoutRedirectUri = null;
-           
+
             for (int i = 0; i < count; ++i)
             {
                 postLogoutRedirectUri = CreatePostLogoutRedirectUri();
@@ -507,7 +260,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             postLogoutRedirectUris.Count.ShouldBe(count);
 
             TRedirectUri redirectUri = null;
-             
+
             for (int i = 0; i < count; ++i)
             {
                 redirectUri = CreateTestRedirectUri();
@@ -522,7 +275,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             resultredirectUris.Count.ShouldBe(count);
 
             TProperty property = null;
-          
+
             for (int i = 0; i < count; ++i)
             {
                 property = CreateTestProperty();
@@ -535,6 +288,24 @@ namespace Stores.IdentityServer4.Test.Core.Store
             var properties = await _clientUserStore.GetPropertiesAsync(client);
             properties.ShouldNotBeNull();
             properties.Count.ShouldBe(count);
+        }
+        [TestMethod]
+        public async Task Create_Client_ManyRelationships_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            TClient client = CreateTestClient();
+ 
+            var result = await _clientUserStore.CreateClientAsync(client);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
+            findResult.ShouldNotBeNull();
+            findResult.ClientId.ShouldBe(client.ClientId);
+
+            await PopulateManyRelationships(client, 10);
 
             /////////////////////////////////////////////////////////////
 
@@ -1066,14 +837,7 @@ namespace Stores.IdentityServer4.Test.Core.Store
             var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
 
             var client = CreateTestClient();
-            client.ClientSecrets = new List<Secret>()
-            {
-                new Secret()
-                {
-                    Type = IdentityServerConstants.SecretTypes.SharedSecret,
-                    Value = Unique.S
-                }
-            };
+             
 
             var identityResult = await _clientUserStore.AddClientToUserAsync(
                 testUser, client);

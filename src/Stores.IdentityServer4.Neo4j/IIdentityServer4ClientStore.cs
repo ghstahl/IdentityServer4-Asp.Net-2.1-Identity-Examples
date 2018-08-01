@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using IdentityServer4.Models;
 using IdentityServer4Extras;
 using Microsoft.AspNetCore.Identity;
-using Stores.IdentityServer4.Neo4j.Entities;
+using StoresIdentityServer4.Neo4j.Entities;
+using Client = StoresIdentityServer4.Neo4j.Entities.Client;
 
-namespace Stores.IdentityServer4.Neo4j
+namespace StoresIdentityServer4.Neo4j
 {
     public interface IIdentityServer4ClientStore<in TClient,
         TSecret,
@@ -21,7 +22,7 @@ namespace Stores.IdentityServer4.Neo4j
         TRedirectUri> :
         IIdentityServer4GrantTypeStore<TGrantType>,
         IDisposable
-        where TClient : ClientRoot
+        where TClient : Client
         where TSecret : Secret
         where TGrantType : ClientGrantType
         where TClaim : ClientClaim
@@ -33,6 +34,11 @@ namespace Stores.IdentityServer4.Neo4j
         where TRedirectUri : ClientRedirectUri
 
     {
+        Task<IdentityResult> RollupAsync(string clientId,
+            CancellationToken cancellationToken = default(CancellationToken));
+        Task<global::IdentityServer4.Models.Client> GetRollupAsync(string clientId,
+            CancellationToken cancellationToken = default(CancellationToken));
+
         #region Client  
         Task<IdentityResult> CreateClientAsync(TClient client,
             CancellationToken cancellationToken = default(CancellationToken));

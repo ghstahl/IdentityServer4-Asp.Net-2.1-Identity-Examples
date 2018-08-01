@@ -2,10 +2,10 @@ using AspNetCore.Identity.Neo4j;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Neo4j.Driver.V1;
-using Stores.IdentityServer4.Neo4j.Test.Models;
-using Stores.IdentityServer4.Neo4j;
+using StoresIdentityServer4.Neo4j.Test.Models;
+using StoresIdentityServer4.Neo4j;
 
-namespace Stores.IdentityServer4.Neo4j.Test
+namespace StoresIdentityServer4.Neo4j.Test
 {
     public static class HostContainer
     {

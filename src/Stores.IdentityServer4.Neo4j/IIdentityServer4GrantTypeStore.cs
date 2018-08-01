@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Stores.IdentityServer4.Neo4j.Entities;
+using StoresIdentityServer4.Neo4j.Entities;
 
-namespace Stores.IdentityServer4.Neo4j
+namespace StoresIdentityServer4.Neo4j
 {
     public interface IIdentityServer4GrantTypeStore<TGrantType> :
         IDisposable

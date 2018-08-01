@@ -1,9 +1,10 @@
-namespace Stores.IdentityServer4.Neo4j
+namespace StoresIdentityServer4.Neo4j
 {
     internal static class Neo4jConstants
     {
         internal static class Labels
         {
+            public const string ClientRollup = "IdSrv4ClientRollup";
             public const string Client = "IdSrv4Client";
             public const string Secret = "IdSrv4ClientSecret";
             public const string GrantType = "IdSrv4ClientGrantType";
@@ -19,6 +20,7 @@ namespace Stores.IdentityServer4.Neo4j
 
         internal static class Relationships
         {
+            public const string HasRollup = "HAS_ROLLUP";
             public const string HasClient = "HAS_CLIENT";
             public const string HasSecret = "HAS_SECRET";
             public const string HasGrantType = "HAS_GRANTTYPE";

@@ -4,9 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
-using Stores.IdentityServer4.Neo4j.Entities;
+using StoresIdentityServer4.Neo4j.Entities;
+using Client = StoresIdentityServer4.Neo4j.Entities.Client;
 
-namespace Stores.IdentityServer4.Neo4j
+namespace StoresIdentityServer4.Neo4j
 {
     public interface IIdentityServer4ClientUserStore<
         TUser, 
@@ -33,7 +34,7 @@ namespace Stores.IdentityServer4.Neo4j
             TRedirectUri>,
         IDisposable
         where TUser : class
-        where TClient : ClientRoot
+        where TClient : Client
         where TSecret : Secret
         where TGrantType : ClientGrantType
         where TClaim : ClientClaim

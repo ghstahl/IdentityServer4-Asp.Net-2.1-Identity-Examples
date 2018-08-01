@@ -2,12 +2,17 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
+using IdentityServer4.Models;
+using Microsoft.AspNetCore.Identity;
 using Neo4j.Driver.V1;
+using Neo4jExtras;
 using Neo4jExtras.Extensions;
-using Stores.IdentityServer4.Neo4j;
-using Stores.IdentityServer4.Neo4j.Entities;
+using StoresIdentityServer4.Neo4j;
+using StoresIdentityServer4.Neo4j.Entities;
+using StoresIdentityServer4.Neo4j.Mappers;
+using Client = IdentityServer4.Models.Client;
 
-namespace Stores.IdentityServer4.Neo4j
+namespace StoresIdentityServer4.Neo4j
 {
     public partial class Neo4jIdentityServer4ClientUserStore<TUser> :
         IIdentityServer4ClientUserStore<
@@ -50,9 +55,12 @@ namespace Stores.IdentityServer4.Neo4j
         /// </summary>
         public ISession Session { get; }
 
+
         static Neo4jIdentityServer4ClientUserStore()
         {
             User = typeof(TUser).GetNeo4jLabelName();
+
+            IdSrv4ClientRollup = typeof(Neo4jIdentityServer4ClientRollup).GetNeo4jLabelName();
             IdSrv4Client = typeof(Neo4jIdentityServer4Client).GetNeo4jLabelName();
             IdSrv4ClientSecret = typeof(Neo4jIdentityServer4ClientSecret).GetNeo4jLabelName();
             IdSrv4ClientGrantType = typeof(Neo4jIdentityServer4ClientGrantType).GetNeo4jLabelName();
