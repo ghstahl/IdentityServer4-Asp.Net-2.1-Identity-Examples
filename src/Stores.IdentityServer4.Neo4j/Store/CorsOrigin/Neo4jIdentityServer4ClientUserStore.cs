@@ -31,6 +31,7 @@ namespace StoresIdentityServer4.Neo4j
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, corsOrigin));
+                await RaiseClientChangeEventAsync(client);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -61,6 +62,7 @@ namespace StoresIdentityServer4.Neo4j
                         client.ClientId,
                         corsOrigin.Origin
                     ));
+                await RaiseClientChangeEventAsync(client);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -89,6 +91,7 @@ namespace StoresIdentityServer4.Neo4j
                     Params.Create(
                         client.ClientId
                     ));
+                await RaiseClientChangeEventAsync(client);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)

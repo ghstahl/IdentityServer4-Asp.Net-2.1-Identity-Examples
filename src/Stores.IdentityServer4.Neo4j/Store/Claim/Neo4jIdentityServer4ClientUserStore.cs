@@ -8,12 +8,15 @@ using Microsoft.AspNetCore.Identity;
 using Neo4j.Driver.V1;
 using Neo4jExtras;
 using Neo4jExtras.Extensions;
+using Stores.IdentityServer4Neo4j.Events;
 
 namespace StoresIdentityServer4.Neo4j
 {
     public partial class Neo4jIdentityServer4ClientUserStore<TUser> where TUser : Neo4jIdentityUser
     {
         private static readonly string IdSrv4ClientClaim;
+    
+
         public async Task<IdentityResult> AddClaimToClientAsync(Neo4jIdentityServer4Client client,
             Neo4jIdentityServer4ClientClaim claim,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -30,6 +33,8 @@ namespace StoresIdentityServer4.Neo4j
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasClaim}]->(claim)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, claim));
+
+                await RaiseClientChangeEventAsync(client);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)

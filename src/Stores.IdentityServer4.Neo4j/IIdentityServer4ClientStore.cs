@@ -34,7 +34,7 @@ namespace StoresIdentityServer4.Neo4j
         where TRedirectUri : ClientRedirectUri
 
     {
-        Task<IdentityResult> RollupAsync(TClient client,
+        Task<IdentityServer4.Models.Client> RollupAsync(TClient client,
             CancellationToken cancellationToken = default(CancellationToken));
         Task<global::IdentityServer4.Models.Client> GetRollupAsync(TClient client,
             CancellationToken cancellationToken = default(CancellationToken));

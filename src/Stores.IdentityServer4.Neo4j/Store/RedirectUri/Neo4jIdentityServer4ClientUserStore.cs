@@ -30,6 +30,7 @@ namespace StoresIdentityServer4.Neo4j
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(redirectUri)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, redirectUri));
+                await RaiseClientChangeEventAsync(client);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -60,6 +61,7 @@ namespace StoresIdentityServer4.Neo4j
                         client.ClientId,
                         redirectUri.RedirectUri
                     ));
+                await RaiseClientChangeEventAsync(client);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -88,6 +90,7 @@ namespace StoresIdentityServer4.Neo4j
                     Params.Create(
                         client.ClientId
                     ));
+                await RaiseClientChangeEventAsync(client);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)

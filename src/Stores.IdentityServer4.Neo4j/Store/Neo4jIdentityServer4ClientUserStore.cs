@@ -2,11 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
+using IdentityServer4.Events;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
 using Neo4j.Driver.V1;
 using Neo4jExtras;
 using Neo4jExtras.Extensions;
+using Stores.IdentityServer4Neo4j.Events;
 using StoresIdentityServer4.Neo4j;
 using StoresIdentityServer4.Neo4j.Entities;
 using StoresIdentityServer4.Neo4j.Mappers;
@@ -14,6 +16,75 @@ using Client = IdentityServer4.Models.Client;
 
 namespace StoresIdentityServer4.Neo4j
 {
+    public partial class Neo4jIdentityServer4ClientUserStoreAccessor<TUser> :
+        IIdentityServer4ClientUserStoreAccessor<
+            TUser,
+            Neo4jIdentityServer4Client,
+            Neo4jIdentityServer4ClientSecret,
+            Neo4jIdentityServer4ClientGrantType,
+            Neo4jIdentityServer4ClientClaim,
+            Neo4jIdentityServer4ClientCorsOrigin,
+            Neo4jIdentityServer4ClientScope,
+            Neo4jIdentityServer4ClientIDPRestriction,
+            Neo4jIdentityServer4ClientProperty,
+            Neo4jIdentityServer4ClientPostLogoutRedirectUri,
+            Neo4jIdentityServer4ClientRedirectUri>
+        where TUser : Neo4jIdentityUser
+    {
+        private IServiceProvider _serviceProvider;
+        public Neo4jIdentityServer4ClientUserStoreAccessor(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
+        public IIdentityServer4ClientUserStore<
+            TUser, 
+            Neo4jIdentityServer4Client, 
+            Neo4jIdentityServer4ClientSecret, 
+            Neo4jIdentityServer4ClientGrantType, 
+            Neo4jIdentityServer4ClientClaim, 
+            Neo4jIdentityServer4ClientCorsOrigin,
+            Neo4jIdentityServer4ClientScope, 
+            Neo4jIdentityServer4ClientIDPRestriction, 
+            Neo4jIdentityServer4ClientProperty, 
+            Neo4jIdentityServer4ClientPostLogoutRedirectUri, 
+            Neo4jIdentityServer4ClientRedirectUri
+        > IdentityServer4ClientUserStore
+        {
+            get
+            {
+                var service = _serviceProvider.GetService(typeof(IIdentityServer4ClientUserStore<
+                        TUser,
+                        Neo4jIdentityServer4Client,
+                        Neo4jIdentityServer4ClientSecret,
+                        Neo4jIdentityServer4ClientGrantType,
+                        Neo4jIdentityServer4ClientClaim,
+                        Neo4jIdentityServer4ClientCorsOrigin,
+                        Neo4jIdentityServer4ClientScope,
+                        Neo4jIdentityServer4ClientIDPRestriction,
+                        Neo4jIdentityServer4ClientProperty,
+                        Neo4jIdentityServer4ClientPostLogoutRedirectUri,
+                        Neo4jIdentityServer4ClientRedirectUri
+                    >))
+                    as IIdentityServer4ClientUserStore<
+                        TUser,
+                        Neo4jIdentityServer4Client,
+                        Neo4jIdentityServer4ClientSecret,
+                        Neo4jIdentityServer4ClientGrantType,
+                        Neo4jIdentityServer4ClientClaim,
+                        Neo4jIdentityServer4ClientCorsOrigin,
+                        Neo4jIdentityServer4ClientScope,
+                        Neo4jIdentityServer4ClientIDPRestriction,
+                        Neo4jIdentityServer4ClientProperty,
+                        Neo4jIdentityServer4ClientPostLogoutRedirectUri,
+                        Neo4jIdentityServer4ClientRedirectUri
+                    >;
+                return service;
+            }
+        }
+    }
+
+    
+
     public partial class Neo4jIdentityServer4ClientUserStore<TUser> :
         IIdentityServer4ClientUserStore<
             TUser,
@@ -54,7 +125,7 @@ namespace StoresIdentityServer4.Neo4j
         /// Gets the database session for this store.
         /// </summary>
         public ISession Session { get; }
-
+        private INeo4jEventService _eventService;
 
         static Neo4jIdentityServer4ClientUserStore()
         {
@@ -81,9 +152,16 @@ namespace StoresIdentityServer4.Neo4j
             await Session.RunAsync(cypher);
         }
 
-        public Neo4jIdentityServer4ClientUserStore(ISession session)
+        public Neo4jIdentityServer4ClientUserStore(ISession session, INeo4jEventService eventService)
         {
             Session = session;
+            _eventService = eventService;
         }
+        private Task RaiseClientChangeEventAsync(Neo4jIdentityServer4Client client)
+        {
+            return _eventService.RaiseAsync(new ClientChangeEvent<Neo4jIdentityServer4Client>(client));
+        }
+
+       
     }
 }

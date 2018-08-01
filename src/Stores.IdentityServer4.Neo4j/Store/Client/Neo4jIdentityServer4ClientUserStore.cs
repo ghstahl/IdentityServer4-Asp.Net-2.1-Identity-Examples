@@ -69,6 +69,7 @@ namespace StoresIdentityServer4.Neo4j
                 SET r = $p1";
 
                 await Session.RunAsync(cypher, Params.Create(client.ClientId, client.ConvertToMap()));
+                await RaiseClientChangeEventAsync(client);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -84,15 +85,15 @@ namespace StoresIdentityServer4.Neo4j
             ThrowIfDisposed();
             client.ThrowIfNull(nameof(client));
 
-            await DeleteRollupAsync(client);
-            await DeleteRedirectUrisAsync(client);
-            await DeletePostLogoutRedirectUrisAsync(client);
-            await DeleteClaimsAsync(client);
-            await DeleteCorsOriginsAsync(client);
-            await DeleteIdPRestrictionsAsync(client);
-            await DeletePropertiesAsync(client);
-            await DeleteScopesAsync(client);
-            await DeleteSecretsAsync(client);
+            await RaiseClientChangeEventAsync(client);
+            await DeleteRedirectUrisAsync(client, cancellationToken);
+            await DeletePostLogoutRedirectUrisAsync(client, cancellationToken);
+            await DeleteClaimsAsync(client, cancellationToken);
+            await DeleteCorsOriginsAsync(client, cancellationToken);
+            await DeleteIdPRestrictionsAsync(client, cancellationToken);
+            await DeletePropertiesAsync(client, cancellationToken);
+            await DeleteScopesAsync(client, cancellationToken);
+            await DeleteSecretsAsync(client, cancellationToken);
 
             try
             {

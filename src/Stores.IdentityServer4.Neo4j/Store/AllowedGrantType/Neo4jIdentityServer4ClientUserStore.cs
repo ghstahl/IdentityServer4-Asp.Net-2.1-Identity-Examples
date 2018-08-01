@@ -32,6 +32,7 @@ namespace StoresIdentityServer4.Neo4j
                 MERGE (u)-[:{Neo4jConstants.Relationships.HasGrantType}]->(l)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, grantType));
+                await RaiseClientChangeEventAsync(client);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)

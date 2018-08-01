@@ -30,6 +30,7 @@ namespace StoresIdentityServer4.Neo4j
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasProperty}]->(property)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, property));
+                await RaiseClientChangeEventAsync(client);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -62,6 +63,7 @@ namespace StoresIdentityServer4.Neo4j
                         property.Key,
                         property.Value
                     ));
+                await RaiseClientChangeEventAsync(client);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -90,6 +92,7 @@ namespace StoresIdentityServer4.Neo4j
                     Params.Create(
                         client.ClientId
                     ));
+                await RaiseClientChangeEventAsync(client);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)

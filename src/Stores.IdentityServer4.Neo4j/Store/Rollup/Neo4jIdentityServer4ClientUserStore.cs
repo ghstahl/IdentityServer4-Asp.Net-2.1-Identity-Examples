@@ -20,13 +20,14 @@ namespace StoresIdentityServer4.Neo4j
     public partial class Neo4jIdentityServer4ClientUserStore<TUser> where TUser : Neo4jIdentityUser
     {
         private static readonly string IdSrv4ClientRollup;
+      
 
-        public async Task<IdentityResult> RollupAsync(Neo4jIdentityServer4Client client, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IdentityServer4.Models.Client> RollupAsync(Neo4jIdentityServer4Client client, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             client.ThrowIfNull(nameof(client));
-            await DeleteRollupAsync(client, cancellationToken);
+            await RaiseClientChangeEventAsync(client);
             var finalResult = new Client();
             var clientFound = await FindClientByClientIdAsync(client.ClientId, cancellationToken);
             var model = clientFound.ToModel();
@@ -107,13 +108,20 @@ namespace StoresIdentityServer4.Neo4j
             {
                 ClientJson = JsonConvert.SerializeObject(model),
                 ClaimsJson = claimsJson
-
             };
             var result = await AddRollupToClientAsync(client, rollup, cancellationToken);
-            return IdentityResult.Success;
+
+            if (claims != null)
+            {
+                foreach (var item in claims)
+                {
+                    model.Claims.Add(new Claim(item.Type, item.Value));
+                }
+            }
+            return model;
         }
 
-        public async Task<Client> GetRollupAsync(Neo4jIdentityServer4Client client,
+        public async Task<IdentityServer4.Models.Client> GetRollupAsync(Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -129,29 +137,23 @@ namespace StoresIdentityServer4.Neo4j
                 Params.Create(
                     client.ClientId));
 
+            IdentityServer4.Models.Client model = null;
             var foundRecord =
                 await result.SingleOrDefaultAsync(r => r.MapTo<ClientRollup>("rollup"));
             if (foundRecord == null)
             {
-                var identityResult = await RollupAsync(client, cancellationToken);
-                result = await Session.RunAsync(cypher,
-                    Params.Create(
-                        client.ClientId));
-                foundRecord =
-                    await result.SingleOrDefaultAsync(r => r.MapTo<ClientRollup>("rollup"));
-                if (foundRecord == null)
-                {
-                    throw new ClientException("Unknown error");
-                }
+                model = await RollupAsync(client, cancellationToken);
             }
-
-            var model = JsonConvert.DeserializeObject<Client>(foundRecord.ClientJson);
-            if (!string.IsNullOrEmpty(foundRecord.ClaimsJson))
+            else
             {
-                var claims = JsonConvert.DeserializeObject<List<Neo4jIdentityServer4ClientClaim>>(foundRecord.ClaimsJson);
-                foreach (var item in claims)
+                model = JsonConvert.DeserializeObject<Client>(foundRecord.ClientJson);
+                if (!string.IsNullOrEmpty(foundRecord.ClaimsJson))
                 {
-                    model.Claims.Add(new Claim(item.Type,item.Value));
+                    var claims = JsonConvert.DeserializeObject<List<Neo4jIdentityServer4ClientClaim>>(foundRecord.ClaimsJson);
+                    foreach (var item in claims)
+                    {
+                        model.Claims.Add(new Claim(item.Type, item.Value));
+                    }
                 }
             }
             return model;
