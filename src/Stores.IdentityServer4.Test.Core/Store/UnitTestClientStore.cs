@@ -319,6 +319,31 @@ namespace StoresIdentityServer4.Test.Core.Store
 
         }
         [TestMethod]
+        public async Task Create_Client_ManyRelationships_Rollup()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            TClient client = CreateTestClient();
+
+            var result = await _clientUserStore.CreateClientAsync(client);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindClientByClientIdAsync(client.ClientId);
+            findResult.ShouldNotBeNull();
+            findResult.ClientId.ShouldBe(client.ClientId);
+
+            await PopulateManyRelationships(client, 10);
+
+            /////////////////////////////////////////////////////////////
+
+            var model = await _clientUserStore.GetRollupAsync(client);
+            model.ShouldNotBeNull();
+            model.ClientId.ShouldBe(client.ClientId);
+
+        }
+        [TestMethod]
         public async Task Create_Client_Secret_Update_Delete()
         {
             var challenge = Unique.S;

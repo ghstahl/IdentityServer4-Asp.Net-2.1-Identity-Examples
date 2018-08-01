@@ -4,36 +4,8 @@ namespace StoresIdentityServer4.Neo4j.Entities
 {
     public class ClientRollup
     {
-        private string _clientJson;
-
-        public string ClientJson
-        {
-            get
-            {
-                if (
-                    string.IsNullOrEmpty(_clientJson) && 
-                    _client != null)
-                {
-                    _clientJson = JsonConvert.SerializeObject(_client);
-                }
-                return _clientJson;
-            }
-            set => _clientJson = value;
-        }
-
-        private IdentityServer4.Models.Client _client;
-        [JsonIgnore]
-        public IdentityServer4.Models.Client Client {
-            get
-            {
-                if (_client == null)
-                {
-                    _client = JsonConvert.DeserializeObject<IdentityServer4.Models.Client>(ClientJson);
-                }
-
-                return _client;
-            }
-            set => _client = value;
-        }
+        public string ClientJson { get; set; }
+        // System claims can't bet deserialized, so we will serialize our own claims.
+        public string ClaimsJson { get; set; }
     }
 }

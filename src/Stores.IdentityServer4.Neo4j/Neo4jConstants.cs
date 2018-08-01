@@ -4,6 +4,8 @@ namespace StoresIdentityServer4.Neo4j
     {
         internal static class Labels
         {
+            public const string IdentityResource = "IdSrv4IdentityResource";
+            public const string ApiResource = "IdSrv4ApiResource";
             public const string ClientRollup = "IdSrv4ClientRollup";
             public const string Client = "IdSrv4Client";
             public const string Secret = "IdSrv4ClientSecret";

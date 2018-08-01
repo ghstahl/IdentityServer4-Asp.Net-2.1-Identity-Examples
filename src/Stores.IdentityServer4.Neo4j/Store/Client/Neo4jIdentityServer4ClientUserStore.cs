@@ -83,6 +83,8 @@ namespace StoresIdentityServer4.Neo4j
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             client.ThrowIfNull(nameof(client));
+
+            await DeleteRollupAsync(client);
             await DeleteRedirectUrisAsync(client);
             await DeletePostLogoutRedirectUrisAsync(client);
             await DeleteClaimsAsync(client);
