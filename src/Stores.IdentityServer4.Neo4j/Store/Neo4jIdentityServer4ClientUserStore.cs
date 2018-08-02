@@ -28,7 +28,7 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClientClaim,
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope,
-            Neo4jIdentityServer4ClientIDPRestriction,
+            Neo4jIdentityServer4ClienTIDPRestriction,
             Neo4jIdentityServer4ClientProperty,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri,
             Neo4jIdentityServer4ClientRedirectUri>
@@ -54,7 +54,7 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClientClaim, 
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope, 
-            Neo4jIdentityServer4ClientIDPRestriction, 
+            Neo4jIdentityServer4ClienTIDPRestriction, 
             Neo4jIdentityServer4ClientProperty, 
             Neo4jIdentityServer4ClientPostLogoutRedirectUri, 
             Neo4jIdentityServer4ClientRedirectUri
@@ -75,7 +75,7 @@ namespace StoresIdentityServer4.Neo4j
                         Neo4jIdentityServer4ClientClaim,
                         Neo4jIdentityServer4ClientCorsOrigin,
                         Neo4jIdentityServer4ClientScope,
-                        Neo4jIdentityServer4ClientIDPRestriction,
+                        Neo4jIdentityServer4ClienTIDPRestriction,
                         Neo4jIdentityServer4ClientProperty,
                         Neo4jIdentityServer4ClientPostLogoutRedirectUri,
                         Neo4jIdentityServer4ClientRedirectUri
@@ -93,7 +93,7 @@ namespace StoresIdentityServer4.Neo4j
                         Neo4jIdentityServer4ClientClaim,
                         Neo4jIdentityServer4ClientCorsOrigin,
                         Neo4jIdentityServer4ClientScope,
-                        Neo4jIdentityServer4ClientIDPRestriction,
+                        Neo4jIdentityServer4ClienTIDPRestriction,
                         Neo4jIdentityServer4ClientProperty,
                         Neo4jIdentityServer4ClientPostLogoutRedirectUri,
                         Neo4jIdentityServer4ClientRedirectUri
@@ -119,7 +119,7 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClientClaim,
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope,
-            Neo4jIdentityServer4ClientIDPRestriction,
+            Neo4jIdentityServer4ClienTIDPRestriction,
             Neo4jIdentityServer4ClientProperty,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri,
             Neo4jIdentityServer4ClientRedirectUri>
@@ -171,7 +171,7 @@ namespace StoresIdentityServer4.Neo4j
             IdSrv4ClientClaim = typeof(Neo4jIdentityServer4ClientClaim).GetNeo4jLabelName();
             IdSrv4ClientCorsOrigin = typeof(Neo4jIdentityServer4ClientCorsOrigin).GetNeo4jLabelName();
             IdSrv4ClientScope = typeof(Neo4jIdentityServer4ClientScope).GetNeo4jLabelName();
-            IdSrv4ClientIDPRestriction = typeof(Neo4jIdentityServer4ClientIDPRestriction).GetNeo4jLabelName();
+            IdSrv4ClienTIDPRestriction = typeof(Neo4jIdentityServer4ClienTIDPRestriction).GetNeo4jLabelName();
             IdSrv4ClientProperty = typeof(Neo4jIdentityServer4ClientProperty).GetNeo4jLabelName();
             IdSrv4ClientPostLogoutRedirectUri = typeof(Neo4jIdentityServer4ClientPostLogoutRedirectUri).GetNeo4jLabelName();
             IdSrv4ClientRedirectUri = typeof(Neo4jIdentityServer4ClientRedirectUri).GetNeo4jLabelName();

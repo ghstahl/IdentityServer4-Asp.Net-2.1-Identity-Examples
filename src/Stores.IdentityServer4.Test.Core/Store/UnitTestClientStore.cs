@@ -29,7 +29,7 @@ namespace StoresIdentityServer4.Test.Core.Store
         TClaim,
         TCorsOrigin,
         TScope,
-        TIdPRestriction,
+        TIDPRestriction,
         TProperty,
         TPostLogoutRedirectUri,
         TRedirectUri>
@@ -45,7 +45,7 @@ namespace StoresIdentityServer4.Test.Core.Store
         where TClaim : ClientClaim
         where TCorsOrigin : ClientCorsOrigin
         where TScope : ClientScope
-        where TIdPRestriction : ClientIDPRestriction
+        where TIDPRestriction : ClienTIDPRestriction
         where TProperty : ClientProperty
         where TPostLogoutRedirectUri : ClientPostLogoutRedirectUri
         where TRedirectUri : ClientRedirectUri
@@ -66,7 +66,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             TClaim,
             TCorsOrigin,
             TScope,
-            TIdPRestriction,
+            TIDPRestriction,
             TProperty,
             TPostLogoutRedirectUri,
             TRedirectUri> _clientUserStore;
@@ -86,7 +86,7 @@ namespace StoresIdentityServer4.Test.Core.Store
                 TClaim,
                 TCorsOrigin,
                 TScope,
-                TIdPRestriction,
+                TIDPRestriction,
                 TProperty,
                 TPostLogoutRedirectUri,
                 TRedirectUri> clientUserStore,
@@ -107,7 +107,7 @@ namespace StoresIdentityServer4.Test.Core.Store
         protected abstract TPostLogoutRedirectUri CreatePostLogoutRedirectUri();
         protected abstract TRedirectUri CreateTestRedirectUri();
         protected abstract TProperty CreateTestProperty();
-        protected abstract TIdPRestriction CreateTestIdpRestriction();
+        protected abstract TIDPRestriction CreateTesTIDPRestriction();
 
         [TestInitialize]
         public async Task Initialize()
@@ -254,18 +254,18 @@ namespace StoresIdentityServer4.Test.Core.Store
             corsOrigins.ShouldNotBeNull();
             corsOrigins.Count.ShouldBe(count);
 
-            TIdPRestriction idp = null;
+            TIDPRestriction idp = null;
 
             for (int i = 0; i < count; ++i)
             {
-                idp = CreateTestIdpRestriction();
+                idp = CreateTesTIDPRestriction();
                 var resultIdp = await _clientUserStore.AddIdPRestrictionToClientAsync(client, idp);
                 resultIdp.ShouldNotBeNull();
                 resultIdp.Succeeded.ShouldBeTrue();
             }
 
 
-            var idps = await _clientUserStore.GetIdPRestrictionsAsync(client);
+            var idps = await _clientUserStore.GeTIDPRestrictionsAsync(client);
             idps.ShouldNotBeNull();
             idps.Count.ShouldBe(count);
 
@@ -632,18 +632,18 @@ namespace StoresIdentityServer4.Test.Core.Store
 
             await _clientUserStore.CreateClientAsync(client);
 
-            TIdPRestriction idp = null;
+            TIDPRestriction idp = null;
             var count = 10;
             for (int i = 0; i < count; ++i)
             {
-                idp = CreateTestIdpRestriction();
+                idp = CreateTesTIDPRestriction();
                 var result = await _clientUserStore.AddIdPRestrictionToClientAsync(client, idp);
                 result.ShouldNotBeNull();
                 result.Succeeded.ShouldBeTrue();
             }
 
 
-            var idps = await _clientUserStore.GetIdPRestrictionsAsync(client);
+            var idps = await _clientUserStore.GeTIDPRestrictionsAsync(client);
             idps.ShouldNotBeNull();
             idps.Count.ShouldBe(count);
 

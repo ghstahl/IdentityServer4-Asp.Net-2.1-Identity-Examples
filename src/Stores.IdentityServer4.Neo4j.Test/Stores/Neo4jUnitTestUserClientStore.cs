@@ -1,21 +1,15 @@
 using System;
-using System.Data;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AspNetCore.Identity.Neo4j;
 using IdentityServer4;
 using IdentityServer4.Models;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
-using StoresIdentityServer4.Neo4j;
-using StoresIdentityServer4.Neo4j.Test;
-
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoresIdentityServer4.Neo4j.Test.Models;
 using StoresIdentityServer4.Test.Core.Store;
 
-namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
+namespace StoresIdentityServer4.Neo4j.Test.Stores
 {
-
-
     [TestClass]
     public class Neo4jUnitTestUserClientStore :
         UnitTestClientStore<
@@ -31,7 +25,7 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
             Neo4jIdentityServer4ClientClaim,
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope,
-            Neo4jIdentityServer4ClientIDPRestriction,
+            Neo4jIdentityServer4ClienTIDPRestriction,
             Neo4jIdentityServer4ClientProperty,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri,
             Neo4jIdentityServer4ClientRedirectUri>
@@ -53,7 +47,7 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
                         Neo4jIdentityServer4ClientClaim,
                         Neo4jIdentityServer4ClientCorsOrigin,
                         Neo4jIdentityServer4ClientScope,
-                        Neo4jIdentityServer4ClientIDPRestriction,
+                        Neo4jIdentityServer4ClienTIDPRestriction,
                         Neo4jIdentityServer4ClientProperty,
                         Neo4jIdentityServer4ClientPostLogoutRedirectUri,
                         Neo4jIdentityServer4ClientRedirectUri>>(),
@@ -140,9 +134,9 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
             };
         }
 
-        protected override Neo4jIdentityServer4ClientIDPRestriction CreateTestIdpRestriction()
+        protected override Neo4jIdentityServer4ClienTIDPRestriction CreateTesTIDPRestriction()
         {
-            return new Neo4jIdentityServer4ClientIDPRestriction()
+            return new Neo4jIdentityServer4ClienTIDPRestriction()
             {
                 Provider = Unique.S
             };

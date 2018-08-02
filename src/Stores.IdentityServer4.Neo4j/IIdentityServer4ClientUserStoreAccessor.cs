@@ -17,7 +17,7 @@ namespace StoresIdentityServer4.Neo4j
         TClaim,
         TCorsOrigin,
         TScope,
-        TIdPRestriction,
+        TIDPRestriction,
         TProperty,
         TPostLogoutRedirectUri,
         TRedirectUri>
@@ -33,7 +33,7 @@ namespace StoresIdentityServer4.Neo4j
         where TClaim : ClientClaim
         where TCorsOrigin : ClientCorsOrigin
         where TScope : ClientScope
-        where TIdPRestriction : ClientIDPRestriction
+        where TIDPRestriction : ClienTIDPRestriction
         where TProperty : ClientProperty
         where TPostLogoutRedirectUri : ClientPostLogoutRedirectUri
         where TRedirectUri : ClientRedirectUri
@@ -51,7 +51,7 @@ namespace StoresIdentityServer4.Neo4j
             TClaim,
             TCorsOrigin,
             TScope,
-            TIdPRestriction,
+            TIDPRestriction,
             TProperty,
             TPostLogoutRedirectUri,
             TRedirectUri> IdentityServer4ClientUserStore { get; }

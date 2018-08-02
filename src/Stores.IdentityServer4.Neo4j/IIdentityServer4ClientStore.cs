@@ -21,7 +21,7 @@ namespace StoresIdentityServer4.Neo4j
         TClaim,
         TCorsOrigin,
         TScope,
-        TIdPRestriction,
+        TIDPRestriction,
         TProperty,
         TPostLogoutRedirectUri,
         TRedirectUri> :
@@ -41,7 +41,7 @@ namespace StoresIdentityServer4.Neo4j
         where TClaim : ClientClaim
         where TCorsOrigin : ClientCorsOrigin
         where TScope : ClientScope
-        where TIdPRestriction : ClientIDPRestriction
+        where TIDPRestriction : ClienTIDPRestriction
         where TProperty : ClientProperty
         where TPostLogoutRedirectUri : ClientPostLogoutRedirectUri
         where TRedirectUri : ClientRedirectUri
@@ -152,17 +152,17 @@ namespace StoresIdentityServer4.Neo4j
         #region IdPRestriction  
 
         Task<IdentityResult> AddIdPRestrictionToClientAsync(TClient client,
-            TIdPRestriction idPRestriction,
+            TIDPRestriction idPRestriction,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> DeleteIdPRestrictionAsync(TClient client, TIdPRestriction idPRestriction,
+        Task<IdentityResult> DeleteIdPRestrictionAsync(TClient client, TIDPRestriction idPRestriction,
             CancellationToken cancellationToken = default(CancellationToken));
         Task<IdentityResult> DeleteIdPRestrictionsAsync(TClient client, 
             CancellationToken cancellationToken = default(CancellationToken));
-        Task<TIdPRestriction> FindIdPRestrictionAsync(TClient client, TIdPRestriction idPRestriction,
+        Task<TIDPRestriction> FindIdPRestrictionAsync(TClient client, TIDPRestriction idPRestriction,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IList<TIdPRestriction>> GetIdPRestrictionsAsync(TClient client,
+        Task<IList<TIDPRestriction>> GeTIDPRestrictionsAsync(TClient client,
             CancellationToken cancellationToken = default(CancellationToken));
 
         #endregion

@@ -32,7 +32,7 @@ namespace Stores.IdentityServer4Neo4j.Events
             Neo4jIdentityServer4ClientClaim,
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope,
-            Neo4jIdentityServer4ClientIDPRestriction,
+            Neo4jIdentityServer4ClienTIDPRestriction,
             Neo4jIdentityServer4ClientProperty,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri,
             Neo4jIdentityServer4ClientRedirectUri> _accessor;
@@ -55,7 +55,7 @@ namespace Stores.IdentityServer4Neo4j.Events
                 Neo4jIdentityServer4ClientClaim,
                 Neo4jIdentityServer4ClientCorsOrigin,
                 Neo4jIdentityServer4ClientScope,
-                Neo4jIdentityServer4ClientIDPRestriction,
+                Neo4jIdentityServer4ClienTIDPRestriction,
                 Neo4jIdentityServer4ClientProperty,
                 Neo4jIdentityServer4ClientPostLogoutRedirectUri,
                 Neo4jIdentityServer4ClientRedirectUri> accessor,

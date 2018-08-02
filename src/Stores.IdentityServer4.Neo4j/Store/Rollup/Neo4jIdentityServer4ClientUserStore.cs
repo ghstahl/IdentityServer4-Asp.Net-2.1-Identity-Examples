@@ -60,7 +60,7 @@ namespace StoresIdentityServer4.Neo4j
                     model.AllowedCorsOrigins.Add(item.Origin);
                 }
             }
-            var idpRestrictions = await GetIdPRestrictionsAsync(client, cancellationToken);
+            var idpRestrictions = await GeTIDPRestrictionsAsync(client, cancellationToken);
             if (idpRestrictions != null)
             {
                 foreach (var item in idpRestrictions)

@@ -19,7 +19,7 @@ namespace StoresIdentityServer4.Neo4j
             public const string RedirectUri = "IdSrv4ClientRedirectUri";
             public const string PostLogoutRedirectUri = "IdSrv4ClientPostLogoutRedirectUri";
             public const string Scope = "IdSrv4ClientScope";
-            public const string IDPRestriction = "IdSrv4ClientIDPRestriction";
+            public const string IDPRestriction = "IdSrv4ClienTIDPRestriction";
             public const string Claim = "IdSrv4ClientClaim";
             public const string CorsOrigin = "IdSrv4ClientCorsOrigin";
             public const string Property = "IdSrv4ClientProperty";

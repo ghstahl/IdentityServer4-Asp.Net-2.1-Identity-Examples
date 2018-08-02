@@ -54,7 +54,7 @@ namespace StoresIdentityServer4.Neo4j.Entities
 
         public bool EnableLocalLogin { get; set; } = true;
 
-        //public List<ClientIDPRestriction> IdentityProviderRestrictions { get; set; }
+        //public List<ClienTIDPRestriction> IdentityProviderRestrictions { get; set; }
         public bool IncludeJwtId { get; set; }
 
         //public List<ClientClaim> Claims { get; set; }

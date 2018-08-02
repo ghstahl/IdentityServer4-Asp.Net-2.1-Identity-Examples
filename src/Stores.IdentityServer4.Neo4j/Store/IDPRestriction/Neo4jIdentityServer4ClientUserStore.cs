@@ -13,10 +13,10 @@ namespace StoresIdentityServer4.Neo4j
 {
     public partial class Neo4jIdentityServer4ClientUserStore<TUser> where TUser : Neo4jIdentityUser
     {
-        private static readonly string IdSrv4ClientIDPRestriction;
+        private static readonly string IdSrv4ClienTIDPRestriction;
 
         public async Task<IdentityResult> AddIdPRestrictionToClientAsync(Neo4jIdentityServer4Client client,
-            Neo4jIdentityServer4ClientIDPRestriction idpRestriction,
+            Neo4jIdentityServer4ClienTIDPRestriction idpRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -27,7 +27,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
-                MERGE (idp:{IdSrv4ClientIDPRestriction} {"$p1".AsMapFor<Neo4jIdentityServer4ClientIDPRestriction>()})
+                MERGE (idp:{IdSrv4ClienTIDPRestriction} {"$p1".AsMapFor<Neo4jIdentityServer4ClienTIDPRestriction>()})
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, idpRestriction));
@@ -41,7 +41,7 @@ namespace StoresIdentityServer4.Neo4j
         }
 
         public async Task<IdentityResult> DeleteIdPRestrictionAsync(Neo4jIdentityServer4Client client,
-            Neo4jIdentityServer4ClientIDPRestriction idpRestriction,
+            Neo4jIdentityServer4ClienTIDPRestriction idpRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -52,7 +52,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
-                        IdSrv4ClientIDPRestriction
+                        IdSrv4ClienTIDPRestriction
                     })
                 WHERE client.ClientId = $p0 AND idp.Provider = $p1 
                 DETACH DELETE idp";
@@ -81,7 +81,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
-                        IdSrv4ClientIDPRestriction
+                        IdSrv4ClienTIDPRestriction
                     })
                 WHERE client.ClientId = $p0 
                 DETACH DELETE idp";
@@ -99,9 +99,9 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<Neo4jIdentityServer4ClientIDPRestriction> FindIdPRestrictionAsync(
+        public async Task<Neo4jIdentityServer4ClienTIDPRestriction> FindIdPRestrictionAsync(
             Neo4jIdentityServer4Client client,
-            Neo4jIdentityServer4ClientIDPRestriction idpRestriction,
+            Neo4jIdentityServer4ClienTIDPRestriction idpRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -110,7 +110,7 @@ namespace StoresIdentityServer4.Neo4j
             idpRestriction.ThrowIfNull(nameof(idpRestriction));
             var cypher = $@"
                 MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
-                    IdSrv4ClientIDPRestriction
+                    IdSrv4ClienTIDPRestriction
                 })
                 WHERE client.ClientId = $p0 AND idp.Provider = $p1  
                 RETURN idp{{ .* }}";
@@ -122,12 +122,12 @@ namespace StoresIdentityServer4.Neo4j
                 ));
 
             var foundRecord =
-                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientIDPRestriction>("idp"));
+                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClienTIDPRestriction>("idp"));
 
             return foundRecord;
         }
 
-        public async Task<IList<Neo4jIdentityServer4ClientIDPRestriction>> GetIdPRestrictionsAsync(
+        public async Task<IList<Neo4jIdentityServer4ClienTIDPRestriction>> GeTIDPRestrictionsAsync(
             Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -137,14 +137,14 @@ namespace StoresIdentityServer4.Neo4j
 
             var cypher = $@"
                  MATCH (client:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasIdPRestriction}]->(idp:{
-                    IdSrv4ClientIDPRestriction
+                    IdSrv4ClienTIDPRestriction
                 })
                 WHERE client.ClientId = $p0
                 RETURN idp{{ .* }}";
 
             var result = await Session.RunAsync(cypher, Params.Create(client.ClientId));
 
-            var ipds = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ClientIDPRestriction>("idp"));
+            var ipds = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ClienTIDPRestriction>("idp"));
             return ipds;
         }
 

@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <RootNamespace>StoresIdentityServer4.Neo4j.Test</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
