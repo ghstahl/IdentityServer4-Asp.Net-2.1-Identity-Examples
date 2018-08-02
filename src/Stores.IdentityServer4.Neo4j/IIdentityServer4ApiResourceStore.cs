@@ -12,7 +12,7 @@ namespace StoresIdentityServer4.Neo4j
         TApiSecret,
         TApiScope, 
         TApiScopeClaim> :
-        IIdentityServer4ApiScopeStore<TApiScope, TApiScopeClaim>,
+        IIdentityServer4ApiScopeStore<TApiResource, TApiScope, TApiScopeClaim>,
         IDisposable
         where TApiResource : StoresIdentityServer4.Neo4j.Entities.ApiResource
         where TApiResourceClaim : StoresIdentityServer4.Neo4j.Entities.ApiResourceClaim
@@ -46,19 +46,6 @@ namespace StoresIdentityServer4.Neo4j
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IList<TApiResourceClaim>> GetApiResourceClaimsAsync(TApiResource apiResource,
-            CancellationToken cancellationToken = default(CancellationToken));
-
-        Task<IdentityResult> AddApiScopeToApiResourceAsync(
-            TApiResource apiResource,
-            TApiScope apiScope,
-            CancellationToken cancellationToken = default(CancellationToken));
-
-        Task<IdentityResult> RemoveApiScopeFromApiResourceAsync(
-            TApiResource apiResource,
-            TApiScope apiScope,
-            CancellationToken cancellationToken = default(CancellationToken));
-
-        Task<IList<TApiScope>> GetApiScopesAsync(TApiResource apiResource,
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IdentityResult> AddApiSecretToApiResourceAsync(

@@ -11,6 +11,8 @@ namespace StoresIdentityServer4.Neo4j
             public const string ApiScopeClaim = "IdSrv4ApiScopeClaim";
             public const string ApiSecret = "IdSrv4ApiSecret";
             public const string ClientRollup = "IdSrv4ClientRollup";
+            public const string ApiResourceRollup = "IdSrv4ApiResourceRollup";
+            public const string ApiScopeRollup = "IdSrv4ApiScopeRollup";
             public const string Client = "IdSrv4Client";
             public const string Secret = "IdSrv4ClientSecret";
             public const string GrantType = "IdSrv4ClientGrantType";

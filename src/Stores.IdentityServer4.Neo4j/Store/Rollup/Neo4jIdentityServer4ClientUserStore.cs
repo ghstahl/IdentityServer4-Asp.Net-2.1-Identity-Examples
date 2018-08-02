@@ -22,7 +22,9 @@ namespace StoresIdentityServer4.Neo4j
         private static readonly string IdSrv4ClientRollup;
       
 
-        public async Task<IdentityServer4.Models.Client> RollupAsync(Neo4jIdentityServer4Client client, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IdentityServer4.Models.Client> RollupAsync(
+            Neo4jIdentityServer4Client client, 
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();

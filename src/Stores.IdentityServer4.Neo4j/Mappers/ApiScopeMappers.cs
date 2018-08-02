@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AutoMapper;
- 
+﻿using AutoMapper;
 
 namespace StoresIdentityServer4.Neo4j.Mappers
 {
-    // <summary>
     /// Extension methods to map to/from entity/model for clients.
     /// </summary>
-    public static class ClientMappers
+    public static class ApiScopeMappers
     {
-        static ClientMappers()
+        static ApiScopeMappers()
         {
-            Mapper = new MapperConfiguration(cfg => cfg.AddProfile<ClientMapperProfile>())
+            Mapper = new MapperConfiguration(cfg => cfg.AddProfile<ApiScopeMapperProfile>())
                 .CreateMapper();
         }
 
@@ -24,9 +19,9 @@ namespace StoresIdentityServer4.Neo4j.Mappers
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public static IdentityServer4.Models.Client ToModel(this Entities.Client entity)
+        public static IdentityServer4.Models.Scope ToModel(this Entities.ApiScope entity)
         {
-            return Mapper.Map<IdentityServer4.Models.Client>(entity);
+            return Mapper.Map<IdentityServer4.Models.Scope>(entity);
         }
 
         /// <summary>
@@ -34,12 +29,9 @@ namespace StoresIdentityServer4.Neo4j.Mappers
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        public static Entities.Client ToEntity(this IdentityServer4.Models.Client model)
+        public static Entities.ApiScope ToEntity(this IdentityServer4.Models.Scope model)
         {
-            return Mapper.Map<Entities.Client>(model);
+            return Mapper.Map<Entities.ApiScope>(model);
         }
     }
-
-
-    // <summary>
 }
