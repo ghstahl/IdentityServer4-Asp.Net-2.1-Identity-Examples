@@ -11,15 +11,21 @@ using Shouldly;
 using StoresIdentityServer4.Neo4j;
 using StoresIdentityServer4.Neo4j.Entities;
 using StoresIdentityServer4.Neo4j.Mappers;
+using ApiResource = StoresIdentityServer4.Neo4j.Entities.ApiResource;
 using Client = StoresIdentityServer4.Neo4j.Entities.Client;
 
 namespace StoresIdentityServer4.Test.Core.Store
 {
     public abstract class UnitTestClientStore<
-        TUser, 
+        TUser,
         TClient,
         TSecret,
         TGrantType,
+        TApiResource,
+        TApiResourceClaim,
+        TApiSecret,
+        TApiScope,
+        TApiScopeClaim,
         TClaim,
         TCorsOrigin,
         TScope,
@@ -31,6 +37,11 @@ namespace StoresIdentityServer4.Test.Core.Store
         where TClient : Client
         where TSecret : Secret
         where TGrantType : ClientGrantType
+        where TApiResource : ApiResource
+        where TApiResourceClaim : StoresIdentityServer4.Neo4j.Entities.ApiResourceClaim
+        where TApiSecret : StoresIdentityServer4.Neo4j.Entities.ApiSecret
+        where TApiScope : StoresIdentityServer4.Neo4j.Entities.ApiScope
+        where TApiScopeClaim : StoresIdentityServer4.Neo4j.Entities.ApiScopeClaim
         where TClaim : ClientClaim
         where TCorsOrigin : ClientCorsOrigin
         where TScope : ClientScope
@@ -41,11 +52,17 @@ namespace StoresIdentityServer4.Test.Core.Store
     {
         private INeo4jTest _neo4jtest;
         private IUserStore<TUser> _userStore;
+
         private IIdentityServer4ClientUserStore<
-            TUser, 
+            TUser,
             TClient,
             TSecret,
             TGrantType,
+            TApiResource,
+            TApiResourceClaim,
+            TApiSecret,
+            TApiScope,
+            TApiScopeClaim,
             TClaim,
             TCorsOrigin,
             TScope,
@@ -57,10 +74,15 @@ namespace StoresIdentityServer4.Test.Core.Store
         public UnitTestClientStore(
             IUserStore<TUser> userStore,
             IIdentityServer4ClientUserStore<
-                TUser, 
+                TUser,
                 TClient,
                 TSecret,
                 TGrantType,
+                TApiResource,
+                TApiResourceClaim,
+                TApiSecret,
+                TApiScope,
+                TApiScopeClaim,
                 TClaim,
                 TCorsOrigin,
                 TScope,
@@ -100,11 +122,11 @@ namespace StoresIdentityServer4.Test.Core.Store
             var entityOriginal = CreateTestClient();
             var model = ClientMappers.ToModel(entityOriginal);
             var entity = ClientMappers.ToEntity(model);
- 
+
             // Assert
             entity.ShouldNotBeNull();
             model.ShouldNotBeNull();
-           
+
         }
 
         [TestMethod]
@@ -163,7 +185,7 @@ namespace StoresIdentityServer4.Test.Core.Store
         }
 
 
-        public async Task PopulateManyRelationships(TClient client,int nCount)
+        public async Task PopulateManyRelationships(TClient client, int nCount)
         {
             IdentityResult result;
             var count = nCount;
@@ -173,6 +195,7 @@ namespace StoresIdentityServer4.Test.Core.Store
                 result.ShouldNotBeNull();
                 result.Succeeded.ShouldBeTrue();
             }
+
             var secrets = await _clientUserStore.GetSecretsAsync(client);
             secrets.ShouldNotBeNull();
             secrets.Count.ShouldBe(count);
@@ -186,6 +209,7 @@ namespace StoresIdentityServer4.Test.Core.Store
                 addResult.ShouldNotBeNull();
                 addResult.Succeeded.ShouldBeTrue();
             }
+
             var grants = await _clientUserStore.GetAllowedGrantTypesAsync(client);
             grants.ShouldNotBeNull();
             grants.Count.ShouldBe(count);
@@ -211,6 +235,7 @@ namespace StoresIdentityServer4.Test.Core.Store
                 scopResult.ShouldNotBeNull();
                 scopResult.Succeeded.ShouldBeTrue();
             }
+
             var scopes = await _clientUserStore.GetScopesAsync(client);
             scopes.ShouldNotBeNull();
             scopes.Count.ShouldBe(count);
@@ -249,7 +274,8 @@ namespace StoresIdentityServer4.Test.Core.Store
             for (int i = 0; i < count; ++i)
             {
                 postLogoutRedirectUri = CreatePostLogoutRedirectUri();
-                var resultpostLogoutRedirectUri = await _clientUserStore.AddPostLogoutRedirectUriToClientAsync(client, postLogoutRedirectUri);
+                var resultpostLogoutRedirectUri =
+                    await _clientUserStore.AddPostLogoutRedirectUriToClientAsync(client, postLogoutRedirectUri);
                 resultpostLogoutRedirectUri.ShouldNotBeNull();
                 resultpostLogoutRedirectUri.Succeeded.ShouldBeTrue();
             }
@@ -289,13 +315,14 @@ namespace StoresIdentityServer4.Test.Core.Store
             properties.ShouldNotBeNull();
             properties.Count.ShouldBe(count);
         }
+
         [TestMethod]
         public async Task Create_Client_ManyRelationships_Delete()
         {
             var challenge = Unique.S;
             var challengeResponse = Unique.S;
             TClient client = CreateTestClient();
- 
+
             var result = await _clientUserStore.CreateClientAsync(client);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
@@ -318,6 +345,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             findResult.ShouldBeNull();
 
         }
+
         [TestMethod]
         public async Task Create_Client_ManyRelationships_Rollup()
         {
@@ -343,6 +371,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             model.ClientId.ShouldBe(client.ClientId);
 
         }
+
         [TestMethod]
         public async Task Create_Client_Secret_Update_Delete()
         {
@@ -384,7 +413,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             secretResult.Description.ShouldBe(secret.Description);
 
 
-            result = await _clientUserStore.DeleteSecretAsync(client,secret);
+            result = await _clientUserStore.DeleteSecretAsync(client, secret);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
@@ -431,6 +460,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             claimResult.ShouldBeNull();
 
         }
+
         [TestMethod]
         public async Task Create_Client_Scope_Delete()
         {
@@ -449,7 +479,7 @@ namespace StoresIdentityServer4.Test.Core.Store
                 result.ShouldNotBeNull();
                 result.Succeeded.ShouldBeTrue();
             }
-            
+
 
             var scopes = await _clientUserStore.GetScopesAsync(client);
             scopes.ShouldNotBeNull();
@@ -460,7 +490,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             var result2 = await _clientUserStore.FindScopeAsync(client, scope);
             result2.ShouldNotBeNull();
             result2.Scope.ShouldBe(scope.Scope);
-            
+
 
             var result3 = await _clientUserStore.DeleteScopeAsync(client, scope);
             result3.ShouldNotBeNull();
@@ -470,6 +500,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             result2.ShouldBeNull();
 
         }
+
         [TestMethod]
         public async Task Create_Client_postlogout_Delete()
         {
@@ -590,7 +621,7 @@ namespace StoresIdentityServer4.Test.Core.Store
 
         }
 
-       
+
 
         [TestMethod]
         public async Task Create_Client_idp_restrictions_Delete()
@@ -674,7 +705,7 @@ namespace StoresIdentityServer4.Test.Core.Store
 
         }
 
-       
+
 
 
         [TestMethod]
@@ -859,7 +890,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             var createUserResult = await _userStore.CreateAsync(testUser, CancellationToken.None);
 
             var client = CreateTestClient();
-             
+
 
             var identityResult = await _clientUserStore.AddClientToUserAsync(
                 testUser, client);

@@ -12,7 +12,7 @@ namespace Stores.IdentityServer4Neo4j.Events
 
     public class ClientEventSink<TUser> : INeo4jEventSink
         where TUser : Neo4jIdentityUser
-     
+
     {
         /// <summary>
         /// The logger
@@ -20,17 +20,21 @@ namespace Stores.IdentityServer4Neo4j.Events
         private readonly ILogger _logger;
 
         private IIdentityServer4ClientUserStoreAccessor<
-            TUser, 
-            Neo4jIdentityServer4Client, 
-            Neo4jIdentityServer4ClientSecret, 
-            Neo4jIdentityServer4ClientGrantType, 
+            TUser,
+            Neo4jIdentityServer4Client,
+            Neo4jIdentityServer4ClientSecret,
+            Neo4jIdentityServer4ClientGrantType,
             Neo4jIdentityServer4ApiResource,
-            Neo4jIdentityServer4ClientClaim, 
-            Neo4jIdentityServer4ClientCorsOrigin, 
-            Neo4jIdentityServer4ClientScope, 
-            Neo4jIdentityServer4ClientIDPRestriction, 
-            Neo4jIdentityServer4ClientProperty, 
-            Neo4jIdentityServer4ClientPostLogoutRedirectUri, 
+            Neo4jIdentityServer4ApiResourceClaim,
+            Neo4jIdentityServer4ApiSecret,
+            Neo4jIdentityServer4ApiScope,
+            Neo4jIdentityServer4ApiScopeClaim,
+            Neo4jIdentityServer4ClientClaim,
+            Neo4jIdentityServer4ClientCorsOrigin,
+            Neo4jIdentityServer4ClientScope,
+            Neo4jIdentityServer4ClientIDPRestriction,
+            Neo4jIdentityServer4ClientProperty,
+            Neo4jIdentityServer4ClientPostLogoutRedirectUri,
             Neo4jIdentityServer4ClientRedirectUri> _accessor;
 
 
@@ -40,17 +44,21 @@ namespace Stores.IdentityServer4Neo4j.Events
         /// <param name="logger">The logger.</param>
         public ClientEventSink(
             IIdentityServer4ClientUserStoreAccessor<TUser,
-                    Neo4jIdentityServer4Client,
-                    Neo4jIdentityServer4ClientSecret,
-                    Neo4jIdentityServer4ClientGrantType,
-                    Neo4jIdentityServer4ApiResource,
-                    Neo4jIdentityServer4ClientClaim,
-                    Neo4jIdentityServer4ClientCorsOrigin,
-                    Neo4jIdentityServer4ClientScope,
-                    Neo4jIdentityServer4ClientIDPRestriction,
-                    Neo4jIdentityServer4ClientProperty,
-                    Neo4jIdentityServer4ClientPostLogoutRedirectUri,
-                    Neo4jIdentityServer4ClientRedirectUri> accessor,
+                Neo4jIdentityServer4Client,
+                Neo4jIdentityServer4ClientSecret,
+                Neo4jIdentityServer4ClientGrantType,
+                Neo4jIdentityServer4ApiResource,
+                Neo4jIdentityServer4ApiResourceClaim,
+                Neo4jIdentityServer4ApiSecret,
+                Neo4jIdentityServer4ApiScope,
+                Neo4jIdentityServer4ApiScopeClaim,
+                Neo4jIdentityServer4ClientClaim,
+                Neo4jIdentityServer4ClientCorsOrigin,
+                Neo4jIdentityServer4ClientScope,
+                Neo4jIdentityServer4ClientIDPRestriction,
+                Neo4jIdentityServer4ClientProperty,
+                Neo4jIdentityServer4ClientPostLogoutRedirectUri,
+                Neo4jIdentityServer4ClientRedirectUri> accessor,
             ILogger<ClientEventSink<TUser>> logger)
         {
             _accessor = accessor;
@@ -68,8 +76,8 @@ namespace Stores.IdentityServer4Neo4j.Events
                 throw new ArgumentNullException(nameof(evt));
             if (evt.Category == "ClientStore")
             {
-                ClientChangeEvent<Neo4jIdentityServer4Client> clientChangeEvent = evt 
-                    as ClientChangeEvent< Neo4jIdentityServer4Client>;
+                ClientChangeEvent<Neo4jIdentityServer4Client> clientChangeEvent = evt
+                    as ClientChangeEvent<Neo4jIdentityServer4Client>;
                 await _accessor.IdentityServer4ClientUserStore.DeleteRollupAsync(clientChangeEvent.Client);
             }
         }

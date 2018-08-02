@@ -4,17 +4,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
-using StoresIdentityServer4.Neo4j.Entities;
-using Client = StoresIdentityServer4.Neo4j.Entities.Client;
+
 
 namespace StoresIdentityServer4.Neo4j
 {
     public interface IIdentityServer4ClientUserStore<
-        TUser, 
+        TUser,
         TClient,
         TSecret,
         TGrantType,
         TApiResource,
+        TApiResourceClaim,
+        TApiSecret,
+        TApiScope,
+        TApiScopeClaim,
         TClaim,
         TCorsOrigin,
         TScope,
@@ -27,6 +30,10 @@ namespace StoresIdentityServer4.Neo4j
             TSecret,
             TGrantType,
             TApiResource,
+            TApiResourceClaim,
+            TApiSecret,
+            TApiScope,
+            TApiScopeClaim,
             TClaim,
             TCorsOrigin,
             TScope,
@@ -36,17 +43,21 @@ namespace StoresIdentityServer4.Neo4j
             TRedirectUri>,
         IDisposable
         where TUser : class
-        where TClient : Client
+        where TClient : StoresIdentityServer4.Neo4j.Entities.Client
         where TSecret : Secret
-        where TGrantType : ClientGrantType
+        where TGrantType : StoresIdentityServer4.Neo4j.Entities.ClientGrantType
         where TApiResource : StoresIdentityServer4.Neo4j.Entities.ApiResource
-        where TClaim : ClientClaim
-        where TCorsOrigin : ClientCorsOrigin
-        where TScope : ClientScope
-        where TIdPRestriction : ClientIDPRestriction
-        where TProperty : ClientProperty
-        where TPostLogoutRedirectUri : ClientPostLogoutRedirectUri
-        where TRedirectUri : ClientRedirectUri
+        where TApiResourceClaim : StoresIdentityServer4.Neo4j.Entities.ApiResourceClaim
+        where TApiSecret : StoresIdentityServer4.Neo4j.Entities.ApiSecret
+        where TApiScope : StoresIdentityServer4.Neo4j.Entities.ApiScope
+        where TApiScopeClaim : StoresIdentityServer4.Neo4j.Entities.ApiScopeClaim
+        where TClaim : StoresIdentityServer4.Neo4j.Entities.ClientClaim
+        where TCorsOrigin : StoresIdentityServer4.Neo4j.Entities.ClientCorsOrigin
+        where TScope : StoresIdentityServer4.Neo4j.Entities.ClientScope
+        where TIdPRestriction : StoresIdentityServer4.Neo4j.Entities.ClientIDPRestriction
+        where TProperty : StoresIdentityServer4.Neo4j.Entities.ClientProperty
+        where TPostLogoutRedirectUri : StoresIdentityServer4.Neo4j.Entities.ClientPostLogoutRedirectUri
+        where TRedirectUri : StoresIdentityServer4.Neo4j.Entities.ClientRedirectUri
 
     {
         Task CreateConstraintsAsync(CancellationToken cancellationToken = default(CancellationToken));

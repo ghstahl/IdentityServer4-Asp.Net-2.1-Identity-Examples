@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
@@ -20,6 +21,10 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClientSecret,
             Neo4jIdentityServer4ClientGrantType,
             Neo4jIdentityServer4ApiResource,
+            Neo4jIdentityServer4ApiResourceClaim,
+            Neo4jIdentityServer4ApiSecret,
+            Neo4jIdentityServer4ApiScope,
+            Neo4jIdentityServer4ApiScopeClaim,
             Neo4jIdentityServer4ClientClaim,
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope,
@@ -42,6 +47,10 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClientSecret, 
             Neo4jIdentityServer4ClientGrantType,
             Neo4jIdentityServer4ApiResource,
+            Neo4jIdentityServer4ApiResourceClaim,
+            Neo4jIdentityServer4ApiSecret,
+            Neo4jIdentityServer4ApiScope,
+            Neo4jIdentityServer4ApiScopeClaim,
             Neo4jIdentityServer4ClientClaim, 
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope, 
@@ -59,6 +68,10 @@ namespace StoresIdentityServer4.Neo4j
                         Neo4jIdentityServer4ClientSecret,
                         Neo4jIdentityServer4ClientGrantType,
                         Neo4jIdentityServer4ApiResource,
+                        Neo4jIdentityServer4ApiResourceClaim,
+                        Neo4jIdentityServer4ApiSecret,
+                        Neo4jIdentityServer4ApiScope,
+                        Neo4jIdentityServer4ApiScopeClaim,
                         Neo4jIdentityServer4ClientClaim,
                         Neo4jIdentityServer4ClientCorsOrigin,
                         Neo4jIdentityServer4ClientScope,
@@ -73,6 +86,10 @@ namespace StoresIdentityServer4.Neo4j
                         Neo4jIdentityServer4ClientSecret,
                         Neo4jIdentityServer4ClientGrantType,
                         Neo4jIdentityServer4ApiResource,
+                        Neo4jIdentityServer4ApiResourceClaim,
+                        Neo4jIdentityServer4ApiSecret,
+                        Neo4jIdentityServer4ApiScope,
+                        Neo4jIdentityServer4ApiScopeClaim,
                         Neo4jIdentityServer4ClientClaim,
                         Neo4jIdentityServer4ClientCorsOrigin,
                         Neo4jIdentityServer4ClientScope,
@@ -95,6 +112,10 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClientSecret,
             Neo4jIdentityServer4ClientGrantType,
             Neo4jIdentityServer4ApiResource,
+            Neo4jIdentityServer4ApiResourceClaim,
+            Neo4jIdentityServer4ApiSecret,
+            Neo4jIdentityServer4ApiScope,
+            Neo4jIdentityServer4ApiScopeClaim,
             Neo4jIdentityServer4ClientClaim,
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope,
@@ -172,5 +193,7 @@ namespace StoresIdentityServer4.Neo4j
         {
             return _eventService.RaiseAsync(new ClientChangeEvent<Neo4jIdentityServer4Client>(client));
         }
+
+
     }
 }
