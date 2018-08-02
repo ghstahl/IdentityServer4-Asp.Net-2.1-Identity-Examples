@@ -9,10 +9,7 @@ using Neo4j.Driver.V1;
 using Neo4jExtras;
 using Neo4jExtras.Extensions;
 using Stores.IdentityServer4Neo4j.Events;
-using StoresIdentityServer4.Neo4j;
-using StoresIdentityServer4.Neo4j.Entities;
-using StoresIdentityServer4.Neo4j.Mappers;
-using Client = IdentityServer4.Models.Client;
+
 
 namespace StoresIdentityServer4.Neo4j
 {
