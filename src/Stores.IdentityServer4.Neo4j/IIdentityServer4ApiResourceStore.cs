@@ -73,5 +73,12 @@ namespace StoresIdentityServer4.Neo4j
 
         Task<IList<TApiSecret>> GetApiSecretsAsync(TApiResource apiResource,
             CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IdentityServer4.Models.ApiResource> RollupAsync(TApiResource apiResource,
+            CancellationToken cancellationToken = default(CancellationToken));
+        Task<global::IdentityServer4.Models.ApiResource> GetRollupAsync(TApiResource apiResource,
+            CancellationToken cancellationToken = default(CancellationToken));
+        Task<IdentityResult> DeleteRollupAsync(TApiResource apiResource,
+            CancellationToken cancellationToken = default(CancellationToken));
     }
 }

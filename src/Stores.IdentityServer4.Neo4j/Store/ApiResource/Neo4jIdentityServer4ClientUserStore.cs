@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
+using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
 using Neo4j.Driver.V1;
 using Neo4jExtras;
@@ -147,7 +148,8 @@ namespace StoresIdentityServer4.Neo4j
             throw new NotImplementedException();
         }
 
-        public async Task<IdentityResult> AddApiScopeToApiResourceAsync(Neo4jIdentityServer4ApiResource apiResource,
+        public async Task<IdentityResult> AddApiScopeToApiResourceAsync(
+            Neo4jIdentityServer4ApiResource apiResource,
             Neo4jIdentityServer4ApiScope apiScope,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -156,7 +158,8 @@ namespace StoresIdentityServer4.Neo4j
 
         public async Task<IdentityResult> RemoveApiScopeFromApiResourceAsync(
             Neo4jIdentityServer4ApiResource apiResource,
-            Neo4jIdentityServer4ApiScope apiScope, CancellationToken cancellationToken = default(CancellationToken))
+            Neo4jIdentityServer4ApiScope apiScope, 
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }
@@ -168,20 +171,44 @@ namespace StoresIdentityServer4.Neo4j
             throw new NotImplementedException();
         }
 
-        public async Task<IdentityResult> AddApiSecretToApiResourceAsync(Neo4jIdentityServer4ApiResource apiResource,
-            Neo4jIdentityServer4ApiSecret apiSecret, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IdentityResult> AddApiSecretToApiResourceAsync(
+            Neo4jIdentityServer4ApiResource apiResource,
+            Neo4jIdentityServer4ApiSecret apiSecret, 
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }
 
         public async Task<IdentityResult> RemoveApiSecretFromApiResourceAsync(
             Neo4jIdentityServer4ApiResource apiResource,
-            Neo4jIdentityServer4ApiSecret apiSecret, CancellationToken cancellationToken = default(CancellationToken))
+            Neo4jIdentityServer4ApiSecret apiSecret,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }
 
         public async Task<IList<Neo4jIdentityServer4ApiSecret>> GetApiSecretsAsync(
+            Neo4jIdentityServer4ApiResource apiResource,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ApiResource> RollupAsync(
+            Neo4jIdentityServer4ApiResource apiResource,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ApiResource> GetRollupAsync(
+            Neo4jIdentityServer4ApiResource apiResource,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IdentityResult> DeleteRollupAsync(
             Neo4jIdentityServer4ApiResource apiResource,
             CancellationToken cancellationToken = default(CancellationToken))
         {

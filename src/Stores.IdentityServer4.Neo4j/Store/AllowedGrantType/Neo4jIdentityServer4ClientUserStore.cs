@@ -41,7 +41,8 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<IdentityResult> CreateGrantTypeAsync(Neo4jIdentityServer4ClientGrantType grantType,
+        public async Task<IdentityResult> CreateGrantTypeAsync(
+            Neo4jIdentityServer4ClientGrantType grantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -146,7 +147,8 @@ namespace StoresIdentityServer4.Neo4j
         }
 
         public async Task<IList<Neo4jIdentityServer4ClientGrantType>> GetAllowedGrantTypesAsync(
-            Neo4jIdentityServer4Client client, CancellationToken cancellationToken = default(CancellationToken))
+            Neo4jIdentityServer4Client client, 
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
