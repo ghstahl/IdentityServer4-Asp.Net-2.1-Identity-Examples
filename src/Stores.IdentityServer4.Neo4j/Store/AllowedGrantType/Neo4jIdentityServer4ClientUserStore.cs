@@ -60,7 +60,6 @@ namespace StoresIdentityServer4.Neo4j
         }
 
         public async Task<IdentityResult> UpdateGrantTypeAsync(
-            Neo4jIdentityServer4ClientGrantType originalGrantType,
             Neo4jIdentityServer4ClientGrantType grantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -74,7 +73,7 @@ namespace StoresIdentityServer4.Neo4j
                 WHERE r.GrantType = $p0
                 SET r = $p1";
 
-                await Session.RunAsync(cypher, Params.Create(originalGrantType.GrantType, grantType.ConvertToMap()));
+                await Session.RunAsync(cypher, Params.Create(grantType.GrantType, grantType.ConvertToMap()));
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -83,7 +82,8 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<IdentityResult> DeleteGrantTypeAsync(Neo4jIdentityServer4ClientGrantType grantType,
+        public async Task<IdentityResult> DeleteGrantTypeAsync(
+            Neo4jIdentityServer4ClientGrantType grantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -126,7 +126,8 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<Neo4jIdentityServer4ClientGrantType> FindGrantTypeAsync(string grantType,
+        public async Task<Neo4jIdentityServer4ClientGrantType> FindGrantTypeAsync(
+            Neo4jIdentityServer4ClientGrantType grantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -138,7 +139,7 @@ namespace StoresIdentityServer4.Neo4j
                 WHERE r.GrantType = $p0
                 RETURN r {{ .* }}";
 
-            var result = await Session.RunAsync(cypher, Params.Create(grantType));
+            var result = await Session.RunAsync(cypher, Params.Create(grantType.GrantType));
             var grantTypeRecord =
                 await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientGrantType>("r"));
             return grantTypeRecord;

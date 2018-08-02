@@ -720,7 +720,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             result.Succeeded.ShouldBeTrue();
 
             var findResult =
-                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
+                await _clientUserStore.FindGrantTypeAsync(grantType);
             findResult.ShouldNotBeNull();
             findResult.GrantType.ShouldBe(grantType.GrantType);
 
@@ -742,22 +742,19 @@ namespace StoresIdentityServer4.Test.Core.Store
             result.Succeeded.ShouldBeTrue();
 
             var findResult =
-                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
+                await _clientUserStore.FindGrantTypeAsync(grantType);
             findResult.ShouldNotBeNull();
             findResult.GrantType.ShouldBe(grantType.GrantType);
 
             var grantTypeNew = CreateTestGrantType();
-
-            result = await _clientUserStore.UpdateGrantTypeAsync(grantType, grantTypeNew);
+            grantTypeNew.GrantType = findResult.GrantType;
+            grantType = grantTypeNew;
+            result = await _clientUserStore.UpdateGrantTypeAsync(grantType);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
             findResult =
-                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
-            findResult.ShouldBeNull();
-
-            findResult =
-                await _clientUserStore.FindGrantTypeAsync(grantTypeNew.GrantType);
+                await _clientUserStore.FindGrantTypeAsync(grantType);
             findResult.ShouldNotBeNull();
             findResult.GrantType.ShouldBe(grantTypeNew.GrantType);
         }
@@ -775,7 +772,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             result.Succeeded.ShouldBeTrue();
 
             var findResult =
-                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
+                await _clientUserStore.FindGrantTypeAsync(grantType);
             findResult.ShouldNotBeNull();
             findResult.GrantType.ShouldBe(grantType.GrantType);
 
@@ -785,7 +782,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             result.Succeeded.ShouldBeTrue();
 
             findResult =
-                await _clientUserStore.FindGrantTypeAsync(grantType.GrantType);
+                await _clientUserStore.FindGrantTypeAsync(grantType);
             findResult.ShouldBeNull();
 
             // delete it

@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
-using StoresIdentityServer4.Neo4j.Entities;
 
 namespace StoresIdentityServer4.Neo4j
 {
-    public interface IIdentityServer4GrantTypeStore<TGrantType> :
+    public interface IIdentityServer4ApiResourceStore<TApiResource> :
         IDisposable
-        where TGrantType : ClientGrantType
+        where TApiResource : ApiResource
     {
-        Task<IdentityResult> CreateGrantTypeAsync(TGrantType grantType,
+        Task<IdentityResult> CreateApiResourceAsync(TApiResource apiResource,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> UpdateGrantTypeAsync(TGrantType grantType,
+        Task<IdentityResult> UpdateApiResourceAsync(TApiResource apiResource, 
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> DeleteGrantTypeAsync(TGrantType grantType,
+        Task<IdentityResult> DeleteApiResourceAsync(TApiResource apiResource,
             CancellationToken cancellationToken = default(CancellationToken));
-        Task<IdentityResult> DeleteGrantTypesAsync(
+        Task<IdentityResult> DeleteApiResourcesAsync(
             CancellationToken cancellationToken = default(CancellationToken));
-        Task<TGrantType> FindGrantTypeAsync(TGrantType grantType,
+        Task<TApiResource> FindApiResourceAsync(TApiResource apiResource,
             CancellationToken cancellationToken = default(CancellationToken));
     }
 }
