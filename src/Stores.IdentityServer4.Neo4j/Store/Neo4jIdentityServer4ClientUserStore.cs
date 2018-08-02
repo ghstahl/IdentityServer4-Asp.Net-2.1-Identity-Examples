@@ -19,6 +19,7 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4Client,
             Neo4jIdentityServer4ClientSecret,
             Neo4jIdentityServer4ClientGrantType,
+            Neo4jIdentityServer4ApiResource,
             Neo4jIdentityServer4ClientClaim,
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope,
@@ -28,6 +29,8 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClientRedirectUri>
         where TUser : Neo4jIdentityUser
     {
+       
+
         private IServiceProvider _serviceProvider;
         public Neo4jIdentityServer4ClientUserStoreAccessor(IServiceProvider serviceProvider)
         {
@@ -37,7 +40,8 @@ namespace StoresIdentityServer4.Neo4j
             TUser, 
             Neo4jIdentityServer4Client, 
             Neo4jIdentityServer4ClientSecret, 
-            Neo4jIdentityServer4ClientGrantType, 
+            Neo4jIdentityServer4ClientGrantType,
+            Neo4jIdentityServer4ApiResource,
             Neo4jIdentityServer4ClientClaim, 
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope, 
@@ -54,6 +58,7 @@ namespace StoresIdentityServer4.Neo4j
                         Neo4jIdentityServer4Client,
                         Neo4jIdentityServer4ClientSecret,
                         Neo4jIdentityServer4ClientGrantType,
+                        Neo4jIdentityServer4ApiResource,
                         Neo4jIdentityServer4ClientClaim,
                         Neo4jIdentityServer4ClientCorsOrigin,
                         Neo4jIdentityServer4ClientScope,
@@ -67,6 +72,7 @@ namespace StoresIdentityServer4.Neo4j
                         Neo4jIdentityServer4Client,
                         Neo4jIdentityServer4ClientSecret,
                         Neo4jIdentityServer4ClientGrantType,
+                        Neo4jIdentityServer4ApiResource,
                         Neo4jIdentityServer4ClientClaim,
                         Neo4jIdentityServer4ClientCorsOrigin,
                         Neo4jIdentityServer4ClientScope,
@@ -88,6 +94,7 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4Client,
             Neo4jIdentityServer4ClientSecret,
             Neo4jIdentityServer4ClientGrantType,
+            Neo4jIdentityServer4ApiResource,
             Neo4jIdentityServer4ClientClaim,
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope,
@@ -97,7 +104,6 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClientRedirectUri>
         where TUser : Neo4jIdentityUser
     {
-
         private bool _disposed;
 
         /// <summary>
@@ -128,7 +134,15 @@ namespace StoresIdentityServer4.Neo4j
         {
             User = typeof(TUser).GetNeo4jLabelName();
 
+            IdSrv4ClientApiResource = typeof(Neo4jIdentityServer4ApiResource).GetNeo4jLabelName();
+            IdSrv4ClientApiResourceClaim = typeof(Neo4jIdentityServer4ApiResourceClaim).GetNeo4jLabelName();
+            IdSrv4ClientApiScope = typeof(Neo4jIdentityServer4ApiScope).GetNeo4jLabelName();
+            IdSrv4ClientApiScopeClaim = typeof(Neo4jIdentityServer4ApiScope).GetNeo4jLabelName();
+            IdSrv4ClientApiSecret = typeof(Neo4jIdentityServer4ApiSecret).GetNeo4jLabelName();
+
+            
             IdSrv4ClientRollup = typeof(Neo4jIdentityServer4ClientRollup).GetNeo4jLabelName();
+
             IdSrv4Client = typeof(Neo4jIdentityServer4Client).GetNeo4jLabelName();
             IdSrv4ClientSecret = typeof(Neo4jIdentityServer4ClientSecret).GetNeo4jLabelName();
             IdSrv4ClientGrantType = typeof(Neo4jIdentityServer4ClientGrantType).GetNeo4jLabelName();
@@ -158,7 +172,5 @@ namespace StoresIdentityServer4.Neo4j
         {
             return _eventService.RaiseAsync(new ClientChangeEvent<Neo4jIdentityServer4Client>(client));
         }
-
-       
     }
 }

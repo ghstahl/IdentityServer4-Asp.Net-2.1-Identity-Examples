@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace StoresIdentityServer4.Neo4j
 {
     public interface IIdentityServer4ApiResourceStore<TApiResource> :
         IDisposable
-        where TApiResource : ApiResource
+        where TApiResource : StoresIdentityServer4.Neo4j.Entities.ApiResource
     {
         Task<IdentityResult> CreateApiResourceAsync(TApiResource apiResource,
             CancellationToken cancellationToken = default(CancellationToken));

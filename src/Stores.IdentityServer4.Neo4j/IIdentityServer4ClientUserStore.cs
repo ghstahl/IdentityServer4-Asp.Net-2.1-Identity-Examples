@@ -14,6 +14,7 @@ namespace StoresIdentityServer4.Neo4j
         TClient,
         TSecret,
         TGrantType,
+        TApiResource,
         TClaim,
         TCorsOrigin,
         TScope,
@@ -25,6 +26,7 @@ namespace StoresIdentityServer4.Neo4j
             TClient,
             TSecret,
             TGrantType,
+            TApiResource,
             TClaim,
             TCorsOrigin,
             TScope,
@@ -37,6 +39,7 @@ namespace StoresIdentityServer4.Neo4j
         where TClient : Client
         where TSecret : Secret
         where TGrantType : ClientGrantType
+        where TApiResource : StoresIdentityServer4.Neo4j.Entities.ApiResource
         where TClaim : ClientClaim
         where TCorsOrigin : ClientCorsOrigin
         where TScope : ClientScope
