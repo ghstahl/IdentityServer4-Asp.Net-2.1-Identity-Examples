@@ -18,7 +18,7 @@ namespace Stores.IdentityServer4Neo4j.Events
         }
         public ApiResourceChangeEvent(TApiResource apiResource) : this()
         {
-
+            ApiResource = apiResource;
         }
     }
 }

@@ -21,9 +21,10 @@ namespace StoresIdentityServer4.Neo4j
     public partial class Neo4jIdentityServer4ClientUserStore<TUser> 
         where TUser : Neo4jIdentityUser
     {
-        private Task RaiseApiScopeChangeEventAsync(Neo4jIdentityServer4ApiResource apiResource,Neo4jIdentityServer4ApiScope apiScope)
+        private async Task RaiseApiScopeChangeEventAsync(Neo4jIdentityServer4ApiResource apiResource,Neo4jIdentityServer4ApiScope apiScope)
         {
-            return _eventService.RaiseAsync(new ApiScopeChangeEvent<Neo4jIdentityServer4ApiResource,Neo4jIdentityServer4ApiScope>(apiResource,apiScope));
+            await RaiseApiResourceChangeEventAsync(apiResource);
+            await _eventService.RaiseAsync(new ApiScopeChangeEvent<Neo4jIdentityServer4ApiResource,Neo4jIdentityServer4ApiScope>(apiResource,apiScope));
         }
 
         private static readonly string IdSrv4ClientApiScope;

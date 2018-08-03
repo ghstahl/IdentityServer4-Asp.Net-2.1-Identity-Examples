@@ -4,22 +4,22 @@ using StoresIdentityServer4.Neo4j.Entities;
 namespace StoresIdentityServer4.Neo4j.Mappers
 {
     /// <summary>
-    /// AutoMapper configuration for ApiScope
+    /// AutoMapper configuration for ApiResource 
     /// Between model and entity
     /// </summary>
-    public class ApiScopeMapperProfile : Profile
+    public class ApiResourceMapperProfile : Profile
     {
         /// <summary>
         /// <see>
         ///     <cref>{ApiScopeMapperProfile}</cref>
         /// </see>
         /// </summary>
-        public ApiScopeMapperProfile()
+        public ApiResourceMapperProfile()
         {
             // entity to model
-            CreateMap<ApiScope, IdentityServer4.Models.Scope>(MemberList.Destination);
+            CreateMap<ApiResource, IdentityServer4.Models.ApiResource>(MemberList.Destination);
             // model to entity
-            CreateMap<IdentityServer4.Models.Scope, Entities.ApiScope>(MemberList.Source);
+            CreateMap<IdentityServer4.Models.ApiResource, Entities.ApiResource>(MemberList.Source);
         }
     }
 }

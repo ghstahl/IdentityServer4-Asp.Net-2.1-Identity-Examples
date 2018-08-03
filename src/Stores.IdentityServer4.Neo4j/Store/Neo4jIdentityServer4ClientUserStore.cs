@@ -158,7 +158,7 @@ namespace StoresIdentityServer4.Neo4j
             IdSrv4ClientApiResource = typeof(Neo4jIdentityServer4ApiResource).GetNeo4jLabelName();
             IdSrv4ClientApiResourceClaim = typeof(Neo4jIdentityServer4ApiResourceClaim).GetNeo4jLabelName();
             IdSrv4ClientApiScope = typeof(Neo4jIdentityServer4ApiScope).GetNeo4jLabelName();
-            IdSrv4ClientApiScopeClaim = typeof(Neo4jIdentityServer4ApiScope).GetNeo4jLabelName();
+            IdSrv4ClientApiScopeClaim = typeof(Neo4jIdentityServer4ApiScopeClaim).GetNeo4jLabelName();
             IdSrv4ClientApiSecret = typeof(Neo4jIdentityServer4ApiSecret).GetNeo4jLabelName();
 
             IdSrv4ClientRollup = typeof(Neo4jIdentityServer4ClientRollup).GetNeo4jLabelName();

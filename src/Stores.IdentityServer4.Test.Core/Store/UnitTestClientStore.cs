@@ -1096,7 +1096,59 @@ namespace StoresIdentityServer4.Test.Core.Store
             rollup.Name.ShouldBe(apiScope.Name);
             rollup.UserClaims.Count.ShouldBe(2);
         }
+        [TestMethod]
+        public async Task Create_ApiResource_FULL_Rollup()
+        {
+            var apiResouce = CreateTestApiResource();
+            await _clientUserStore.CreateApiResourceAsync(apiResouce);
 
+            var apiScope = CreateTestApiScope();
+            var result = await _clientUserStore.AddApiScopeAsync(apiResouce, apiScope);
+
+            var nCount = 2;
+            for (int i = 0; i < nCount; ++i)
+            {
+                apiScope = CreateTestApiScope();
+
+                result = await _clientUserStore.AddApiScopeAsync(apiResouce, apiScope);
+
+                var apiClaim = CreateTestApiScopeClaim();
+                result = await _clientUserStore.AddApiScopeClaimAsync(
+                    apiResouce,
+                    apiScope,
+                    apiClaim);
+
+                var apiSecret = CreateTestApiSecret();
+                result = await _clientUserStore.AddApiSecretAsync(apiResouce, apiSecret);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+
+                var apiResourceClaim = CreateTestApiResourceClaim();
+                result = await _clientUserStore.AddApiResourceClaimAsync(apiResouce, apiResourceClaim);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+            }
+
+            var rollup = await _clientUserStore.GetRollupAsync(apiResouce);
+            rollup.ShouldNotBeNull();
+            rollup.Name.ShouldBe(apiResouce.Name);
+            
+            rollup.ApiSecrets.Count.ShouldBe(nCount);
+            rollup.Scopes.Count.ShouldBe(nCount + 2);  // the api resource name automatically gets added.
+            rollup.UserClaims.Count.ShouldBe(nCount);
+
+            var apiClaim2 = CreateTestApiScopeClaim();
+             
+            
+            result = await _clientUserStore.AddApiScopeClaimAsync(
+                apiResouce,
+                apiScope,
+                apiClaim2);
+
+            rollup.ApiSecrets.Count.ShouldBe(nCount);
+            rollup.Scopes.Count.ShouldBe(nCount + 2);  // the api resource name automatically gets added.
+            rollup.UserClaims.Count.ShouldBe(nCount);
+        }
         [TestMethod]
         public async Task Create_ApiResource_ApiScope_Many_Claims_Delete()
         {
