@@ -837,6 +837,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
         }
+       
         [TestMethod]
         public async Task Create_ApiResource_ApiScope_Delete()
         {
@@ -882,7 +883,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             var result = await _clientUserStore.AddApiScopeAsync(apiResouce, apiScope);
 
             var apiClaim = CreateTestApiScopeClaim();
-            result = await _clientUserStore.AddApiScopeClaimToApiScopeAsync(
+            result = await _clientUserStore.AddApiScopeClaimAsync(
                 apiResouce,
                 apiScope,
                 apiClaim);
@@ -902,7 +903,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             scopeClaims.Count.ShouldBe(1);
 
 
-            var scopes = await _clientUserStore.DeleteApiScopeClaimFromApiScopeAsync(apiResouce,
+            var scopes = await _clientUserStore.DeleteApiScopeClaimAsync(apiResouce,
                 apiScope,
                 apiClaim);
             result.ShouldNotBeNull();
@@ -920,9 +921,76 @@ namespace StoresIdentityServer4.Test.Core.Store
             scopeClaims.ShouldNotBeNull();
             scopeClaims.Count.ShouldBe(0);
         }
+        [TestMethod]
+        public async Task Create_ApiResource_ApiScope_Claims_Rollup()
+        {
+            var apiResouce = CreateTestApiResource();
+            await _clientUserStore.CreateApiResourceAsync(apiResouce);
 
+            var apiScope = CreateTestApiScope();
 
+            var result = await _clientUserStore.AddApiScopeAsync(apiResouce, apiScope);
 
+            var apiClaim = CreateTestApiScopeClaim();
+            result = await _clientUserStore.AddApiScopeClaimAsync(
+                apiResouce,
+                apiScope,
+                apiClaim);
+
+            var rollup = await _clientUserStore.GetRollupAsync(apiResouce,apiScope);
+            rollup.ShouldNotBeNull();
+            rollup.Name.ShouldBe(apiScope.Name);
+            rollup.UserClaims.Count.ShouldBe(1);
+
+            apiClaim = CreateTestApiScopeClaim();
+            result = await _clientUserStore.AddApiScopeClaimAsync(
+                apiResouce,
+                apiScope,
+                apiClaim);
+
+            rollup = await _clientUserStore.GetRollupAsync(apiResouce, apiScope);
+            rollup.ShouldNotBeNull();
+            rollup.Name.ShouldBe(apiScope.Name);
+            rollup.UserClaims.Count.ShouldBe(2);
+        }
+
+        [TestMethod]
+        public async Task Create_ApiResource_ApiScope_Many_Claims_Delete()
+        {
+            var apiResouce = CreateTestApiResource();
+            await _clientUserStore.CreateApiResourceAsync(apiResouce);
+
+            var apiScope = CreateTestApiScope();
+
+            var result = await _clientUserStore.AddApiScopeAsync(apiResouce, apiScope);
+
+            int count = 10;
+            for (int i = 0; i < count; ++i)
+            {
+                var apiClaim = CreateTestApiScopeClaim();
+                result = await _clientUserStore.AddApiScopeClaimAsync(
+                    apiResouce,
+                    apiScope,
+                    apiClaim);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+            }
+ 
+
+            var scopeClaims = await _clientUserStore.GetApiScopeClaimsAsync(apiResouce,
+                apiScope);
+            scopeClaims.ShouldNotBeNull();
+            scopeClaims.Count.ShouldBe(count);
+
+            result = await _clientUserStore.DeleteApiScopeClaimsAsync(apiResouce, apiScope);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            scopeClaims = await _clientUserStore.GetApiScopeClaimsAsync(apiResouce,
+                apiScope);
+            scopeClaims.ShouldNotBeNull();
+            scopeClaims.Count.ShouldBe(0);
+        }
 
         [TestMethod]
         public async Task Create_GrantType_Redundant_Delete()

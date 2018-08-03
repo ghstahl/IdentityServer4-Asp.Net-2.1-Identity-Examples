@@ -14,7 +14,7 @@ namespace Stores.IdentityServer4Neo4j.Events
         /// Initializes a new instance of the <see cref="ClientChangeEvent"/> class.
         /// </summary>
         protected ClientChangeEvent()
-            : base("ClientStore",
+            : base(StoresIdentityServer4.Neo4j.Events.Constants.Categories.ClientStore,
                 "Client Change Event",
                 EventTypes.Information,
                 EventIds.ClientChange)

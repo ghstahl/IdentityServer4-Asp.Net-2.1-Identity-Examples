@@ -35,6 +35,8 @@ namespace StoresIdentityServer4.Neo4j
 
             
             serviceCollection.AddScoped<INeo4jEventSink, ClientEventSink<TUser>>();
+            serviceCollection.AddScoped<INeo4jEventSink, ApiScopeEventSink<TUser>>();
+            
             serviceCollection.AddScoped<INeo4jEventService, Neo4jEventService>();
             serviceCollection
                 .AddScoped<IIdentityServer4ClientUserStoreAccessor<TUser,

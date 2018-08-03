@@ -35,17 +35,17 @@ namespace StoresIdentityServer4.Neo4j
             CancellationToken cancellationToken = default(CancellationToken));
 
 
-        Task<IdentityResult> AddApiScopeClaimToApiScopeAsync(
+        Task<IdentityResult> AddApiScopeClaimAsync(
             TApiResource apiResource, 
             TApiScope apiScope,
             TApiScopeClaim apiScopeClaim,
             CancellationToken cancellationToken = default(CancellationToken));
-        Task<IdentityResult> DeleteApiScopeClaimFromApiScopeAsync(
+        Task<IdentityResult> DeleteApiScopeClaimAsync(
             TApiResource apiResource,
             TApiScope apiScope,
             TApiScopeClaim apiScopeClaim,
             CancellationToken cancellationToken = default(CancellationToken));
-        Task<IdentityResult> DeleteApiScopeClaimsFromApiScopeAsync(
+        Task<IdentityResult> DeleteApiScopeClaimsAsync(
             TApiResource apiResource,
             TApiScope apiScope,
             CancellationToken cancellationToken = default(CancellationToken));

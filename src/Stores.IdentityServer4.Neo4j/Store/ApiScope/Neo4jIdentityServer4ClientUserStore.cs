@@ -139,7 +139,7 @@ namespace StoresIdentityServer4.Neo4j
             apiResource.ThrowIfNull(nameof(apiResource));
             apiScope.ThrowIfNull(nameof(apiScope));
         
-            await DeleteApiScopeClaimsFromApiScopeAsync(apiResource,apiScope, cancellationToken);
+            await DeleteApiScopeClaimsAsync(apiResource,apiScope, cancellationToken);
             try
             {
                 var cypher = $@"
@@ -183,7 +183,7 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<IdentityResult> AddApiScopeClaimToApiScopeAsync(
+        public async Task<IdentityResult> AddApiScopeClaimAsync(
             Neo4jIdentityServer4ApiResource apiResource, 
             Neo4jIdentityServer4ApiScope apiScope,
             Neo4jIdentityServer4ApiScopeClaim apiScopeClaim, 
@@ -216,7 +216,7 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<IdentityResult> DeleteApiScopeClaimFromApiScopeAsync(
+        public async Task<IdentityResult> DeleteApiScopeClaimAsync(
             Neo4jIdentityServer4ApiResource apiResource,
             Neo4jIdentityServer4ApiScope apiScope, 
             Neo4jIdentityServer4ApiScopeClaim apiScopeClaim,
@@ -252,7 +252,7 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<IdentityResult> DeleteApiScopeClaimsFromApiScopeAsync(
+        public async Task<IdentityResult> DeleteApiScopeClaimsAsync(
             Neo4jIdentityServer4ApiResource apiResource,
             Neo4jIdentityServer4ApiScope apiScope, 
             CancellationToken cancellationToken = default(CancellationToken))

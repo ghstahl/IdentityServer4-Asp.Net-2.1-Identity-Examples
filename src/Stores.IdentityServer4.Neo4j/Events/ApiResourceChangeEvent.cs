@@ -10,7 +10,7 @@ namespace Stores.IdentityServer4Neo4j.Events
         /// Initializes a new instance of the <see cref="ApiResourceChangeEvent"/> class.
         /// </summary>
         protected ApiResourceChangeEvent()
-            : base("ApiResourceStore",
+            : base(StoresIdentityServer4.Neo4j.Events.Constants.Categories.ApiResourceStore,
                 "ApiResource Change Event",
                 EventTypes.Information,
                 EventIds.ApiResourceChange)

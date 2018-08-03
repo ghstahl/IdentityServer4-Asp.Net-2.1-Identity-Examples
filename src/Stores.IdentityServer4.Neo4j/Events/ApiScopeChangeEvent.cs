@@ -12,7 +12,7 @@ namespace Stores.IdentityServer4Neo4j.Events
         /// Initializes a new instance of the <see cref="ApiScopeChangeEvent"/> class.
         /// </summary>
         protected ApiScopeChangeEvent()
-            : base("ApiScopeStore",
+            : base(StoresIdentityServer4.Neo4j.Events.Constants.Categories.ApiScopeStore,
                 "ApiScope Change Event",
                 EventTypes.Information,
                 EventIds.ApiScopeChange)
