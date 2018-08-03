@@ -10,10 +10,18 @@
         public const int ClientChange = ClientStoreEventsStart + 0;
 
         //////////////////////////////////////////////////////
-        /// ClientStore related events
+        /// ApiScopeStore related events
         //////////////////////////////////////////////////////
         private const int ApiScopeStoreEventsStart = 2000;
 
         public const int ApiScopeChange = ApiScopeStoreEventsStart + 0;
+
+        //////////////////////////////////////////////////////
+        /// ApiResourceStore related events
+        //////////////////////////////////////////////////////
+        private const int ApiResourceStoreEventsStart = 3000;
+
+        public const int ApiResourceChange = ApiResourceStoreEventsStart + 0;
+
     }
 }

@@ -108,7 +108,8 @@ namespace StoresIdentityServer4.Test.Core.Store
         protected abstract TRedirectUri CreateTestRedirectUri();
         protected abstract TProperty CreateTestProperty();
         protected abstract TIDPRestriction CreateTesTIDPRestriction();
-
+        protected abstract TApiResource CreateTestApiResource();
+        protected abstract TApiScope CreateTestApiScope();
         [TestInitialize]
         public async Task Initialize()
         {
@@ -737,6 +738,30 @@ namespace StoresIdentityServer4.Test.Core.Store
             result.Succeeded.ShouldBeTrue();
         }
 
+        [TestMethod]
+        public async Task Create_ApiResource_Assure_Unique()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            var apiResouce = CreateTestApiResource();
+
+            var result = await _clientUserStore.CreateApiResourceAsync(apiResouce);
+
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindApiResourceAsync(apiResouce);
+            findResult.ShouldNotBeNull();
+            findResult.Name.ShouldBe(apiResouce.Name);
+
+            // do it again, but this time it should fail
+            result = await _clientUserStore.CreateApiResourceAsync(apiResouce);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeFalse();
+        }
+
+      
 
         [TestMethod]
         public async Task Create_GrantType_Assure_Unique()
@@ -789,6 +814,88 @@ namespace StoresIdentityServer4.Test.Core.Store
             findResult.ShouldNotBeNull();
             findResult.GrantType.ShouldBe(grantTypeNew.GrantType);
         }
+        [TestMethod]
+        public async Task Create_ApiResource_Redundant_Delete()
+        {
+            var apiResouce = CreateTestApiResource();
+
+            var result = await _clientUserStore.CreateApiResourceAsync(apiResouce);
+
+            // delete it
+            result = await _clientUserStore.DeleteApiResourceAsync(apiResouce);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.FindApiResourceAsync(apiResouce);
+            findResult.ShouldBeNull();
+
+            // delete it
+            result = await _clientUserStore.DeleteApiResourceAsync(apiResouce);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+        }
+        [TestMethod]
+        public async Task Create_ApiResource_ApiScope_Delete()
+        {
+            var apiResouce = CreateTestApiResource();
+            await _clientUserStore.CreateApiResourceAsync(apiResouce);
+
+            var apiScope = CreateTestApiScope();
+
+            var result = await _clientUserStore.AddApiScopeAsync(apiResouce, apiScope);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            result = await _clientUserStore.AddApiScopeAsync(apiResouce, apiScope);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var scope = await _clientUserStore.GetApiScopeAsync(apiResouce, apiScope);
+            scope.ShouldNotBeNull();
+            scope.Name.ShouldBe(apiScope.Name);
+
+            var scopes = await _clientUserStore.GetApiScopesAsync(apiResouce);
+            scopes.ShouldNotBeNull();
+            scopes.Count.ShouldBe(1);
+            scopes[0].ShouldNotBeNull();
+            scopes[0].Name.ShouldBe(apiScope.Name);
+
+            result = await _clientUserStore.DeleteApiScopeAsync(apiResouce, apiScope);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            scope = await _clientUserStore.GetApiScopeAsync(apiResouce, apiScope);
+            scope.ShouldBeNull();
+
+        }
+        [TestMethod]
+        public async Task Create_ApiResource_ApiScope_Claims()
+        {
+            var apiResouce = CreateTestApiResource();
+            await _clientUserStore.CreateApiResourceAsync(apiResouce);
+
+            var apiScope = CreateTestApiScope();
+
+            var result = await _clientUserStore.AddApiScopeAsync(apiResouce, apiScope);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            result = await _clientUserStore.AddApiScopeAsync(apiResouce, apiScope);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var scope = await _clientUserStore.GetApiScopeAsync(apiResouce, apiScope);
+            scope.ShouldNotBeNull();
+            scope.Name.ShouldBe(apiScope.Name);
+
+            var scopes = await _clientUserStore.GetApiScopesAsync(apiResouce);
+            scopes.ShouldNotBeNull();
+            scopes.Count.ShouldBe(1);
+            scopes[0].ShouldNotBeNull();
+            scopes[0].Name.ShouldBe(apiScope.Name);
+        }
+
 
         [TestMethod]
         public async Task Create_GrantType_Redundant_Delete()

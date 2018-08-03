@@ -55,6 +55,16 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
         {
         }
 
+        protected override Neo4jIdentityServer4ApiResource CreateTestApiResource()
+        {
+            return new Neo4jIdentityServer4ApiResource()
+            {
+                Name = Unique.S,
+                Description = Unique.S,
+                DisplayName = Unique.S,
+                Enabled = true
+            };
+        }
         protected override TestUser CreateTestUser()
         {
             return new TestUser()
@@ -185,7 +195,15 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
             };
         }
 
-
-
+        protected override Neo4jIdentityServer4ApiScope CreateTestApiScope()
+        {
+            return new Neo4jIdentityServer4ApiScope()
+            {
+                Name = Unique.S,
+                Description = Unique.S,
+                DisplayName = Unique.S,
+                Emphasize = true,Required = true,ShowInDiscoveryDocument = true
+            };
+        }
     }
 }

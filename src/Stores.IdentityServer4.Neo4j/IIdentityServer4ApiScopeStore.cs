@@ -15,17 +15,14 @@ namespace StoresIdentityServer4.Neo4j
         where TApiScope : StoresIdentityServer4.Neo4j.Entities.ApiScope
         where TApiScopeClaim : StoresIdentityServer4.Neo4j.Entities.ApiScopeClaim
     {
-        Task<IdentityResult> AddApiScopeToApiResourceAsync(
-            TApiResource apiResource,
-            TApiScope apiScope,
-            CancellationToken cancellationToken = default(CancellationToken));
-        Task<TApiScope> FindApiScopeAsync(TApiResource apiResource, TApiScope apiScope,
-            CancellationToken cancellationToken = default(CancellationToken));
-        Task<IdentityResult> RemoveApiScopeFromApiResourceAsync(
+        Task<IdentityResult> AddApiScopeAsync(
             TApiResource apiResource,
             TApiScope apiScope,
             CancellationToken cancellationToken = default(CancellationToken));
 
+        Task<TApiScope> GetApiScopeAsync(TApiResource apiResource, TApiScope apiScope,
+            CancellationToken cancellationToken = default(CancellationToken));
+       
         Task<IList<TApiScope>> GetApiScopesAsync(TApiResource apiResource,
             CancellationToken cancellationToken = default(CancellationToken));
 

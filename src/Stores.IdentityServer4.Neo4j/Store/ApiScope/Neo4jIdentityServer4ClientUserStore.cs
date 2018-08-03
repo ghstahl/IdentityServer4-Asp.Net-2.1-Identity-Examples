@@ -31,7 +31,56 @@ namespace StoresIdentityServer4.Neo4j
         private static readonly string IdSrv4ApiScopeRollup;
         private static readonly string IdSrv4ApiResourceRollup;
 
-        public async Task<Neo4jIdentityServer4ApiScope> FindApiScopeAsync(
+        public async Task<IdentityResult> AddApiScopeAsync(
+            Neo4jIdentityServer4ApiResource apiResource,
+            Neo4jIdentityServer4ApiScope apiScope,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            apiResource.ThrowIfNull(nameof(apiResource));
+            apiScope.ThrowIfNull(nameof(apiScope));
+            try
+            {
+                var cypher = $@"
+                MATCH 
+                    (r:{IdSrv4ClientApiResource}{{Name: $p0}})
+                MERGE 
+                    (l:{IdSrv4ClientApiScope} {"$p1".AsMapFor<Neo4jIdentityServer4ApiScope>()})
+                MERGE 
+                    (r)-[:{Neo4jConstants.Relationships.HasScope}]->(l)";
+
+                var result = await Session.RunAsync(cypher, Params.Create(apiResource.Name, apiScope));
+                await RaiseApiResourceChangeEventAsync(apiResource);
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return ex.ToIdentityResult();
+            }
+        }
+
+        public async Task<IList<Neo4jIdentityServer4ApiScope>> GetApiScopesAsync(
+            Neo4jIdentityServer4ApiResource apiResource,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            apiResource.ThrowIfNull(nameof(apiResource));
+
+            var cypher = $@"
+                 MATCH 
+                        (:{IdSrv4ClientApiResource}{{Name: $p0}})
+                        -[:{Neo4jConstants.Relationships.HasScope}]->
+                        (s:{IdSrv4ClientApiScope})
+                RETURN s{{ .* }}";
+
+            var result = await Session.RunAsync(cypher, Params.Create(apiResource.Name));
+
+            var records = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ApiScope>("s"));
+            return records;
+        }
+        public async Task<Neo4jIdentityServer4ApiScope> GetApiScopeAsync(
             Neo4jIdentityServer4ApiResource apiResource, 
             Neo4jIdentityServer4ApiScope apiScope,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -273,7 +322,7 @@ namespace StoresIdentityServer4.Neo4j
 
             await RaiseApiScopeChangeEventAsync(apiResource,apiScope);
             var finalResult = new Client();
-            var apiScopeFound = await FindApiScopeAsync(apiResource,apiScope, cancellationToken);
+            var apiScopeFound = await GetApiScopeAsync(apiResource,apiScope, cancellationToken);
             var model = apiScopeFound.ToModel();
             var apiScopeClaims = await GetApiScopeClaimsAsync(apiResource,apiScopeFound, cancellationToken);
             if (apiScopeClaims != null)

@@ -20,6 +20,11 @@ namespace StoresIdentityServer4.Neo4j
         private static readonly string IdSrv4ClientApiResourceClaim;
         private static readonly string IdSrv4ClientApiSecret;
 
+        private Task RaiseApiResourceChangeEventAsync(Neo4jIdentityServer4ApiResource apiResource)
+        {
+            return _eventService.RaiseAsync(new ApiResourceChangeEvent<Neo4jIdentityServer4ApiResource>(apiResource));
+        }
+
         public async Task<IdentityResult> CreateApiResourceAsync(
             Neo4jIdentityServer4ApiResource apiResource,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -148,28 +153,7 @@ namespace StoresIdentityServer4.Neo4j
             throw new NotImplementedException();
         }
 
-        public async Task<IdentityResult> AddApiScopeToApiResourceAsync(
-            Neo4jIdentityServer4ApiResource apiResource,
-            Neo4jIdentityServer4ApiScope apiScope,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IdentityResult> RemoveApiScopeFromApiResourceAsync(
-            Neo4jIdentityServer4ApiResource apiResource,
-            Neo4jIdentityServer4ApiScope apiScope, 
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IList<Neo4jIdentityServer4ApiScope>> GetApiScopesAsync(
-            Neo4jIdentityServer4ApiResource apiResource,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public async Task<IdentityResult> AddApiSecretToApiResourceAsync(
             Neo4jIdentityServer4ApiResource apiResource,

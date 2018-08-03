@@ -183,6 +183,8 @@ namespace StoresIdentityServer4.Neo4j
             await Session.RunAsync(cypher);
             cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4ClientGrantType}) ASSERT r.GrantType IS UNIQUE";
             await Session.RunAsync(cypher);
+            cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4ClientApiResource}) ASSERT r.Name IS UNIQUE";
+            await Session.RunAsync(cypher);
         }
 
         public Neo4jIdentityServer4ClientUserStore(ISession session, INeo4jEventService eventService)
