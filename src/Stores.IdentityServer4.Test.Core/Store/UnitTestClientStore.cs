@@ -32,13 +32,17 @@ namespace StoresIdentityServer4.Test.Core.Store
         TIDPRestriction,
         TProperty,
         TPostLogoutRedirectUri,
-        TRedirectUri>
+        TRedirectUri,
+        TIdentityResource,
+        TIdentityClaim>
         where TUser : Neo4jIdentityUser
         where TClient : Client
         where TSecret : Secret
         where TGrantType : ClientGrantType
         where TApiResource : ApiResource
         where TApiResourceClaim : StoresIdentityServer4.Neo4j.Entities.ApiResourceClaim
+        where TIdentityResource : StoresIdentityServer4.Neo4j.Entities.IdentityResource
+        where TIdentityClaim : StoresIdentityServer4.Neo4j.Entities.IdentityClaim
         where TApiSecret : StoresIdentityServer4.Neo4j.Entities.ApiSecret
         where TApiScope : StoresIdentityServer4.Neo4j.Entities.ApiScope
         where TApiScopeClaim : StoresIdentityServer4.Neo4j.Entities.ApiScopeClaim
@@ -69,7 +73,9 @@ namespace StoresIdentityServer4.Test.Core.Store
             TIDPRestriction,
             TProperty,
             TPostLogoutRedirectUri,
-            TRedirectUri> _clientUserStore;
+            TRedirectUri,
+            TIdentityResource,
+            TIdentityClaim> _clientUserStore;
 
         public UnitTestClientStore(
             IUserStore<TUser> userStore,
@@ -89,7 +95,9 @@ namespace StoresIdentityServer4.Test.Core.Store
                 TIDPRestriction,
                 TProperty,
                 TPostLogoutRedirectUri,
-                TRedirectUri> clientUserStore,
+                TRedirectUri,
+                TIdentityResource,
+                TIdentityClaim> clientUserStore,
             INeo4jTest neo4jtest)
         {
             _userStore = userStore;

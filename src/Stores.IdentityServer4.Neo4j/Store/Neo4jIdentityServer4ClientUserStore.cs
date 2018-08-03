@@ -31,7 +31,10 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClienTIDPRestriction,
             Neo4jIdentityServer4ClientProperty,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri,
-            Neo4jIdentityServer4ClientRedirectUri>
+            Neo4jIdentityServer4ClientRedirectUri,
+            Neo4jIdentityServer4IdentityResource,
+            Neo4jIdentityServer4IdentityClaim
+        >
         where TUser : Neo4jIdentityUser
     {
        
@@ -57,7 +60,9 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClienTIDPRestriction, 
             Neo4jIdentityServer4ClientProperty, 
             Neo4jIdentityServer4ClientPostLogoutRedirectUri, 
-            Neo4jIdentityServer4ClientRedirectUri
+            Neo4jIdentityServer4ClientRedirectUri,
+            Neo4jIdentityServer4IdentityResource,
+            Neo4jIdentityServer4IdentityClaim
         > IdentityServer4ClientUserStore
         {
             get
@@ -78,7 +83,9 @@ namespace StoresIdentityServer4.Neo4j
                         Neo4jIdentityServer4ClienTIDPRestriction,
                         Neo4jIdentityServer4ClientProperty,
                         Neo4jIdentityServer4ClientPostLogoutRedirectUri,
-                        Neo4jIdentityServer4ClientRedirectUri
+                        Neo4jIdentityServer4ClientRedirectUri,
+                        Neo4jIdentityServer4IdentityResource,
+                        Neo4jIdentityServer4IdentityClaim
                     >))
                     as IIdentityServer4ClientUserStore<
                         TUser,
@@ -96,7 +103,9 @@ namespace StoresIdentityServer4.Neo4j
                         Neo4jIdentityServer4ClienTIDPRestriction,
                         Neo4jIdentityServer4ClientProperty,
                         Neo4jIdentityServer4ClientPostLogoutRedirectUri,
-                        Neo4jIdentityServer4ClientRedirectUri
+                        Neo4jIdentityServer4ClientRedirectUri,
+                        Neo4jIdentityServer4IdentityResource,
+                        Neo4jIdentityServer4IdentityClaim
                     >;
                 return service;
             }
@@ -122,7 +131,10 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClienTIDPRestriction,
             Neo4jIdentityServer4ClientProperty,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri,
-            Neo4jIdentityServer4ClientRedirectUri>
+            Neo4jIdentityServer4ClientRedirectUri,
+            Neo4jIdentityServer4IdentityResource,
+            Neo4jIdentityServer4IdentityClaim
+        >
         where TUser : Neo4jIdentityUser
     {
         private bool _disposed;
@@ -196,7 +208,6 @@ namespace StoresIdentityServer4.Neo4j
         {
             return _eventService.RaiseAsync(new ClientChangeEvent<Neo4jIdentityServer4Client>(client));
         }
-
 
     }
 }

@@ -24,28 +24,37 @@ namespace StoresIdentityServer4.Neo4j
         TIDPRestriction,
         TProperty,
         TPostLogoutRedirectUri,
-        TRedirectUri> :
+        TRedirectUri,
+        TIdentityResource,
+        TIdentityClaim> :
         IIdentityServer4GrantTypeStore<TGrantType>,
-        IIdentityServer4ApiResourceStore<TApiResource, TApiResourceClaim,
-            TApiSecret, TApiScope,
+        IIdentityServer4ApiResourceStore<
+            TApiResource, 
+            TApiResourceClaim,
+            TApiSecret, 
+            TApiScope,
             TApiScopeClaim>,
+        IIdentityServer4IdentityResourceStore<
+            TIdentityResource,
+            TIdentityClaim>,
         IDisposable
-        where TClient : Client
-        where TSecret : Secret
-        where TGrantType : ClientGrantType
+        where TClient : StoresIdentityServer4.Neo4j.Entities.Client
+        where TSecret : IdentityServer4.Models.Secret
+        where TGrantType : StoresIdentityServer4.Neo4j.Entities.ClientGrantType
         where TApiResource : StoresIdentityServer4.Neo4j.Entities.ApiResource
         where TApiResourceClaim : StoresIdentityServer4.Neo4j.Entities.ApiResourceClaim
+        where TIdentityResource : StoresIdentityServer4.Neo4j.Entities.IdentityResource
+        where TIdentityClaim : StoresIdentityServer4.Neo4j.Entities.IdentityClaim
         where TApiSecret : StoresIdentityServer4.Neo4j.Entities.ApiSecret
         where TApiScope : StoresIdentityServer4.Neo4j.Entities.ApiScope
         where TApiScopeClaim : StoresIdentityServer4.Neo4j.Entities.ApiScopeClaim
-        where TClaim : ClientClaim
-        where TCorsOrigin : ClientCorsOrigin
-        where TScope : ClientScope
-        where TIDPRestriction : ClienTIDPRestriction
-        where TProperty : ClientProperty
-        where TPostLogoutRedirectUri : ClientPostLogoutRedirectUri
-        where TRedirectUri : ClientRedirectUri
-
+        where TClaim : StoresIdentityServer4.Neo4j.Entities.ClientClaim
+        where TCorsOrigin : StoresIdentityServer4.Neo4j.Entities.ClientCorsOrigin
+        where TScope : StoresIdentityServer4.Neo4j.Entities.ClientScope
+        where TIDPRestriction : StoresIdentityServer4.Neo4j.Entities.ClienTIDPRestriction
+        where TProperty : StoresIdentityServer4.Neo4j.Entities.ClientProperty
+        where TPostLogoutRedirectUri : StoresIdentityServer4.Neo4j.Entities.ClientPostLogoutRedirectUri
+        where TRedirectUri : StoresIdentityServer4.Neo4j.Entities.ClientRedirectUri
     {
         Task<IdentityServer4.Models.Client> RollupAsync(TClient client,
             CancellationToken cancellationToken = default(CancellationToken));

@@ -23,5 +23,11 @@
 
         public const int ApiResourceChange = ApiResourceStoreEventsStart + 0;
 
+        //////////////////////////////////////////////////////
+        /// IdentityResourceStore related events
+        //////////////////////////////////////////////////////
+        private const int IdentityResourceStoreEventsStart = 4000;
+
+        public const int IdentityResourceChange = IdentityResourceStoreEventsStart + 0;
     }
 }

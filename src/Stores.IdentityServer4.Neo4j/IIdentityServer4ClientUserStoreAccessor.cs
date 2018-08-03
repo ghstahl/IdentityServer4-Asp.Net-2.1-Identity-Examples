@@ -1,8 +1,4 @@
-﻿using IdentityServer4.Models;
-using StoresIdentityServer4.Neo4j.Entities;
-using Client = StoresIdentityServer4.Neo4j.Entities.Client;
-
-namespace StoresIdentityServer4.Neo4j
+﻿namespace StoresIdentityServer4.Neo4j
 {
     public interface IIdentityServer4ClientUserStoreAccessor<
         TUser,
@@ -20,23 +16,27 @@ namespace StoresIdentityServer4.Neo4j
         TIDPRestriction,
         TProperty,
         TPostLogoutRedirectUri,
-        TRedirectUri>
+        TRedirectUri,
+        TIdentityResource,
+        TIdentityClaim>
         where TUser : class
-        where TClient : Client
-        where TSecret : Secret
-        where TGrantType : ClientGrantType
+        where TClient : StoresIdentityServer4.Neo4j.Entities.Client
+        where TSecret : IdentityServer4.Models.Secret
+        where TGrantType : StoresIdentityServer4.Neo4j.Entities.ClientGrantType
         where TApiResource : StoresIdentityServer4.Neo4j.Entities.ApiResource
         where TApiResourceClaim : StoresIdentityServer4.Neo4j.Entities.ApiResourceClaim
+        where TIdentityResource : StoresIdentityServer4.Neo4j.Entities.IdentityResource
+        where TIdentityClaim : StoresIdentityServer4.Neo4j.Entities.IdentityClaim
         where TApiSecret : StoresIdentityServer4.Neo4j.Entities.ApiSecret
         where TApiScope : StoresIdentityServer4.Neo4j.Entities.ApiScope
         where TApiScopeClaim : StoresIdentityServer4.Neo4j.Entities.ApiScopeClaim
-        where TClaim : ClientClaim
-        where TCorsOrigin : ClientCorsOrigin
-        where TScope : ClientScope
-        where TIDPRestriction : ClienTIDPRestriction
-        where TProperty : ClientProperty
-        where TPostLogoutRedirectUri : ClientPostLogoutRedirectUri
-        where TRedirectUri : ClientRedirectUri
+        where TClaim : StoresIdentityServer4.Neo4j.Entities.ClientClaim
+        where TCorsOrigin : StoresIdentityServer4.Neo4j.Entities.ClientCorsOrigin
+        where TScope : StoresIdentityServer4.Neo4j.Entities.ClientScope
+        where TIDPRestriction : StoresIdentityServer4.Neo4j.Entities.ClienTIDPRestriction
+        where TProperty : StoresIdentityServer4.Neo4j.Entities.ClientProperty
+        where TPostLogoutRedirectUri : StoresIdentityServer4.Neo4j.Entities.ClientPostLogoutRedirectUri
+        where TRedirectUri : StoresIdentityServer4.Neo4j.Entities.ClientRedirectUri
     {
         IIdentityServer4ClientUserStore<
             TUser,
@@ -54,6 +54,8 @@ namespace StoresIdentityServer4.Neo4j
             TIDPRestriction,
             TProperty,
             TPostLogoutRedirectUri,
-            TRedirectUri> IdentityServer4ClientUserStore { get; }
+            TRedirectUri,
+            TIdentityResource,
+            TIdentityClaim> IdentityServer4ClientUserStore { get; }
     }
 }

@@ -11,6 +11,7 @@ namespace StoresIdentityServer4.Neo4j.Events
             public static string ClientStore => "ClientStore";
             public static string ApiScopeStore => "ApiScopeStore";
             public static string ApiResourceStore => "ApiResourceStore";
+            public static string IdentityResourceStore => "IdentityResourceStore";
         }
     }
 }

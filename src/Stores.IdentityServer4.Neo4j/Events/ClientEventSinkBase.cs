@@ -26,7 +26,9 @@ namespace Stores.IdentityServer4Neo4j.Events
             Neo4jIdentityServer4ClienTIDPRestriction,
             Neo4jIdentityServer4ClientProperty,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri,
-            Neo4jIdentityServer4ClientRedirectUri> _accessor;
+            Neo4jIdentityServer4ClientRedirectUri,
+            Neo4jIdentityServer4IdentityResource,
+            Neo4jIdentityServer4IdentityClaim> _accessor;
 
 
         /// <summary>
@@ -49,7 +51,9 @@ namespace Stores.IdentityServer4Neo4j.Events
                 Neo4jIdentityServer4ClienTIDPRestriction,
                 Neo4jIdentityServer4ClientProperty,
                 Neo4jIdentityServer4ClientPostLogoutRedirectUri,
-                Neo4jIdentityServer4ClientRedirectUri> accessor)
+                Neo4jIdentityServer4ClientRedirectUri,
+                Neo4jIdentityServer4IdentityResource,
+                Neo4jIdentityServer4IdentityClaim> accessor)
         {
             _accessor = accessor;
         }

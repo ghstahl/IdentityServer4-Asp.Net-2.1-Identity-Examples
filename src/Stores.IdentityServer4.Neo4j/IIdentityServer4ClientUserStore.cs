@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
 
 
@@ -24,7 +23,9 @@ namespace StoresIdentityServer4.Neo4j
         TIDPRestriction,
         TProperty,
         TPostLogoutRedirectUri,
-        TRedirectUri> :
+        TRedirectUri,
+        TIdentityResource,
+        TIdentityClaim> :
         IIdentityServer4ClientStore<
             TClient,
             TSecret,
@@ -40,14 +41,18 @@ namespace StoresIdentityServer4.Neo4j
             TIDPRestriction,
             TProperty,
             TPostLogoutRedirectUri,
-            TRedirectUri>,
+            TRedirectUri,
+            TIdentityResource,
+            TIdentityClaim>,
         IDisposable
         where TUser : class
         where TClient : StoresIdentityServer4.Neo4j.Entities.Client
-        where TSecret : Secret
+        where TSecret : IdentityServer4.Models.Secret
         where TGrantType : StoresIdentityServer4.Neo4j.Entities.ClientGrantType
         where TApiResource : StoresIdentityServer4.Neo4j.Entities.ApiResource
         where TApiResourceClaim : StoresIdentityServer4.Neo4j.Entities.ApiResourceClaim
+        where TIdentityResource : StoresIdentityServer4.Neo4j.Entities.IdentityResource
+        where TIdentityClaim : StoresIdentityServer4.Neo4j.Entities.IdentityClaim
         where TApiSecret : StoresIdentityServer4.Neo4j.Entities.ApiSecret
         where TApiScope : StoresIdentityServer4.Neo4j.Entities.ApiScope
         where TApiScopeClaim : StoresIdentityServer4.Neo4j.Entities.ApiScopeClaim
@@ -58,7 +63,6 @@ namespace StoresIdentityServer4.Neo4j
         where TProperty : StoresIdentityServer4.Neo4j.Entities.ClientProperty
         where TPostLogoutRedirectUri : StoresIdentityServer4.Neo4j.Entities.ClientPostLogoutRedirectUri
         where TRedirectUri : StoresIdentityServer4.Neo4j.Entities.ClientRedirectUri
-
     {
         Task CreateConstraintsAsync(CancellationToken cancellationToken = default(CancellationToken));
 

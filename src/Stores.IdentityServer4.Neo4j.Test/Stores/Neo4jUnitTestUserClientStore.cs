@@ -28,7 +28,9 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
             Neo4jIdentityServer4ClienTIDPRestriction,
             Neo4jIdentityServer4ClientProperty,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri,
-            Neo4jIdentityServer4ClientRedirectUri>
+            Neo4jIdentityServer4ClientRedirectUri,
+            Neo4jIdentityServer4IdentityResource,
+            Neo4jIdentityServer4IdentityClaim>
     {
         public Neo4jUnitTestUserClientStore() :
             base(
@@ -50,7 +52,9 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
                         Neo4jIdentityServer4ClienTIDPRestriction,
                         Neo4jIdentityServer4ClientProperty,
                         Neo4jIdentityServer4ClientPostLogoutRedirectUri,
-                        Neo4jIdentityServer4ClientRedirectUri>>(),
+                        Neo4jIdentityServer4ClientRedirectUri,
+                        Neo4jIdentityServer4IdentityResource,
+                        Neo4jIdentityServer4IdentityClaim>>(),
                 HostContainer.ServiceProvider.GetService<INeo4jTest>())
         {
         }

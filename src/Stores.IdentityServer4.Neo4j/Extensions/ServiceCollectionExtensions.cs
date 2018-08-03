@@ -29,7 +29,9 @@ namespace StoresIdentityServer4.Neo4j
                         Neo4jIdentityServer4ClienTIDPRestriction,
                         Neo4jIdentityServer4ClientProperty,
                         Neo4jIdentityServer4ClientPostLogoutRedirectUri,
-                        Neo4jIdentityServer4ClientRedirectUri>>
+                        Neo4jIdentityServer4ClientRedirectUri,
+                        Neo4jIdentityServer4IdentityResource,
+                        Neo4jIdentityServer4IdentityClaim>>
                 (x => { return x.GetService<Neo4jIdentityServer4ClientUserStore<TUser>>(); });
             //   serviceCollection.AddScoped<INeo4jEventSink>(x => { return x.GetService<Neo4jIdentityServer4ClientUserStore<TUser>>(); });
 
@@ -56,7 +58,9 @@ namespace StoresIdentityServer4.Neo4j
                         Neo4jIdentityServer4ClienTIDPRestriction,
                         Neo4jIdentityServer4ClientProperty,
                         Neo4jIdentityServer4ClientPostLogoutRedirectUri,
-                        Neo4jIdentityServer4ClientRedirectUri>,
+                        Neo4jIdentityServer4ClientRedirectUri,
+                        Neo4jIdentityServer4IdentityResource,
+                        Neo4jIdentityServer4IdentityClaim>,
                     Neo4jIdentityServer4ClientUserStoreAccessor<TUser>>();
         }
     }
