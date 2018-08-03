@@ -45,7 +45,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH 
-                    (r:{IdSrv4ClientApiResource}{{Name: $p0}})
+                    (r:{IdSrv4ApiResource}{{Name: $p0}})
                 MERGE 
                     (l:{IdSrv4ClientApiScope} {"$p1".AsMapFor<Neo4jIdentityServer4ApiScope>()})
                 MERGE 
@@ -71,7 +71,7 @@ namespace StoresIdentityServer4.Neo4j
 
             var cypher = $@"
                 MATCH 
-                    (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasScope}]->
+                    (:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasScope}]->
                     (s:{IdSrv4ClientApiScope})
                 RETURN 
                     s{{ .* }}";
@@ -92,7 +92,7 @@ namespace StoresIdentityServer4.Neo4j
             apiScope.ThrowIfNull(nameof(apiScope));
 
             var cypher = $@"
-                MATCH (apiResource:{IdSrv4ClientApiResource})-[:{Neo4jConstants.Relationships.HasScope}]->(apiScope:{IdSrv4ClientApiScope})
+                MATCH (apiResource:{IdSrv4ApiResource})-[:{Neo4jConstants.Relationships.HasScope}]->(apiScope:{IdSrv4ClientApiScope})
                 WHERE apiResource.Name = $p0 AND apiScope.Name = $p1
                 RETURN apiScope {{ .* }}";
 
@@ -116,7 +116,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                     MATCH 
-                        (:{IdSrv4ClientApiResource}{{Name: $p0}})
+                        (:{IdSrv4ApiResource}{{Name: $p0}})
                         -[:{Neo4jConstants.Relationships.HasScope}]->
                         (apiScope:{IdSrv4ClientApiScope}{{Name: $p1}})
                     SET apiScope = $p1";
@@ -145,7 +145,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                     MATCH 
-                        (:{IdSrv4ClientApiResource}{{Name: $p0}})
+                        (:{IdSrv4ApiResource}{{Name: $p0}})
                         -[:{Neo4jConstants.Relationships.HasScope}]->
                         (apiScope:{IdSrv4ClientApiScope}{{Name: $p1}})
                     DETACH DELETE apiScope";
@@ -189,7 +189,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH 
-                    (apiResource:{IdSrv4ClientApiResource}{{Name: $p0}})
+                    (apiResource:{IdSrv4ApiResource}{{Name: $p0}})
                     -[:{Neo4jConstants.Relationships.HasScope}]->
                     (apiScope:{IdSrv4ClientApiScope}{{Name: $p1}})
                 MERGE 
@@ -222,7 +222,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH 
-                    (apiResource:{IdSrv4ClientApiResource}{{Name: $p0}})
+                    (apiResource:{IdSrv4ApiResource}{{Name: $p0}})
                     -[:{Neo4jConstants.Relationships.HasScope}]->
                     (apiScope:{IdSrv4ClientApiScope}{{Name: $p1}})
                     -[:{Neo4jConstants.Relationships.HasClaim}]->
@@ -257,7 +257,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                     MATCH 
-                        (apiResource:{IdSrv4ClientApiResource}{{Name: $p0}})
+                        (apiResource:{IdSrv4ApiResource}{{Name: $p0}})
                         -[:{Neo4jConstants.Relationships.HasScope}]->
                         (apiScope:{IdSrv4ClientApiScope}{{Name: $p1}})
                         -[:{Neo4jConstants.Relationships.HasClaim}]->
@@ -288,7 +288,7 @@ namespace StoresIdentityServer4.Neo4j
 
             var cypher = $@"
                 MATCH 
-                    (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasScope}]->
+                    (:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasScope}]->
                     (:{IdSrv4ClientApiScope}{{Name: $p1}})-[:{Neo4jConstants.Relationships.HasClaim}]->
                     (s:{IdSrv4ClientApiScopeClaim})
                 RETURN 
@@ -313,7 +313,7 @@ namespace StoresIdentityServer4.Neo4j
 
             var cypher = $@"
                 MATCH 
-                    (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasScope}]->
+                    (:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasScope}]->
                     (:{IdSrv4ClientApiScope}{{Name: $p1}})-[:{Neo4jConstants.Relationships.HasClaim}]->
                     (s:{IdSrv4ClientApiScopeClaim}{{Type: $p2}})
                 RETURN s {{ .* }}";
@@ -370,7 +370,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                  MATCH 
-                        (:{IdSrv4ClientApiResource}{{Name: $p0}})
+                        (:{IdSrv4ApiResource}{{Name: $p0}})
                         -[:{Neo4jConstants.Relationships.HasScope}]->
                         (c:{IdSrv4ClientApiScope}{{Name: $p1}})
                 MERGE (rollup:{IdSrv4ApiScopeRollup} {"$p2".AsMapFor<Neo4jIdentityServer4ApiScopeRollup>()})
@@ -396,7 +396,7 @@ namespace StoresIdentityServer4.Neo4j
 
             var cypher = $@"
                 MATCH 
-                    (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasScope}]->
+                    (:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasScope}]->
                     (:{IdSrv4ClientApiScope}{{Name: $p1}})-[:{Neo4jConstants.Relationships.HasRollup}]->
                     (r:{IdSrv4ApiScopeRollup})
                 RETURN r{{ .* }}";
@@ -432,7 +432,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH 
-                    (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasScope}]->
+                    (:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasScope}]->
                     (:{IdSrv4ClientApiScope}{{Name: $p1}})-[:{Neo4jConstants.Relationships.HasRollup}]->(r:{IdSrv4ApiScopeRollup})
              
                 DETACH DELETE r";

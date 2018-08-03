@@ -19,9 +19,9 @@ namespace StoresIdentityServer4.Neo4j
     public partial class Neo4jIdentityServer4ClientUserStore<TUser>
         where TUser : Neo4jIdentityUser
     {
-        private static readonly string IdSrv4ClientApiResource;
-        private static readonly string IdSrv4ClientApiResourceClaim;
-        private static readonly string IdSrv4ClientApiSecret;
+        private static readonly string IdSrv4ApiResource;
+        private static readonly string IdSrv4ApiResourceClaim;
+        private static readonly string IdSrv4ApiSecret;
 
         private async Task RaiseApiResourceChangeEventAsync(Neo4jIdentityServer4ApiResource apiResource)
         {
@@ -37,7 +37,7 @@ namespace StoresIdentityServer4.Neo4j
             apiResource.ThrowIfNull(nameof(apiResource));
             try
             {
-                var cypher = $@"CREATE (r:{IdSrv4ClientApiResource} $p0)";
+                var cypher = $@"CREATE (r:{IdSrv4ApiResource} $p0)";
                 await Session.RunAsync(cypher, Params.Create(apiResource.ConvertToMap()));
                 return IdentityResult.Success;
             }
@@ -57,7 +57,7 @@ namespace StoresIdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (r:{IdSrv4ClientApiResource}{{Name: $p0}})
+                MATCH (r:{IdSrv4ApiResource}{{Name: $p0}})
                 SET r = $p1";
 
                 await Session.RunAsync(cypher, Params.Create(apiResource.Name, apiResource.ConvertToMap()));
@@ -80,7 +80,7 @@ namespace StoresIdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (r:{IdSrv4ClientApiResource}{{Name: $p0}})
+                MATCH (r:{IdSrv4ApiResource}{{Name: $p0}})
                 DETACH DELETE r";
 
                 await Session.RunAsync(cypher, Params.Create(apiResource.Name));
@@ -116,7 +116,7 @@ namespace StoresIdentityServer4.Neo4j
             apiResource.ThrowIfNull(nameof(apiResource));
 
             var cypher = $@"
-                MATCH (r:{IdSrv4ClientApiResource}{{Name: $p0}})
+                MATCH (r:{IdSrv4ApiResource}{{Name: $p0}})
                 RETURN r {{ .* }}";
 
             var result = await Session.RunAsync(cypher, Params.Create(apiResource.Name));
@@ -134,7 +134,7 @@ namespace StoresIdentityServer4.Neo4j
 
             var cypher = $@"
                 MATCH 
-                    (r:{IdSrv4ClientApiResource})
+                    (r:{IdSrv4ApiResource})
                 RETURN 
                     r{{ .* }}";
 
@@ -158,9 +158,9 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH 
-                    (r:{IdSrv4ClientApiResource}{{Name: $p0}}) 
+                    (r:{IdSrv4ApiResource}{{Name: $p0}}) 
                 MERGE 
-                    (l:{IdSrv4ClientApiResourceClaim} {"$p1".AsMapFor<Neo4jIdentityServer4ApiResourceClaim>()})
+                    (l:{IdSrv4ApiResourceClaim} {"$p1".AsMapFor<Neo4jIdentityServer4ApiResourceClaim>()})
                 MERGE 
                     (r)-[:{Neo4jConstants.Relationships.HasClaim}]->(l)";
 
@@ -186,8 +186,8 @@ namespace StoresIdentityServer4.Neo4j
 
             var cypher = $@"
                 MATCH 
-                    (r:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasClaim}]->
-                    (c:{IdSrv4ClientApiResourceClaim}{{Type: $p1}}) 
+                    (r:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasClaim}]->
+                    (c:{IdSrv4ApiResourceClaim}{{Type: $p1}}) 
                 RETURN c {{ .* }}";
 
             var result = await Session.RunAsync(cypher, Params.Create(apiResource.Name, apiResourceClaim.Type));
@@ -210,8 +210,8 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH 
-                    (r:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasClaim}]->
-                    (c:{IdSrv4ClientApiResourceClaim}{{Type: $p1}}) 
+                    (r:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasClaim}]->
+                    (c:{IdSrv4ApiResourceClaim}{{Type: $p1}}) 
                 DETACH DELETE c";
 
                 await Session.RunAsync(cypher,
@@ -237,8 +237,8 @@ namespace StoresIdentityServer4.Neo4j
 
             var cypher = $@"
                 MATCH 
-                    (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasClaim}]->
-                    (s:{IdSrv4ClientApiResourceClaim})
+                    (:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasClaim}]->
+                    (s:{IdSrv4ApiResourceClaim})
                 RETURN 
                     s{{ .* }}";
 
@@ -259,8 +259,8 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH 
-                   (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasClaim}]->
-                    (s:{IdSrv4ClientApiResourceClaim})
+                   (:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasClaim}]->
+                    (s:{IdSrv4ApiResourceClaim})
                 DETACH DELETE s";
 
                 await Session.RunAsync(cypher,
@@ -289,9 +289,9 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH 
-                    (r:{IdSrv4ClientApiResource}{{Name: $p0}}) 
+                    (r:{IdSrv4ApiResource}{{Name: $p0}}) 
                 MERGE 
-                    (s:{IdSrv4ClientApiSecret} {"$p1".AsMapFor<Neo4jIdentityServer4ApiSecret>()})
+                    (s:{IdSrv4ApiSecret} {"$p1".AsMapFor<Neo4jIdentityServer4ApiSecret>()})
                 MERGE 
                     (r)-[:{Neo4jConstants.Relationships.HasSecret}]->(s)";
 
@@ -317,8 +317,8 @@ namespace StoresIdentityServer4.Neo4j
 
             var cypher = $@"
                 MATCH 
-                    (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasSecret}]->
-                    (s:{IdSrv4ClientApiSecret}{{Type: $p1,Value: $p2}}) 
+                    (:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasSecret}]->
+                    (s:{IdSrv4ApiSecret}{{Type: $p1,Value: $p2}}) 
                 RETURN s {{ .* }}";
 
             var result = await Session.RunAsync(cypher,
@@ -342,8 +342,8 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH 
-                    (r:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasSecret}]->
-                    (s:{IdSrv4ClientApiSecret}{{Type: $p1,Value: $p2}}) 
+                    (r:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasSecret}]->
+                    (s:{IdSrv4ApiSecret}{{Type: $p1,Value: $p2}}) 
                 DETACH DELETE s";
 
                 await Session.RunAsync(cypher,
@@ -370,8 +370,8 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH 
-                    (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasSecret}]->
-                    (s:{IdSrv4ClientApiSecret}) 
+                    (:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasSecret}]->
+                    (s:{IdSrv4ApiSecret}) 
                 DETACH DELETE s";
 
                 await Session.RunAsync(cypher,
@@ -396,8 +396,8 @@ namespace StoresIdentityServer4.Neo4j
 
             var cypher = $@"
                 MATCH 
-                    (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasSecret}]->
-                    (s:{IdSrv4ClientApiSecret})
+                    (:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasSecret}]->
+                    (s:{IdSrv4ApiSecret})
                 RETURN 
                     s{{ .* }}";
 
@@ -462,7 +462,7 @@ namespace StoresIdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                    MATCH (c:{IdSrv4ClientApiResource}{{Name: $p0}})        
+                    MATCH (c:{IdSrv4ApiResource}{{Name: $p0}})        
                     MERGE (rollup:{IdSrv4ApiResourceRollup} {"$p1".AsMapFor<Neo4jIdentityServer4ApiResourceRollup>()})
                     MERGE (c)-[:{Neo4jConstants.Relationships.HasRollup}]->(rollup)";
 
@@ -485,7 +485,7 @@ namespace StoresIdentityServer4.Neo4j
 
             var cypher = $@"
                 MATCH 
-                    (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasRollup}]->
+                    (:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasRollup}]->
                     (r:{IdSrv4ApiResourceRollup})
                 RETURN r{{ .* }}";
 
@@ -519,7 +519,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH 
-                    (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasRollup}]->
+                    (:{IdSrv4ApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasRollup}]->
                     (r:{IdSrv4ApiResourceRollup}) 
                 DETACH DELETE r";
 

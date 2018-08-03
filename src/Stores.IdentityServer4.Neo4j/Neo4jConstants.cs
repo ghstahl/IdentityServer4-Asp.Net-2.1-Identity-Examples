@@ -13,6 +13,8 @@ namespace StoresIdentityServer4.Neo4j
             public const string ApiSecret = "IdSrv4ApiSecret";
             public const string ClientRollup = "IdSrv4ClientRollup";
             public const string ApiResourceRollup = "IdSrv4ApiResourceRollup";
+            public const string IdentityResourceRollup = "IdSrv4IdentityResourceRollup";
+            
             public const string ApiScopeRollup = "IdSrv4ApiScopeRollup";
             public const string Client = "IdSrv4Client";
             public const string Secret = "IdSrv4ClientSecret";
@@ -20,7 +22,7 @@ namespace StoresIdentityServer4.Neo4j
             public const string RedirectUri = "IdSrv4ClientRedirectUri";
             public const string PostLogoutRedirectUri = "IdSrv4ClientPostLogoutRedirectUri";
             public const string Scope = "IdSrv4ClientScope";
-            public const string IDPRestriction = "IdSrv4ClienTIDPRestriction";
+            public const string IDPRestriction = "IdSrv4ClientIDPRestriction";
             public const string Claim = "IdSrv4ClientClaim";
             public const string CorsOrigin = "IdSrv4ClientCorsOrigin";
             public const string Property = "IdSrv4ClientProperty";

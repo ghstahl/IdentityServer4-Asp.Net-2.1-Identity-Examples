@@ -27,7 +27,9 @@ namespace StoresIdentityServer4.Neo4j
 
         Task<IdentityResult> DeleteIdentityResourcesAsync(
             CancellationToken cancellationToken = default(CancellationToken));
-
+        Task<TIdentityResource> GetIdentityResourceAsync(
+            TIdentityResource identityResource,
+            CancellationToken cancellationToken = default(CancellationToken));
         Task<IList<TIdentityResource>> GetIdentityResourcesAsync(
             CancellationToken cancellationToken = default(CancellationToken));
 
@@ -49,7 +51,9 @@ namespace StoresIdentityServer4.Neo4j
         Task<IList<TIdentityClaim>> GetIdentityClaimsAsync(
             TIdentityResource identityResource,
             CancellationToken cancellationToken = default(CancellationToken));
-
+        Task<IdentityResult> DeleteIdentityClaimsAsync(
+            TIdentityResource identityResource,
+            CancellationToken cancellationToken = default(CancellationToken));
         Task<IdentityServer4.Models.IdentityResource> RollupAsync(
             TIdentityResource identityResource,
             CancellationToken cancellationToken = default(CancellationToken));

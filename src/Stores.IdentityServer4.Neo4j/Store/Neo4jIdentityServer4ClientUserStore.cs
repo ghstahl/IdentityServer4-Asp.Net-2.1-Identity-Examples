@@ -167,11 +167,11 @@ namespace StoresIdentityServer4.Neo4j
         {
             User = typeof(TUser).GetNeo4jLabelName();
 
-            IdSrv4ClientApiResource = typeof(Neo4jIdentityServer4ApiResource).GetNeo4jLabelName();
-            IdSrv4ClientApiResourceClaim = typeof(Neo4jIdentityServer4ApiResourceClaim).GetNeo4jLabelName();
+            IdSrv4ApiResource = typeof(Neo4jIdentityServer4ApiResource).GetNeo4jLabelName();
+            IdSrv4ApiResourceClaim = typeof(Neo4jIdentityServer4ApiResourceClaim).GetNeo4jLabelName();
             IdSrv4ClientApiScope = typeof(Neo4jIdentityServer4ApiScope).GetNeo4jLabelName();
             IdSrv4ClientApiScopeClaim = typeof(Neo4jIdentityServer4ApiScopeClaim).GetNeo4jLabelName();
-            IdSrv4ClientApiSecret = typeof(Neo4jIdentityServer4ApiSecret).GetNeo4jLabelName();
+            IdSrv4ApiSecret = typeof(Neo4jIdentityServer4ApiSecret).GetNeo4jLabelName();
 
             IdSrv4ClientRollup = typeof(Neo4jIdentityServer4ClientRollup).GetNeo4jLabelName();
             IdSrv4ApiScopeRollup = typeof(Neo4jIdentityServer4ApiScopeRollup).GetNeo4jLabelName();
@@ -187,7 +187,12 @@ namespace StoresIdentityServer4.Neo4j
             IdSrv4ClientProperty = typeof(Neo4jIdentityServer4ClientProperty).GetNeo4jLabelName();
             IdSrv4ClientPostLogoutRedirectUri = typeof(Neo4jIdentityServer4ClientPostLogoutRedirectUri).GetNeo4jLabelName();
             IdSrv4ClientRedirectUri = typeof(Neo4jIdentityServer4ClientRedirectUri).GetNeo4jLabelName();
-        }
+
+            IdSrv4IdentityResource = typeof(Neo4jIdentityServer4IdentityResource).GetNeo4jLabelName();
+            IdSrv4IdentityClaim = typeof(Neo4jIdentityServer4IdentityClaim).GetNeo4jLabelName();
+            IdSrv4IdentityResourceRollup = typeof(Neo4jIdentityServer4IdentityResourceRollup).GetNeo4jLabelName();
+
+    }
 
         public async Task CreateConstraintsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -195,7 +200,7 @@ namespace StoresIdentityServer4.Neo4j
             await Session.RunAsync(cypher);
             cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4ClientGrantType}) ASSERT r.GrantType IS UNIQUE";
             await Session.RunAsync(cypher);
-            cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4ClientApiResource}) ASSERT r.Name IS UNIQUE";
+            cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4ApiResource}) ASSERT r.Name IS UNIQUE";
             await Session.RunAsync(cypher);
         }
 
