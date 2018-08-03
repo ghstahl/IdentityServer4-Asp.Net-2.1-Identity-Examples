@@ -213,5 +213,25 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
                  Type = Unique.S
             };
         }
+
+        protected override Neo4jIdentityServer4ApiSecret CreateTestApiSecret()
+        {
+            return new Neo4jIdentityServer4ApiSecret()
+            {
+                Value = Unique.S.Sha256(),
+                Description = Unique.S,
+
+                Expiration = DateTime.Now.AddDays(1),
+                Type = IdentityServerConstants.SecretTypes.SharedSecret
+            };
+        }
+
+        protected override Neo4jIdentityServer4ApiResourceClaim CreateTestApiResourceClaim()
+        {
+            return new Neo4jIdentityServer4ApiResourceClaim()
+            {
+                Type = Unique.S
+            };
+        }
     }
 }

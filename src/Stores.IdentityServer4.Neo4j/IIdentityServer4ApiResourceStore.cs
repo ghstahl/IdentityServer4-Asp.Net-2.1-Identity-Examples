@@ -32,15 +32,21 @@ namespace StoresIdentityServer4.Neo4j
         Task<IdentityResult> DeleteApiResourcesAsync(
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<TApiResource> FindApiResourceAsync(TApiResource apiResource,
+        Task<TApiResource> GetApiResourceAsync(TApiResource apiResource,
             CancellationToken cancellationToken = default(CancellationToken));
-
-        Task<IdentityResult> AddApiResourceClaimToApiResourceAsync(
+        Task<IList<TApiResource>> GetApiResourcesAsync( 
+            CancellationToken cancellationToken = default(CancellationToken));
+        Task<IdentityResult> AddApiResourceClaimAsync(
             TApiResource apiResource,
             TApiResourceClaim apiResourceClaim,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> RemoveApiResourceClaimFromApiResourceAsync(
+        Task<TApiResourceClaim> GetApiResourceClaimAsync(
+            TApiResource apiResource,
+            TApiResourceClaim apiResourceClaim,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IdentityResult> DeleteApiResourceClaimAsync(
             TApiResource apiResource,
             TApiResourceClaim apiResourceClaim,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -48,14 +54,25 @@ namespace StoresIdentityServer4.Neo4j
         Task<IList<TApiResourceClaim>> GetApiResourceClaimsAsync(TApiResource apiResource,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> AddApiSecretToApiResourceAsync(
+        Task<IdentityResult> DeleteApiResourceClaimsAsync(TApiResource apiResource,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IdentityResult> AddApiSecretAsync(
             TApiResource apiResource,
             TApiSecret apiSecret,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> RemoveApiSecretFromApiResourceAsync(
+        Task<TApiSecret> GetApiSecretAsync(
             TApiResource apiResource,
             TApiSecret apiSecret,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IdentityResult> DeleteApiSecretAsync(
+            TApiResource apiResource,
+            TApiSecret apiSecret,
+            CancellationToken cancellationToken = default(CancellationToken));
+        Task<IdentityResult> DeleteApiSecretsAsync(
+            TApiResource apiResource, 
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IList<TApiSecret>> GetApiSecretsAsync(TApiResource apiResource,

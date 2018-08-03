@@ -69,11 +69,11 @@ namespace StoresIdentityServer4.Neo4j
             apiResource.ThrowIfNull(nameof(apiResource));
 
             var cypher = $@"
-                 MATCH 
-                        (:{IdSrv4ClientApiResource}{{Name: $p0}})
-                        -[:{Neo4jConstants.Relationships.HasScope}]->
-                        (s:{IdSrv4ClientApiScope})
-                RETURN s{{ .* }}";
+                MATCH 
+                    (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasScope}]->
+                    (s:{IdSrv4ClientApiScope})
+                RETURN 
+                    s{{ .* }}";
 
             var result = await Session.RunAsync(cypher, Params.Create(apiResource.Name));
 
@@ -165,22 +165,12 @@ namespace StoresIdentityServer4.Neo4j
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             apiResource.ThrowIfNull(nameof(apiResource));
-            try
+            var apiScopes = await GetApiScopesAsync(apiResource, cancellationToken);
+            foreach (var apiScope in apiScopes)
             {
-                var cypher = $@"
-                  MATCH 
-                        (:{IdSrv4ClientApiResource}{{Name: $p0}})
-                        -[:{Neo4jConstants.Relationships.HasScope}]->
-                        (apiScope:{IdSrv4ClientApiScope})
-                DETACH DELETE apiScope";
-
-                await Session.RunAsync(cypher, Params.Create(apiResource.Name));
-                return IdentityResult.Success;
+                await DeleteApiScopeAsync(apiResource, apiScope, cancellationToken);
             }
-            catch (ClientException ex)
-            {
-                return ex.ToIdentityResult();
-            }
+            return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> AddApiScopeClaimAsync(
@@ -224,7 +214,7 @@ namespace StoresIdentityServer4.Neo4j
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-            apiScope.ThrowIfNull(nameof(apiResource));
+            apiResource.ThrowIfNull(nameof(apiResource));
             apiScope.ThrowIfNull(nameof(apiScope));
             apiScopeClaim.ThrowIfNull(nameof(apiScopeClaim));
             try

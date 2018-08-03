@@ -111,7 +111,8 @@ namespace StoresIdentityServer4.Test.Core.Store
         protected abstract TApiResource CreateTestApiResource();
         protected abstract TApiScope CreateTestApiScope();
         protected abstract TApiScopeClaim CreateTestApiScopeClaim();
-
+        protected abstract TApiSecret CreateTestApiSecret();
+        protected abstract TApiResourceClaim CreateTestApiResourceClaim();
         [TestInitialize]
         public async Task Initialize()
         {
@@ -753,7 +754,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             result.Succeeded.ShouldBeTrue();
 
             var findResult =
-                await _clientUserStore.FindApiResourceAsync(apiResouce);
+                await _clientUserStore.GetApiResourceAsync(apiResouce);
             findResult.ShouldNotBeNull();
             findResult.Name.ShouldBe(apiResouce.Name);
 
@@ -829,7 +830,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             result.Succeeded.ShouldBeTrue();
 
             var findResult =
-                await _clientUserStore.FindApiResourceAsync(apiResouce);
+                await _clientUserStore.GetApiResourceAsync(apiResouce);
             findResult.ShouldBeNull();
 
             // delete it
@@ -838,6 +839,148 @@ namespace StoresIdentityServer4.Test.Core.Store
             result.Succeeded.ShouldBeTrue();
         }
        
+        [TestMethod]
+        public async Task Create_ApiResource_ApiSecret_Delete()
+        {
+            var apiResouce = CreateTestApiResource();
+            await _clientUserStore.CreateApiResourceAsync(apiResouce);
+
+            var apiSecret = CreateTestApiSecret();
+
+            var result = await _clientUserStore.AddApiSecretAsync(apiResouce, apiSecret);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            result = await _clientUserStore.AddApiSecretAsync(apiResouce, apiSecret);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var founApiSecret = await _clientUserStore.GetApiSecretAsync(apiResouce, apiSecret);
+            founApiSecret.ShouldNotBeNull();
+            founApiSecret.Type.ShouldBe(apiSecret.Type);
+            founApiSecret.Value.ShouldBe(apiSecret.Value);
+
+            var foundSecrets = await _clientUserStore.GetApiSecretsAsync(apiResouce);
+            foundSecrets.ShouldNotBeNull();
+            foundSecrets.Count.ShouldBe(1);
+            foundSecrets[0].ShouldNotBeNull();
+            foundSecrets[0].Type.ShouldBe(apiSecret.Type);
+            foundSecrets[0].Value.ShouldBe(apiSecret.Value);
+
+
+            result = await _clientUserStore.DeleteApiSecretAsync(apiResouce, apiSecret);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            founApiSecret = await _clientUserStore.GetApiSecretAsync(apiResouce, apiSecret);
+            founApiSecret.ShouldBeNull();
+
+        }
+        [TestMethod]
+        public async Task Create_ApiResource_ApiResourceClaim_Delete()
+        {
+            var apiResouce = CreateTestApiResource();
+            await _clientUserStore.CreateApiResourceAsync(apiResouce);
+
+            var apiResourceClaim = CreateTestApiResourceClaim();
+
+            var result = await _clientUserStore.AddApiResourceClaimAsync(apiResouce, apiResourceClaim);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            result = await _clientUserStore.AddApiResourceClaimAsync(apiResouce, apiResourceClaim);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var founApiResourceClaim = await _clientUserStore.GetApiResourceClaimAsync(apiResouce, apiResourceClaim);
+            founApiResourceClaim.ShouldNotBeNull();
+            founApiResourceClaim.Type.ShouldBe(apiResourceClaim.Type);
+           
+
+            var foundApiResourceClaims = await _clientUserStore.GetApiResourceClaimsAsync(apiResouce);
+            foundApiResourceClaims.ShouldNotBeNull();
+            foundApiResourceClaims.Count.ShouldBe(1);
+            foundApiResourceClaims[0].ShouldNotBeNull();
+            foundApiResourceClaims[0].Type.ShouldBe(apiResourceClaim.Type);
+ 
+            result = await _clientUserStore.DeleteApiResourceClaimAsync(apiResouce, apiResourceClaim);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            founApiResourceClaim = await _clientUserStore.GetApiResourceClaimAsync(apiResouce, apiResourceClaim);
+            founApiResourceClaim.ShouldBeNull();
+
+            foundApiResourceClaims = await _clientUserStore.GetApiResourceClaimsAsync(apiResouce);
+            foundApiResourceClaims.ShouldNotBeNull();
+            foundApiResourceClaims.Count.ShouldBe(0);
+ 
+        }
+        [TestMethod]
+        public async Task Create_ApiResource_Many_ApiResourceClaim_Delete()
+        {
+            var apiResouce = CreateTestApiResource();
+            var result = await _clientUserStore.CreateApiResourceAsync(apiResouce);
+
+         
+
+
+            var count = 10;
+
+            for (int i = 0; i < count; ++i)
+            {
+                var apiResourceClaim = CreateTestApiResourceClaim();
+                result = await _clientUserStore.AddApiResourceClaimAsync(apiResouce, apiResourceClaim);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+            }
+        
+            var foundApiResourceClaims = await _clientUserStore.GetApiResourceClaimsAsync(apiResouce);
+            foundApiResourceClaims.ShouldNotBeNull();
+            foundApiResourceClaims.Count.ShouldBe(count);
+ 
+
+            result = await _clientUserStore.DeleteApiResourceClaimsAsync(apiResouce);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+ 
+            foundApiResourceClaims = await _clientUserStore.GetApiResourceClaimsAsync(apiResouce);
+            foundApiResourceClaims.ShouldNotBeNull();
+            foundApiResourceClaims.Count.ShouldBe(0);
+
+        }
+
+
+        [TestMethod]
+        public async Task Create_ApiResource_Many_ApiSecret_Delete()
+        {
+            var apiResouce = CreateTestApiResource();
+            var result = await _clientUserStore.CreateApiResourceAsync(apiResouce);
+
+            
+
+            var count = 10;
+            for (int i = 0; i < count; ++i)
+            {
+                var apiSecret = CreateTestApiSecret();
+                result = await _clientUserStore.AddApiSecretAsync(apiResouce, apiSecret);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+            }
+
+            var foundSecrets = await _clientUserStore.GetApiSecretsAsync(apiResouce);
+            foundSecrets.ShouldNotBeNull();
+            foundSecrets.Count.ShouldBe(count);
+         
+            result = await _clientUserStore.DeleteApiSecretsAsync(apiResouce);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            foundSecrets = await _clientUserStore.GetApiSecretsAsync(apiResouce);
+            foundSecrets.ShouldNotBeNull();
+            foundSecrets.Count.ShouldBe(0);
+
+        }
+
         [TestMethod]
         public async Task Create_ApiResource_ApiScope_Delete()
         {
