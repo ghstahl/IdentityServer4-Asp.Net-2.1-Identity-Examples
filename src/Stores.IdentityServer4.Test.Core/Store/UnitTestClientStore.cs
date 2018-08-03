@@ -110,6 +110,8 @@ namespace StoresIdentityServer4.Test.Core.Store
         protected abstract TIDPRestriction CreateTesTIDPRestriction();
         protected abstract TApiResource CreateTestApiResource();
         protected abstract TApiScope CreateTestApiScope();
+        protected abstract TApiScopeClaim CreateTestApiScopeClaim();
+
         [TestInitialize]
         public async Task Initialize()
         {
@@ -870,7 +872,7 @@ namespace StoresIdentityServer4.Test.Core.Store
 
         }
         [TestMethod]
-        public async Task Create_ApiResource_ApiScope_Claims()
+        public async Task Create_ApiResource_ApiScope_Claims_Delete()
         {
             var apiResouce = CreateTestApiResource();
             await _clientUserStore.CreateApiResourceAsync(apiResouce);
@@ -878,23 +880,48 @@ namespace StoresIdentityServer4.Test.Core.Store
             var apiScope = CreateTestApiScope();
 
             var result = await _clientUserStore.AddApiScopeAsync(apiResouce, apiScope);
+
+            var apiClaim = CreateTestApiScopeClaim();
+            result = await _clientUserStore.AddApiScopeClaimToApiScopeAsync(
+                apiResouce,
+                apiScope,
+                apiClaim);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
-            result = await _clientUserStore.AddApiScopeAsync(apiResouce, apiScope);
+            var foundScopeClaim = await _clientUserStore.GetApiScopeClaimAsync(
+                apiResouce,
+                apiScope,
+                apiClaim);
+            foundScopeClaim.ShouldNotBeNull();
+            foundScopeClaim.Type.ShouldBe(apiClaim.Type);
+
+            var scopeClaims = await _clientUserStore.GetApiScopeClaimsAsync(apiResouce,
+                apiScope);
+            scopeClaims.ShouldNotBeNull();
+            scopeClaims.Count.ShouldBe(1);
+
+
+            var scopes = await _clientUserStore.DeleteApiScopeClaimFromApiScopeAsync(apiResouce,
+                apiScope,
+                apiClaim);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
-            var scope = await _clientUserStore.GetApiScopeAsync(apiResouce, apiScope);
-            scope.ShouldNotBeNull();
-            scope.Name.ShouldBe(apiScope.Name);
+            foundScopeClaim = await _clientUserStore.GetApiScopeClaimAsync(
+                apiResouce,
+                apiScope,
+                apiClaim);
+            foundScopeClaim.ShouldBeNull(); 
+          
 
-            var scopes = await _clientUserStore.GetApiScopesAsync(apiResouce);
-            scopes.ShouldNotBeNull();
-            scopes.Count.ShouldBe(1);
-            scopes[0].ShouldNotBeNull();
-            scopes[0].Name.ShouldBe(apiScope.Name);
+            scopeClaims = await _clientUserStore.GetApiScopeClaimsAsync(apiResouce,
+                apiScope);
+            scopeClaims.ShouldNotBeNull();
+            scopeClaims.Count.ShouldBe(0);
         }
+
+
 
 
         [TestMethod]

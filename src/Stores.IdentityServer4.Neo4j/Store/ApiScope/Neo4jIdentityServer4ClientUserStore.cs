@@ -296,18 +296,42 @@ namespace StoresIdentityServer4.Neo4j
             apiScope.ThrowIfNull(nameof(apiScope));
 
             var cypher = $@"
-                 MATCH 
-                        (:{IdSrv4ClientApiResource}{{Name: $p0}})
-                        -[:{Neo4jConstants.Relationships.HasScope}]->
-                        (:{IdSrv4ClientApiScope}{{Name: $p1}})
-                        -[:{Neo4jConstants.Relationships.HasClaim}]->
-                        (s:{IdSrv4ClientApiScopeClaim})
-                RETURN s{{ .* }}";
+                MATCH 
+                    (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasScope}]->
+                    (:{IdSrv4ClientApiScope}{{Name: $p1}})-[:{Neo4jConstants.Relationships.HasClaim}]->
+                    (s:{IdSrv4ClientApiScopeClaim})
+                RETURN 
+                    s{{ .* }}";
 
             var result = await Session.RunAsync(cypher, Params.Create(apiResource.Name,apiScope.Name));
 
             var records = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ApiScopeClaim>("s"));
             return records;
+        }
+
+        public async Task<Neo4jIdentityServer4ApiScopeClaim> GetApiScopeClaimAsync(
+            Neo4jIdentityServer4ApiResource apiResource, 
+            Neo4jIdentityServer4ApiScope apiScope,
+            Neo4jIdentityServer4ApiScopeClaim apiScopeClaim, 
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            apiResource.ThrowIfNull(nameof(apiResource));
+            apiScope.ThrowIfNull(nameof(apiScope));
+
+            var cypher = $@"
+                MATCH 
+                    (:{IdSrv4ClientApiResource}{{Name: $p0}})-[:{Neo4jConstants.Relationships.HasScope}]->
+                    (:{IdSrv4ClientApiScope}{{Name: $p1}})-[:{Neo4jConstants.Relationships.HasClaim}]->
+                    (s:{IdSrv4ClientApiScopeClaim}{{Type: $p2}})
+                RETURN s {{ .* }}";
+
+            var result = await Session.RunAsync(cypher, 
+                Params.Create(apiResource.Name, apiScope.Name, apiScopeClaim.Type));
+            var record =
+                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ApiScopeClaim>("s"));
+            return record;
         }
 
         public async Task<Scope> RollupAsync(

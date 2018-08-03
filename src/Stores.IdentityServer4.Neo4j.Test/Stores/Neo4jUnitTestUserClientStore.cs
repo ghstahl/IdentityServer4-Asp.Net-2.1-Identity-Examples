@@ -205,5 +205,13 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
                 Emphasize = true,Required = true,ShowInDiscoveryDocument = true
             };
         }
+
+        protected override Neo4jIdentityServer4ApiScopeClaim CreateTestApiScopeClaim()
+        {
+            return new Neo4jIdentityServer4ApiScopeClaim()
+            {
+                 Type = Unique.S
+            };
+        }
     }
 }

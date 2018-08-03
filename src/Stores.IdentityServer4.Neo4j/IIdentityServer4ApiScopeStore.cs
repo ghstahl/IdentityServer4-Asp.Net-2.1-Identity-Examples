@@ -53,6 +53,11 @@ namespace StoresIdentityServer4.Neo4j
             TApiResource apiResource,
             TApiScope apiScope,
             CancellationToken cancellationToken = default(CancellationToken));
+        Task<TApiScopeClaim> GetApiScopeClaimAsync(
+            TApiResource apiResource,
+            TApiScope apiScope,
+            TApiScopeClaim apiScopeClaim,
+            CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IdentityServer4.Models.Scope> RollupAsync(
             TApiResource apiResource,
