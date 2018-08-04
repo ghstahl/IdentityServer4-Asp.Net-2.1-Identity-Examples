@@ -40,7 +40,7 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<IdentityResult> DeleteIdPRestrictionAsync(Neo4jIdentityServer4Client client,
+        public async Task<IdentityResult> DeleteIDPRestrictionAsync(Neo4jIdentityServer4Client client,
             Neo4jIdentityServer4ClienTIDPRestriction idpRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -71,7 +71,7 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<IdentityResult> DeleteIdPRestrictionsAsync(Neo4jIdentityServer4Client client,
+        public async Task<IdentityResult> DeleteIDPRestrictionsAsync(Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -99,7 +99,7 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<Neo4jIdentityServer4ClienTIDPRestriction> FindIdPRestrictionAsync(
+        public async Task<Neo4jIdentityServer4ClienTIDPRestriction> FindIDPRestrictionAsync(
             Neo4jIdentityServer4Client client,
             Neo4jIdentityServer4ClienTIDPRestriction idpRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -127,7 +127,7 @@ namespace StoresIdentityServer4.Neo4j
             return foundRecord;
         }
 
-        public async Task<IList<Neo4jIdentityServer4ClienTIDPRestriction>> GeTIDPRestrictionsAsync(
+        public async Task<IList<Neo4jIdentityServer4ClienTIDPRestriction>> GetIDPRestrictionsAsync(
             Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {

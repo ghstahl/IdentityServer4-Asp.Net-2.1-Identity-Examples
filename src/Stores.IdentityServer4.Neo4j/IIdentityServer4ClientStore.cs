@@ -164,14 +164,14 @@ namespace StoresIdentityServer4.Neo4j
             TIDPRestriction idPRestriction,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IdentityResult> DeleteIdPRestrictionAsync(TClient client, TIDPRestriction idPRestriction,
+        Task<IdentityResult> DeleteIDPRestrictionAsync(TClient client, TIDPRestriction idPRestriction,
             CancellationToken cancellationToken = default(CancellationToken));
-        Task<IdentityResult> DeleteIdPRestrictionsAsync(TClient client, 
+        Task<IdentityResult> DeleteIDPRestrictionsAsync(TClient client, 
             CancellationToken cancellationToken = default(CancellationToken));
-        Task<TIDPRestriction> FindIdPRestrictionAsync(TClient client, TIDPRestriction idPRestriction,
+        Task<TIDPRestriction> FindIDPRestrictionAsync(TClient client, TIDPRestriction idPRestriction,
             CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IList<TIDPRestriction>> GeTIDPRestrictionsAsync(TClient client,
+        Task<IList<TIDPRestriction>> GetIDPRestrictionsAsync(TClient client,
             CancellationToken cancellationToken = default(CancellationToken));
 
         #endregion

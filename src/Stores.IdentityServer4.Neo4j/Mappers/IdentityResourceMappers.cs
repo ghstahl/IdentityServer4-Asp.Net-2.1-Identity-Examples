@@ -6,7 +6,7 @@ namespace StoresIdentityServer4.Neo4j.Mappers
     {
         static IdentityResourceMappers()
         {
-            Mapper = new MapperConfiguration(cfg => cfg.AddProfile<ApiResourceMapperProfile>())
+            Mapper = new MapperConfiguration(cfg => cfg.AddProfile<IdentityResourceMapperProfile>())
                 .CreateMapper();
         }
 

@@ -237,5 +237,27 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
                 Type = Unique.S
             };
         }
+
+        protected override Neo4jIdentityServer4IdentityResource CreateTestIdentityResource()
+        {
+            return new Neo4jIdentityServer4IdentityResource()
+            {
+                Name = Unique.S,
+                Description = Unique.S,
+                DisplayName = Unique.S,
+                Emphasize = true,
+                Enabled = true,
+                Required = true,
+                ShowInDiscoveryDocument = true
+            };
+        }
+
+        protected override Neo4jIdentityServer4IdentityClaim CreateTestIdentityClaim()
+        {
+            return new Neo4jIdentityServer4IdentityClaim()
+            {
+                Type = Unique.S
+            };
+        }
     }
 }

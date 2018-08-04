@@ -90,7 +90,7 @@ namespace StoresIdentityServer4.Neo4j
             await DeletePostLogoutRedirectUrisAsync(client, cancellationToken);
             await DeleteClaimsAsync(client, cancellationToken);
             await DeleteCorsOriginsAsync(client, cancellationToken);
-            await DeleteIdPRestrictionsAsync(client, cancellationToken);
+            await DeleteIDPRestrictionsAsync(client, cancellationToken);
             await DeletePropertiesAsync(client, cancellationToken);
             await DeleteScopesAsync(client, cancellationToken);
             await DeleteSecretsAsync(client, cancellationToken);
@@ -127,6 +127,8 @@ namespace StoresIdentityServer4.Neo4j
             var factor = await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4Client>("c"));
             return factor;
         }
+
+        
 
         public async Task<IList<Neo4jIdentityServer4Client>> GetClientsAsync(TUser user,
             CancellationToken cancellationToken = default(CancellationToken))

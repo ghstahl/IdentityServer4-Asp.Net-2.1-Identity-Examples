@@ -121,6 +121,8 @@ namespace StoresIdentityServer4.Test.Core.Store
         protected abstract TApiScopeClaim CreateTestApiScopeClaim();
         protected abstract TApiSecret CreateTestApiSecret();
         protected abstract TApiResourceClaim CreateTestApiResourceClaim();
+        protected abstract TIdentityResource CreateTestIdentityResource();
+        protected abstract TIdentityClaim CreateTestIdentityClaim();
         [TestInitialize]
         public async Task Initialize()
         {
@@ -277,7 +279,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             }
 
 
-            var idps = await _clientUserStore.GeTIDPRestrictionsAsync(client);
+            var idps = await _clientUserStore.GetIDPRestrictionsAsync(client);
             idps.ShouldNotBeNull();
             idps.Count.ShouldBe(count);
 
@@ -655,22 +657,22 @@ namespace StoresIdentityServer4.Test.Core.Store
             }
 
 
-            var idps = await _clientUserStore.GeTIDPRestrictionsAsync(client);
+            var idps = await _clientUserStore.GetIDPRestrictionsAsync(client);
             idps.ShouldNotBeNull();
             idps.Count.ShouldBe(count);
 
             idp = idps[0];
 
-            var result2 = await _clientUserStore.FindIdPRestrictionAsync(client, idp);
+            var result2 = await _clientUserStore.FindIDPRestrictionAsync(client, idp);
             result2.ShouldNotBeNull();
             result2.Provider.ShouldBe(idp.Provider);
 
 
-            var result3 = await _clientUserStore.DeleteIdPRestrictionAsync(client, idp);
+            var result3 = await _clientUserStore.DeleteIDPRestrictionAsync(client, idp);
             result3.ShouldNotBeNull();
             result3.Succeeded.ShouldBeTrue();
 
-            result2 = await _clientUserStore.FindIdPRestrictionAsync(client, idp);
+            result2 = await _clientUserStore.FindIDPRestrictionAsync(client, idp);
             result2.ShouldBeNull();
 
         }
@@ -771,8 +773,177 @@ namespace StoresIdentityServer4.Test.Core.Store
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeFalse();
         }
+        [TestMethod]
+        public async Task Create_IdentityResource_Assure_Unique()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            var identityResource = CreateTestIdentityResource();
 
-      
+            var result = await _clientUserStore.CreateIdentityResourceAsync(identityResource);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.GetIdentityResourceAsync(identityResource);
+            findResult.ShouldNotBeNull();
+            findResult.Name.ShouldBe(identityResource.Name);
+
+            // do it again, but this time it should fail
+            result = await _clientUserStore.CreateIdentityResourceAsync(identityResource);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeFalse();
+        }
+        [TestMethod]
+        public async Task Create_IdentityResource_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            var identityResource = CreateTestIdentityResource();
+
+            var result = await _clientUserStore.CreateIdentityResourceAsync(identityResource);
+
+            var findResult =
+                await _clientUserStore.GetIdentityResourceAsync(identityResource);
+            findResult.ShouldNotBeNull();
+            findResult.Name.ShouldBe(identityResource.Name);
+
+            result = await _clientUserStore.DeleteIdentityResourceAsync(identityResource);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            findResult =
+                await _clientUserStore.GetIdentityResourceAsync(identityResource);
+            findResult.ShouldBeNull();
+        }
+        [TestMethod]
+        public async Task Create_Many_IdentityResource_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+
+            int nCount = 10;
+            for (int i = 0; i < nCount; ++i)
+            {
+                var identityResource = CreateTestIdentityResource();
+                var result = await _clientUserStore.CreateIdentityResourceAsync(identityResource);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+            }
+
+            var identityResources = await _clientUserStore.GetIdentityResourcesAsync();
+            identityResources.ShouldNotBeNull();
+            identityResources.Count.ShouldBe(nCount);
+
+
+            var result2 = await _clientUserStore.DeleteIdentityResourcesAsync();
+            result2.ShouldNotBeNull();
+            result2.Succeeded.ShouldBeTrue();
+
+            identityResources = await _clientUserStore.GetIdentityResourcesAsync();
+            identityResources.ShouldNotBeNull();
+            identityResources.Count.ShouldBe(0);
+        }
+        [TestMethod]
+        public async Task Create_IdentityResource_Claims_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            var identityResource = CreateTestIdentityResource();
+            var identityClaim = CreateTestIdentityClaim();
+
+            var result = await _clientUserStore.CreateIdentityResourceAsync(identityResource);
+
+            result = await _clientUserStore.AddIdentityClaimAsync(identityResource, identityClaim);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var findResult =
+                await _clientUserStore.GetIdentityClaimAsync(identityResource, identityClaim);
+            findResult.ShouldNotBeNull();
+            findResult.Type.ShouldBe(identityClaim.Type);
+
+            result = await _clientUserStore.DeleteIdentityClaimAsync(identityResource, identityClaim);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            findResult =
+                await _clientUserStore.GetIdentityClaimAsync(identityResource, identityClaim);
+            findResult.ShouldBeNull();
+        }
+        [TestMethod]
+        public async Task Create_IdentityResource_Many_Claims_Delete()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            var identityResource = CreateTestIdentityResource();
+          
+
+            var result = await _clientUserStore.CreateIdentityResourceAsync(identityResource);
+
+            var nCount = 10;
+            for (int i = 0; i < nCount; ++i)
+            {
+                var identityClaim = CreateTestIdentityClaim();
+                result = await _clientUserStore.AddIdentityClaimAsync(identityResource, identityClaim);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+            }
+        
+
+            var findResult =
+                await _clientUserStore.GetIdentityClaimsAsync(identityResource);
+            findResult.ShouldNotBeNull();
+            findResult.Count.ShouldBe(nCount);
+
+            result = await _clientUserStore.DeleteIdentityClaimsAsync(identityResource);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            findResult =
+                await _clientUserStore.GetIdentityClaimsAsync(identityResource);
+            findResult.ShouldNotBeNull();
+            findResult.Count.ShouldBe(0);
+        }
+        [TestMethod]
+        public async Task Create_IdentityResource_Many_Claims_Rollup()
+        {
+            var challenge = Unique.S;
+            var challengeResponse = Unique.S;
+            var identityResource = CreateTestIdentityResource();
+
+
+            var result = await _clientUserStore.CreateIdentityResourceAsync(identityResource);
+
+            var nCount = 10;
+            for (int i = 0; i < nCount; ++i)
+            {
+                var identityClaim = CreateTestIdentityClaim();
+                result = await _clientUserStore.AddIdentityClaimAsync(identityResource, identityClaim);
+                result.ShouldNotBeNull();
+                result.Succeeded.ShouldBeTrue();
+            }
+
+
+            var rollup =
+                await _clientUserStore.GetRollupAsync(identityResource);
+            rollup.ShouldNotBeNull();
+            rollup.Name.ShouldBe(identityResource.Name);
+            rollup.UserClaims.Count.ShouldBe(nCount);
+
+            var identityClaim2 = CreateTestIdentityClaim();
+            result = await _clientUserStore.AddIdentityClaimAsync(identityResource, identityClaim2);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+
+            rollup =
+                await _clientUserStore.GetRollupAsync(identityResource);
+            rollup.ShouldNotBeNull();
+            rollup.Name.ShouldBe(identityResource.Name);
+            rollup.UserClaims.Count.ShouldBe(nCount+1);
+        }
+
 
         [TestMethod]
         public async Task Create_GrantType_Assure_Unique()
