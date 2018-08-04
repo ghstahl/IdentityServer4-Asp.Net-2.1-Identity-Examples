@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using StoresIdentityServer4.Neo4j;
+using StoresIdentityServer4.Neo4j.DTO.Mappers;
 using StoresIdentityServer4.Neo4j.Entities;
 using StoresIdentityServer4.Neo4j.Mappers;
 using ApiResource = StoresIdentityServer4.Neo4j.Entities.ApiResource;
@@ -376,7 +377,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             findResult.ShouldNotBeNull();
             findResult.ClientId.ShouldBe(client.ClientId);
 
-            await PopulateManyRelationships(client, 10);
+            await PopulateManyRelationships(client, 1);
 
             /////////////////////////////////////////////////////////////
 
@@ -773,6 +774,29 @@ namespace StoresIdentityServer4.Test.Core.Store
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeFalse();
         }
+
+        [TestMethod]
+        public async Task Create_Standard_IdentityResources()
+        {
+ 
+
+            await _clientUserStore.EnsureStandardAsync();
+
+            var identityResources =
+                await _clientUserStore.GetIdentityResourcesAsync();
+            identityResources.ShouldNotBeNull();
+            identityResources.Count.ShouldBeGreaterThan(1);
+
+            var count = identityResources.Count;
+            // do it again, but this time it should fail
+            await _clientUserStore.EnsureStandardAsync();
+
+            identityResources =
+                await _clientUserStore.GetIdentityResourcesAsync();
+            identityResources.ShouldNotBeNull();
+            identityResources.Count.ShouldBe(count);
+        }
+
         [TestMethod]
         public async Task Create_IdentityResource_Assure_Unique()
         {

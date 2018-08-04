@@ -10,6 +10,10 @@ using Client = StoresIdentityServer4.Neo4j.Entities.Client;
 
 namespace StoresIdentityServer4.Neo4j
 {
+    public interface IEnsurePopulation
+    {
+        Task EnsureStandardAsync();
+    }
     public interface IIdentityServer4ClientStore<in TClient,
         TSecret,
         TGrantType,
@@ -37,6 +41,7 @@ namespace StoresIdentityServer4.Neo4j
         IIdentityServer4IdentityResourceStore<
             TIdentityResource,
             TIdentityClaim>,
+        IEnsurePopulation,
         IDisposable
         where TClient : StoresIdentityServer4.Neo4j.Entities.Client
         where TSecret : IdentityServer4.Models.Secret

@@ -10,6 +10,8 @@ using Neo4j.Driver.V1;
 using Neo4jExtras;
 using Neo4jExtras.Extensions;
 using Stores.IdentityServer4Neo4j.Events;
+using StoresIdentityServer4.Neo4j.DTO.Mappers;
+using StoresIdentityServer4.Neo4j.Mappers;
 
 
 namespace StoresIdentityServer4.Neo4j
@@ -216,5 +218,35 @@ namespace StoresIdentityServer4.Neo4j
             return _eventService.RaiseAsync(new ClientChangeEvent<Neo4jIdentityServer4Client>(client));
         }
 
+        private async Task EnsureIdentityResource(IdentityServer4.Models.IdentityResource model)
+        {
+            var dto = model.ToNeo4jEntity();
+            await CreateIdentityResourceAsync(dto);
+            foreach (var claim in model.UserClaims)
+            {
+                var dtoClaim = new Neo4jIdentityServer4IdentityClaim()
+                {
+                    Type = claim
+                };
+                await AddIdentityClaimAsync(dto, dtoClaim);
+            }
+        }
+        public async Task EnsureStandardAsync()
+        {
+            IdentityResource model = new IdentityResources.OpenId();
+            await EnsureIdentityResource(model);
+
+            model = new IdentityResources.Email();
+            await EnsureIdentityResource(model);
+
+            model = new IdentityResources.Address();
+            await EnsureIdentityResource(model);
+
+            model = new IdentityResources.Phone();
+            await EnsureIdentityResource(model);
+
+            model = new IdentityResources.Profile();
+            await EnsureIdentityResource(model);
+        }
     }
 }
