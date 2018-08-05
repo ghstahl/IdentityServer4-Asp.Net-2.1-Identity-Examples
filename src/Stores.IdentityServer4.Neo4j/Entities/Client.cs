@@ -65,7 +65,6 @@ namespace StoresIdentityServer4.Neo4j.Entities
 
         //public List<ClientCorsOrigin> AllowedCorsOrigins { get; set; }
         //public List<ClientProperty> Properties { get; set; }
-        public bool RequireRefreshClientSecret { get; set; }
-        public bool AllowArbitraryLocalRedirectUris { get; set; }
+ 
     }
 }

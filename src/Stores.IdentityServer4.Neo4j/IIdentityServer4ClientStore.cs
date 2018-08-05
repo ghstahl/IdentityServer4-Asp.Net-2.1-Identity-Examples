@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 using IdentityServer4.Models;
 using IdentityServer4Extras;
 using Microsoft.AspNetCore.Identity;
-using StoresIdentityServer4.Neo4j.Entities;
-using Client = StoresIdentityServer4.Neo4j.Entities.Client;
+ 
 
 namespace StoresIdentityServer4.Neo4j
 {
@@ -39,7 +38,7 @@ namespace StoresIdentityServer4.Neo4j
             TIdentityClaim>,
         IIdentityServer4ModelsPopulation,
         IDisposable
-        where TClient : StoresIdentityServer4.Neo4j.Entities.Client
+        where TClient : StoresIdentityServer4.Neo4j.Entities.ClientExtra
         where TSecret : StoresIdentityServer4.Neo4j.Entities.Secret
         where TGrantType : StoresIdentityServer4.Neo4j.Entities.ClientGrantType
         where TApiResource : StoresIdentityServer4.Neo4j.Entities.ApiResource

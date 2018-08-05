@@ -46,7 +46,7 @@ namespace StoresIdentityServer4.Neo4j
             TIdentityClaim>,
         IDisposable
         where TUser : class
-        where TClient : StoresIdentityServer4.Neo4j.Entities.Client
+        where TClient : StoresIdentityServer4.Neo4j.Entities.ClientExtra
         where TSecret : StoresIdentityServer4.Neo4j.Entities.Secret
         where TGrantType : StoresIdentityServer4.Neo4j.Entities.ClientGrantType
         where TApiResource : StoresIdentityServer4.Neo4j.Entities.ApiResource

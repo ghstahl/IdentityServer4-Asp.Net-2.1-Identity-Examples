@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using IdentityServer4.Models;
 using IdentityServer4Extras;
 using Microsoft.AspNetCore.Identity;
 
@@ -26,7 +27,10 @@ namespace StoresIdentityServer4.Neo4j
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IdentityResult> InsertClient(
-            ClientExtra model,
+            IdentityServer4.Models.ClientExtra model,
+            CancellationToken cancellationToken = default(CancellationToken));
+        Task<IdentityResult> InsertClients(
+            IEnumerable<IdentityServer4.Models.ClientExtra> models,
             CancellationToken cancellationToken = default(CancellationToken));
     }
 }

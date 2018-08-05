@@ -12,8 +12,7 @@ using StoresIdentityServer4.Neo4j;
 using StoresIdentityServer4.Neo4j.DTO.Mappers;
 using StoresIdentityServer4.Neo4j.Entities;
 using StoresIdentityServer4.Neo4j.Mappers;
-using ApiResource = StoresIdentityServer4.Neo4j.Entities.ApiResource;
-using Client = StoresIdentityServer4.Neo4j.Entities.Client;
+ 
 
 namespace StoresIdentityServer4.Test.Core.Store
 {
@@ -37,7 +36,7 @@ namespace StoresIdentityServer4.Test.Core.Store
         TIdentityResource,
         TIdentityClaim>
         where TUser : Neo4jIdentityUser
-        where TClient : StoresIdentityServer4.Neo4j.Entities.Client
+        where TClient : StoresIdentityServer4.Neo4j.Entities.ClientExtra
         where TSecret : StoresIdentityServer4.Neo4j.Entities.Secret
         where TGrantType : StoresIdentityServer4.Neo4j.Entities.ClientGrantType
         where TApiResource : StoresIdentityServer4.Neo4j.Entities.ApiResource
@@ -776,7 +775,7 @@ namespace StoresIdentityServer4.Test.Core.Store
         }
 
         [TestMethod]
-        public async Task Insert_Standard_IdentityResources()
+        public async Task Insert_Model_Standard_IdentityResources()
         {
             var result = await _clientUserStore.EnsureStandardAsync();
             result.ShouldNotBeNull();
@@ -797,7 +796,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             identityResources.Count.ShouldBe(count);
         }
         [TestMethod]
-        public async Task Insert_Model_ApiResorces_IdentityResources()
+        public async Task Insert_Model_ApiResorces()
         {
             var apiResources = new List<IdentityServer4.Models.ApiResource>
             {

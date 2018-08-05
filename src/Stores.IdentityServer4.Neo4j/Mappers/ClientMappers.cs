@@ -24,9 +24,9 @@ namespace StoresIdentityServer4.Neo4j.Mappers
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public static IdentityServer4.Models.Client ToModel(this Entities.Client entity)
+        public static IdentityServer4.Models.ClientExtra ToModel(this Entities.ClientExtra entity)
         {
-            return Mapper.Map<IdentityServer4.Models.Client>(entity);
+            return Mapper.Map<IdentityServer4.Models.ClientExtra>(entity);
         }
 
         /// <summary>
@@ -34,9 +34,9 @@ namespace StoresIdentityServer4.Neo4j.Mappers
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        public static Entities.Client ToEntity(this IdentityServer4.Models.Client model)
+        public static Entities.ClientExtra ToEntity(this IdentityServer4.Models.ClientExtra model)
         {
-            return Mapper.Map<Entities.Client>(model);
+            return Mapper.Map<Entities.ClientExtra>(model);
         }
     }
 

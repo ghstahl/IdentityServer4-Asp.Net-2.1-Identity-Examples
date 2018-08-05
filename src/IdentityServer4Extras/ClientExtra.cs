@@ -1,6 +1,6 @@
 ﻿using IdentityServer4.Models;
 
-namespace IdentityServer4Extras
+namespace IdentityServer4.Models
 {
     public class ClientExtra : Client
     {

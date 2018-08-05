@@ -199,7 +199,8 @@ namespace StoresIdentityServer4.Neo4j
 
         }
 
-        public async Task CreateConstraintsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task CreateConstraintsAsync(
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             var cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4Client}) ASSERT r.ClientId IS UNIQUE";
             await Session.RunAsync(cypher);
@@ -211,19 +212,23 @@ namespace StoresIdentityServer4.Neo4j
             await Session.RunAsync(cypher);
         }
 
-        public Neo4jIdentityServer4ClientUserStore(ISession session, INeo4jEventService eventService)
+        public Neo4jIdentityServer4ClientUserStore(
+            ISession session, 
+            INeo4jEventService eventService)
         {
             Session = session;
             _eventService = eventService;
         }
 
-        private Task RaiseClientChangeEventAsync(Neo4jIdentityServer4Client client)
+        private Task RaiseClientChangeEventAsync(
+            Neo4jIdentityServer4Client client)
         {
             return _eventService.RaiseAsync(new ClientChangeEvent<Neo4jIdentityServer4Client>(client));
         }
 
 
-        public async Task<IdentityResult> EnsureStandardAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IdentityResult> EnsureStandardAsync(
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -240,7 +245,8 @@ namespace StoresIdentityServer4.Neo4j
             return await InsertIdentityResources(identityResources, cancellationToken);
         }
 
-        public async Task<IdentityResult> InsertIdentityResource(IdentityResource model,
+        public async Task<IdentityResult> InsertIdentityResource(
+            IdentityResource model,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -271,8 +277,13 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<IdentityResult> InsertIdentityResources(IEnumerable<IdentityResource> models, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IdentityResult> InsertIdentityResources(
+            IEnumerable<IdentityResource> models, 
+            CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            models.ThrowIfNull(nameof(models));
             foreach (var model in models)
             {
                 var result = await InsertIdentityResource(model, cancellationToken);
@@ -341,8 +352,13 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<IdentityResult> InsertApiResources(IEnumerable<ApiResource> models, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IdentityResult> InsertApiResources(
+            IEnumerable<ApiResource> models, 
+            CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            models.ThrowIfNull(nameof(models));
             foreach (var model in models)
             {
                 var result = await InsertApiResource(model, cancellationToken);
@@ -352,9 +368,35 @@ namespace StoresIdentityServer4.Neo4j
             return IdentityResult.Success;
         }
 
-        public Task<IdentityResult> InsertClient(ClientExtra model, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IdentityResult> InsertClient(
+            ClientExtra model, 
+            CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            model.ThrowIfNull(nameof(model));
+            try
+            {
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return ex.ToIdentityResult();
+            }
+        }
+
+        public async Task<IdentityResult> InsertClients(IEnumerable<ClientExtra> models, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            models.ThrowIfNull(nameof(models));
+            foreach (var model in models)
+            {
+                var result = await InsertClient(model, cancellationToken);
+                if (!result.Succeeded)
+                    return result;
+            }
+            return IdentityResult.Success;
         }
     }
 

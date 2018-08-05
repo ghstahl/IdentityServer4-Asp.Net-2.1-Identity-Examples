@@ -22,9 +22,9 @@ namespace StoresIdentityServer4.Neo4j.Mappers
         public ClientMapperProfile()
         {
             // entity to model
-            CreateMap<Client, IdentityServer4.Models.Client>(MemberList.Destination);
+            CreateMap<Entities.ClientExtra, IdentityServer4.Models.ClientExtra>(MemberList.Destination);
             // model to entity
-            CreateMap<IdentityServer4.Models.Client, Entities.Client>(MemberList.Source);
+            CreateMap<IdentityServer4.Models.ClientExtra, Entities.ClientExtra>(MemberList.Source);
         }
     }
 }
