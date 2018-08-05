@@ -114,7 +114,7 @@ namespace StoresIdentityServer4.Neo4j
         }
     }
 
-    
+
 
     public partial class Neo4jIdentityServer4ClientUserStore<TUser> :
         IIdentityServer4ClientUserStore<
@@ -163,6 +163,7 @@ namespace StoresIdentityServer4.Neo4j
         /// Gets the database session for this store.
         /// </summary>
         public ISession Session { get; }
+
         private INeo4jEventService _eventService;
 
         static Neo4jIdentityServer4ClientUserStore()
@@ -187,14 +188,15 @@ namespace StoresIdentityServer4.Neo4j
             IdSrv4ClientScope = typeof(Neo4jIdentityServer4ClientScope).GetNeo4jLabelName();
             IdSrv4ClienTIDPRestriction = typeof(Neo4jIdentityServer4ClienTIDPRestriction).GetNeo4jLabelName();
             IdSrv4ClientProperty = typeof(Neo4jIdentityServer4ClientProperty).GetNeo4jLabelName();
-            IdSrv4ClientPostLogoutRedirectUri = typeof(Neo4jIdentityServer4ClientPostLogoutRedirectUri).GetNeo4jLabelName();
+            IdSrv4ClientPostLogoutRedirectUri =
+                typeof(Neo4jIdentityServer4ClientPostLogoutRedirectUri).GetNeo4jLabelName();
             IdSrv4ClientRedirectUri = typeof(Neo4jIdentityServer4ClientRedirectUri).GetNeo4jLabelName();
 
             IdSrv4IdentityResource = typeof(Neo4jIdentityServer4IdentityResource).GetNeo4jLabelName();
             IdSrv4IdentityClaim = typeof(Neo4jIdentityServer4IdentityClaim).GetNeo4jLabelName();
             IdSrv4IdentityResourceRollup = typeof(Neo4jIdentityServer4IdentityResourceRollup).GetNeo4jLabelName();
 
-    }
+        }
 
         public async Task CreateConstraintsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -213,40 +215,63 @@ namespace StoresIdentityServer4.Neo4j
             Session = session;
             _eventService = eventService;
         }
+
         private Task RaiseClientChangeEventAsync(Neo4jIdentityServer4Client client)
         {
             return _eventService.RaiseAsync(new ClientChangeEvent<Neo4jIdentityServer4Client>(client));
         }
 
-        private async Task EnsureIdentityResource(IdentityServer4.Models.IdentityResource model)
+
+        public async Task EnsureStandardAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var dto = model.ToNeo4jEntity();
-            await CreateIdentityResourceAsync(dto);
-            foreach (var claim in model.UserClaims)
-            {
-                var dtoClaim = new Neo4jIdentityServer4IdentityClaim()
-                {
-                    Type = claim
-                };
-                await AddIdentityClaimAsync(dto, dtoClaim);
-            }
-        }
-        public async Task EnsureStandardAsync()
-        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
             IdentityResource model = new IdentityResources.OpenId();
-            await EnsureIdentityResource(model);
+            await InsertIdentityResource(model);
 
             model = new IdentityResources.Email();
-            await EnsureIdentityResource(model);
+            await InsertIdentityResource(model);
 
             model = new IdentityResources.Address();
-            await EnsureIdentityResource(model);
+            await InsertIdentityResource(model);
 
             model = new IdentityResources.Phone();
-            await EnsureIdentityResource(model);
+            await InsertIdentityResource(model);
 
             model = new IdentityResources.Profile();
-            await EnsureIdentityResource(model);
+            await InsertIdentityResource(model);
+        }
+
+        public async Task<IdentityResult> InsertIdentityResource(IdentityResource model,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            model.ThrowIfNull(nameof(model));
+            try
+            {
+                var dto = model.ToNeo4jEntity();
+                var result = await CreateIdentityResourceAsync(dto);
+                if (!result.Succeeded)
+                    return result;
+                foreach (var claim in model.UserClaims)
+                {
+                    var dtoClaim = new Neo4jIdentityServer4IdentityClaim()
+                    {
+                        Type = claim
+                    };
+                    result = await AddIdentityClaimAsync(dto, dtoClaim);
+                    if (!result.Succeeded)
+                        return result;
+                }
+
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return ex.ToIdentityResult();
+            }
         }
     }
+
 }
