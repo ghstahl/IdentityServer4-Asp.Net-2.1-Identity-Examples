@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
 using IdentityServer4.Events;
 using IdentityServer4.Models;
+using IdentityServer4Extras;
 using Microsoft.AspNetCore.Identity;
 using Neo4j.Driver.V1;
 using Neo4jExtras;
@@ -222,24 +223,21 @@ namespace StoresIdentityServer4.Neo4j
         }
 
 
-        public async Task EnsureStandardAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IdentityResult> EnsureStandardAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-            IdentityResource model = new IdentityResources.OpenId();
-            await InsertIdentityResource(model);
 
-            model = new IdentityResources.Email();
-            await InsertIdentityResource(model);
+            var identityResources = new List<IdentityResource>()
+            {
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile(),
+                new IdentityResources.Email(),
+                new IdentityResources.Address(),
+                new IdentityResources.Phone(),
+            };
 
-            model = new IdentityResources.Address();
-            await InsertIdentityResource(model);
-
-            model = new IdentityResources.Phone();
-            await InsertIdentityResource(model);
-
-            model = new IdentityResources.Profile();
-            await InsertIdentityResource(model);
+            return await InsertIdentityResources(identityResources, cancellationToken);
         }
 
         public async Task<IdentityResult> InsertIdentityResource(IdentityResource model,
@@ -271,6 +269,92 @@ namespace StoresIdentityServer4.Neo4j
             {
                 return ex.ToIdentityResult();
             }
+        }
+
+        public async Task<IdentityResult> InsertIdentityResources(IEnumerable<IdentityResource> models, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            foreach (var model in models)
+            {
+                var result = await InsertIdentityResource(model, cancellationToken);
+                if (!result.Succeeded)
+                    return result;
+            }
+            return IdentityResult.Success;
+        }
+
+        public async Task<IdentityResult> InsertApiResource(
+            ApiResource model, 
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            model.ThrowIfNull(nameof(model));
+            try
+            {
+                var dto = model.ToNeo4jEntity();
+                var result = await CreateApiResourceAsync(dto, cancellationToken);
+                if (!result.Succeeded)
+                    return result;
+
+                foreach (var claim in model.UserClaims)
+                {
+                    var dtoClaim = new Neo4jIdentityServer4ApiResourceClaim()
+                    {
+                        Type = claim
+                    };
+                    result = await AddApiResourceClaimAsync(dto, dtoClaim, cancellationToken);
+                    if (!result.Succeeded)
+                        return result;
+                }
+
+                foreach (var scope in model.Scopes)
+                {
+                    var dtoScope = scope.ToNeo4jEntity();
+                    result = await AddApiScopeAsync(dto, dtoScope, cancellationToken);
+                    if (!result.Succeeded)
+                        return result;
+                    foreach (var claim in scope.UserClaims)
+                    {
+                        var dtoClaim = new Neo4jIdentityServer4ApiScopeClaim()
+                        {
+                            Type = claim
+                        };
+                        result = await AddApiScopeClaimAsync(dto, dtoScope,dtoClaim, cancellationToken);
+                        if (!result.Succeeded)
+                            return result;
+                    }
+                }
+
+                foreach (var apiSecret in model.ApiSecrets)
+                {
+                    var dtoSecret = apiSecret.ToNeo4jEntity();
+                    result = await AddApiSecretAsync(dto, dtoSecret, cancellationToken);
+                    if (!result.Succeeded)
+                        return result;
+                }
+
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return ex.ToIdentityResult();
+            }
+        }
+
+        public async Task<IdentityResult> InsertApiResources(IEnumerable<ApiResource> models, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            foreach (var model in models)
+            {
+                var result = await InsertApiResource(model, cancellationToken);
+                if (!result.Succeeded)
+                    return result;
+            }
+            return IdentityResult.Success;
+        }
+
+        public Task<IdentityResult> InsertClient(ClientExtra model, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
         }
     }
 

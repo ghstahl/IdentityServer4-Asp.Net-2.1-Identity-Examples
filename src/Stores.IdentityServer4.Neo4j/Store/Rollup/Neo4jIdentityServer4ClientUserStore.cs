@@ -36,9 +36,9 @@ namespace StoresIdentityServer4.Neo4j
             var secrets = await GetSecretsAsync(client, cancellationToken);
             if (secrets != null)
             {
-                foreach (var item in secrets)
+                foreach (var secret in secrets)
                 {
-                    model.ClientSecrets.Add(item);
+                    model.ClientSecrets.Add(secret.ToModel());
                 }
             }
 

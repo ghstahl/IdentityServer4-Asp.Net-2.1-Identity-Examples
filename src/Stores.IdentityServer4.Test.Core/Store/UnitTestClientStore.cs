@@ -37,23 +37,23 @@ namespace StoresIdentityServer4.Test.Core.Store
         TIdentityResource,
         TIdentityClaim>
         where TUser : Neo4jIdentityUser
-        where TClient : Client
-        where TSecret : Secret
-        where TGrantType : ClientGrantType
-        where TApiResource : ApiResource
+        where TClient : StoresIdentityServer4.Neo4j.Entities.Client
+        where TSecret : StoresIdentityServer4.Neo4j.Entities.Secret
+        where TGrantType : StoresIdentityServer4.Neo4j.Entities.ClientGrantType
+        where TApiResource : StoresIdentityServer4.Neo4j.Entities.ApiResource
         where TApiResourceClaim : StoresIdentityServer4.Neo4j.Entities.ApiResourceClaim
         where TIdentityResource : StoresIdentityServer4.Neo4j.Entities.IdentityResource
         where TIdentityClaim : StoresIdentityServer4.Neo4j.Entities.IdentityClaim
         where TApiSecret : StoresIdentityServer4.Neo4j.Entities.ApiSecret
         where TApiScope : StoresIdentityServer4.Neo4j.Entities.ApiScope
         where TApiScopeClaim : StoresIdentityServer4.Neo4j.Entities.ApiScopeClaim
-        where TClaim : ClientClaim
-        where TCorsOrigin : ClientCorsOrigin
-        where TScope : ClientScope
-        where TIDPRestriction : ClienTIDPRestriction
-        where TProperty : ClientProperty
-        where TPostLogoutRedirectUri : ClientPostLogoutRedirectUri
-        where TRedirectUri : ClientRedirectUri
+        where TClaim : StoresIdentityServer4.Neo4j.Entities.ClientClaim
+        where TCorsOrigin : StoresIdentityServer4.Neo4j.Entities.ClientCorsOrigin
+        where TScope : StoresIdentityServer4.Neo4j.Entities.ClientScope
+        where TIDPRestriction : StoresIdentityServer4.Neo4j.Entities.ClienTIDPRestriction
+        where TProperty : StoresIdentityServer4.Neo4j.Entities.ClientProperty
+        where TPostLogoutRedirectUri : StoresIdentityServer4.Neo4j.Entities.ClientPostLogoutRedirectUri
+        where TRedirectUri : StoresIdentityServer4.Neo4j.Entities.ClientRedirectUri
     {
         private INeo4jTest _neo4jtest;
         private IUserStore<TUser> _userStore;
@@ -776,11 +776,11 @@ namespace StoresIdentityServer4.Test.Core.Store
         }
 
         [TestMethod]
-        public async Task Create_Standard_IdentityResources()
+        public async Task Insert_Standard_IdentityResources()
         {
- 
-
-            await _clientUserStore.EnsureStandardAsync();
+            var result = await _clientUserStore.EnsureStandardAsync();
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
 
             var identityResources =
                 await _clientUserStore.GetIdentityResourcesAsync();
@@ -796,7 +796,42 @@ namespace StoresIdentityServer4.Test.Core.Store
             identityResources.ShouldNotBeNull();
             identityResources.Count.ShouldBe(count);
         }
+        [TestMethod]
+        public async Task Insert_Model_ApiResorces_IdentityResources()
+        {
+            var apiResources = new List<IdentityServer4.Models.ApiResource>
+            {
+                new IdentityServer4.Models.ApiResource("api1", "My API"),
+                new IdentityServer4.Models.ApiResource("native_api", "Native Client API")
+                {
+                    ApiSecrets =
+                    {
+                        new IdentityServer4.Models.Secret("native_api_secret".Sha256())
+                    }
+                }
+            };
 
+
+            var result = await _clientUserStore.InsertApiResources(apiResources);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var foundApiResources =
+                await _clientUserStore.GetApiResourcesAsync();
+            foundApiResources.ShouldNotBeNull();
+            foundApiResources.Count.ShouldBe(apiResources.Count);
+
+
+            // do it again, but this time it should fail
+            result = await _clientUserStore.InsertApiResources(apiResources);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeFalse();
+
+            foundApiResources =
+                await _clientUserStore.GetApiResourcesAsync();
+            foundApiResources.ShouldNotBeNull();
+            foundApiResources.Count.ShouldBe(apiResources.Count);
+        }
         [TestMethod]
         public async Task Create_IdentityResource_Assure_Unique()
         {

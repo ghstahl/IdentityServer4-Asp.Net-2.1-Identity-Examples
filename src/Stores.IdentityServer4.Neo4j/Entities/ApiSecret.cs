@@ -2,7 +2,7 @@
 
 namespace StoresIdentityServer4.Neo4j.Entities
 {
-    public class ApiSecret : Secret
+    public class ApiSecret : StoresIdentityServer4.Neo4j.Entities.Secret
     {
     }
 }

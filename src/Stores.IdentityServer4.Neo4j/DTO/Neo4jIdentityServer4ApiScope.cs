@@ -9,6 +9,7 @@ namespace StoresIdentityServer4.Neo4j
     public class Neo4jIdentityServer4ApiScope :
         StoresIdentityServer4.Neo4j.Entities.ApiScope
     {
+        
     }
 }
 

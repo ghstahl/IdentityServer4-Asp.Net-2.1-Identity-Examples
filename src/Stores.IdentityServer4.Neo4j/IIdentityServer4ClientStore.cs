@@ -10,12 +10,6 @@ using Client = StoresIdentityServer4.Neo4j.Entities.Client;
 
 namespace StoresIdentityServer4.Neo4j
 {
-    public interface IIdentityServer4ModelsPopulation
-    {
-        Task EnsureStandardAsync(CancellationToken cancellationToken = default(CancellationToken));
-        Task<IdentityResult> InsertIdentityResource(IdentityServer4.Models.IdentityResource model, 
-            CancellationToken cancellationToken = default(CancellationToken));
-    }
     public interface IIdentityServer4ClientStore<in TClient,
         TSecret,
         TGrantType,
@@ -46,7 +40,7 @@ namespace StoresIdentityServer4.Neo4j
         IIdentityServer4ModelsPopulation,
         IDisposable
         where TClient : StoresIdentityServer4.Neo4j.Entities.Client
-        where TSecret : IdentityServer4.Models.Secret
+        where TSecret : StoresIdentityServer4.Neo4j.Entities.Secret
         where TGrantType : StoresIdentityServer4.Neo4j.Entities.ClientGrantType
         where TApiResource : StoresIdentityServer4.Neo4j.Entities.ApiResource
         where TApiResourceClaim : StoresIdentityServer4.Neo4j.Entities.ApiResourceClaim

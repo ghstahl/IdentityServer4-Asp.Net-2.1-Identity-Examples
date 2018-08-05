@@ -21,7 +21,7 @@
         TIdentityClaim>
         where TUser : class
         where TClient : StoresIdentityServer4.Neo4j.Entities.Client
-        where TSecret : IdentityServer4.Models.Secret
+        where TSecret : StoresIdentityServer4.Neo4j.Entities.Secret
         where TGrantType : StoresIdentityServer4.Neo4j.Entities.ClientGrantType
         where TApiResource : StoresIdentityServer4.Neo4j.Entities.ApiResource
         where TApiResourceClaim : StoresIdentityServer4.Neo4j.Entities.ApiResourceClaim

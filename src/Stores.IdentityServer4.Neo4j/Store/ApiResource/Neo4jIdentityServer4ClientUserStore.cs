@@ -422,7 +422,7 @@ namespace StoresIdentityServer4.Neo4j
                 var secrets = await GetApiSecretsAsync(apiResource, cancellationToken);
                 foreach (var secret in secrets)
                 {
-                    model.ApiSecrets.Add(secret);
+                    model.ApiSecrets.Add(secret.ToModel());
                 }
 
                 var claims = await GetApiResourceClaimsAsync(apiResource, cancellationToken);
