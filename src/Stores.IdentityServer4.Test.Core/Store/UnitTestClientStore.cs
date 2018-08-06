@@ -166,15 +166,16 @@ namespace StoresIdentityServer4.Test.Core.Store
                         new Claim("A", "B"),
                         new Claim("A", "B"),
                     },
-                    IdentityProviderRestrictions = new List<string>()
+                    IdentityProviderRestrictions = new HashSet<string>()
                     {
                         "test",
                         "test"
                     },
                     AllowedCorsOrigins = new List<string>()
                         {"https://test.com", "https://test.com"}
+                   
 
-                }
+        }
             };
         }
 

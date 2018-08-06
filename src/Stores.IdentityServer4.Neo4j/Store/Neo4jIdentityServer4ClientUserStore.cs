@@ -406,7 +406,13 @@ namespace StoresIdentityServer4.Neo4j
                     if (!result.Succeeded)
                         return result;
                 }
-               
+                foreach (var identityProviderRestriction in model.IdentityProviderRestrictions)
+                {
+                    var dtoIdentityProviderRestrictions = identityProviderRestriction.ToNeo4jClientIDPRestrictionEntity();
+                    result = await AddIdPRestrictionToClientAsync(dto, dtoIdentityProviderRestrictions, cancellationToken);
+                    if (!result.Succeeded)
+                        return result;
+                }
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
