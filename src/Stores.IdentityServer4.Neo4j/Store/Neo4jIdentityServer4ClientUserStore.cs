@@ -31,7 +31,7 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClientClaim,
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope,
-            Neo4jIdentityServer4ClienTIDPRestriction,
+            Neo4JIdentityServer4ClientIdpRestriction,
             Neo4jIdentityServer4ClientProperty,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri,
             Neo4jIdentityServer4ClientRedirectUri,
@@ -60,7 +60,7 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClientClaim, 
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope, 
-            Neo4jIdentityServer4ClienTIDPRestriction, 
+            Neo4JIdentityServer4ClientIdpRestriction, 
             Neo4jIdentityServer4ClientProperty, 
             Neo4jIdentityServer4ClientPostLogoutRedirectUri, 
             Neo4jIdentityServer4ClientRedirectUri,
@@ -83,7 +83,7 @@ namespace StoresIdentityServer4.Neo4j
                         Neo4jIdentityServer4ClientClaim,
                         Neo4jIdentityServer4ClientCorsOrigin,
                         Neo4jIdentityServer4ClientScope,
-                        Neo4jIdentityServer4ClienTIDPRestriction,
+                        Neo4JIdentityServer4ClientIdpRestriction,
                         Neo4jIdentityServer4ClientProperty,
                         Neo4jIdentityServer4ClientPostLogoutRedirectUri,
                         Neo4jIdentityServer4ClientRedirectUri,
@@ -103,7 +103,7 @@ namespace StoresIdentityServer4.Neo4j
                         Neo4jIdentityServer4ClientClaim,
                         Neo4jIdentityServer4ClientCorsOrigin,
                         Neo4jIdentityServer4ClientScope,
-                        Neo4jIdentityServer4ClienTIDPRestriction,
+                        Neo4JIdentityServer4ClientIdpRestriction,
                         Neo4jIdentityServer4ClientProperty,
                         Neo4jIdentityServer4ClientPostLogoutRedirectUri,
                         Neo4jIdentityServer4ClientRedirectUri,
@@ -131,7 +131,7 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClientClaim,
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope,
-            Neo4jIdentityServer4ClienTIDPRestriction,
+            Neo4JIdentityServer4ClientIdpRestriction,
             Neo4jIdentityServer4ClientProperty,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri,
             Neo4jIdentityServer4ClientRedirectUri,
@@ -187,7 +187,7 @@ namespace StoresIdentityServer4.Neo4j
             IdSrv4ClientClaim = typeof(Neo4jIdentityServer4ClientClaim).GetNeo4jLabelName();
             IdSrv4ClientCorsOrigin = typeof(Neo4jIdentityServer4ClientCorsOrigin).GetNeo4jLabelName();
             IdSrv4ClientScope = typeof(Neo4jIdentityServer4ClientScope).GetNeo4jLabelName();
-            IdSrv4ClienTIDPRestriction = typeof(Neo4jIdentityServer4ClienTIDPRestriction).GetNeo4jLabelName();
+            IdSrv4ClienTIDPRestriction = typeof(Neo4JIdentityServer4ClientIdpRestriction).GetNeo4jLabelName();
             IdSrv4ClientProperty = typeof(Neo4jIdentityServer4ClientProperty).GetNeo4jLabelName();
             IdSrv4ClientPostLogoutRedirectUri =
                 typeof(Neo4jIdentityServer4ClientPostLogoutRedirectUri).GetNeo4jLabelName();
@@ -384,43 +384,74 @@ namespace StoresIdentityServer4.Neo4j
                 var result = await AddClientToUserAsync(user, dto, cancellationToken);
                 if (!result.Succeeded)
                     return result;
-                foreach (var modelClaim in model.Claims)
+                foreach (var mod in model.Claims)
                 {
-                    var dtoClaim = modelClaim.ToNeo4jEntity();
+                    var dtoClaim = mod.ToNeo4jEntity();
                     result = await AddClaimToClientAsync(dto, dtoClaim, cancellationToken);
                     if (!result.Succeeded)
                         return result;
                 }
-                foreach (var modelAllowedScope in model.AllowedScopes)
+                foreach (var mod in model.AllowedScopes)
                 {
-                    var dtoScope = modelAllowedScope.ToNeo4jClientScopeEntity();
+                    var dtoScope = mod.ToNeo4jClientScopeEntity();
                     result = await AddScopeToClientAsync(dto, dtoScope, cancellationToken);
                     if (!result.Succeeded)
                         return result;
 
                 }
-                foreach (var clientSecret in model.ClientSecrets)
+                foreach (var mod in model.ClientSecrets)
                 {
-                    var dtoSecret = clientSecret.ToNeo4jClientSecretEntity();
+                    var dtoSecret = mod.ToNeo4jClientSecretEntity();
                     result = await AddSecretToClientAsync(dto, dtoSecret, cancellationToken);
                     if (!result.Succeeded)
                         return result;
                 }
-                foreach (var identityProviderRestriction in model.IdentityProviderRestrictions)
+                foreach (var mod in model.IdentityProviderRestrictions)
                 {
-                    var dtoIdentityProviderRestrictions = identityProviderRestriction.ToNeo4jClientIDPRestrictionEntity();
+                    var dtoIdentityProviderRestrictions = mod.ToNeo4JClientIdpRestrictionEntity();
                     result = await AddIdPRestrictionToClientAsync(dto, dtoIdentityProviderRestrictions, cancellationToken);
                     if (!result.Succeeded)
                         return result;
                 }
-                foreach (var property in model.Properties)
+                foreach (var mod in model.Properties)
                 {
                   
-                    var propertyDTO = property.ToNeo4jClientPropertyEntity();
+                    var propertyDTO = mod.ToNeo4jClientPropertyEntity();
                     result = await AddPropertyToClientAsync(dto, propertyDTO, cancellationToken);
                     if (!result.Succeeded)
                         return result;
                 }
+                foreach (var mod in model.AllowedCorsOrigins)
+                {
+
+                    var allowedCorsOriginsDTO = mod.ToNeo4jClientCorsOriginEntity();
+                    result = await AddCorsOriginToClientAsync(dto, allowedCorsOriginsDTO, cancellationToken);
+                    if (!result.Succeeded)
+                        return result;
+                }
+                foreach (var mod in model.AllowedGrantTypes)
+                {
+                    var allowedGrantTypesDTO = mod.ToNeo4jClientAllowedGrantTypeEntity();
+                    result = await AddAllowedGrantTypeToClientAsync(dto, allowedGrantTypesDTO, cancellationToken);
+                    if (!result.Succeeded)
+                        return result;
+                }
+                foreach (var mod in model.PostLogoutRedirectUris)
+                {
+                    var postLogoutRedirectUrisDTO = mod.ToNeo4jClientPostLogoutRedirectUriEntity();
+                    result = await AddPostLogoutRedirectUriToClientAsync(dto, postLogoutRedirectUrisDTO, cancellationToken);
+                    if (!result.Succeeded)
+                        return result;
+                }
+                foreach (var mod in model.RedirectUris)
+                {
+                    var redirectUriDTO = mod.ToNeo4jClientRedirectUriEntity();
+                    result = await AddRedirectUriToClientAsync(dto, redirectUriDTO, cancellationToken);
+                    if (!result.Succeeded)
+                        return result;
+                }
+                
+
                 return IdentityResult.Success;
             }
             catch (ClientException ex)

@@ -28,7 +28,7 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
             Neo4jIdentityServer4ClientClaim,
             Neo4jIdentityServer4ClientCorsOrigin,
             Neo4jIdentityServer4ClientScope,
-            Neo4jIdentityServer4ClienTIDPRestriction,
+            Neo4JIdentityServer4ClientIdpRestriction,
             Neo4jIdentityServer4ClientProperty,
             Neo4jIdentityServer4ClientPostLogoutRedirectUri,
             Neo4jIdentityServer4ClientRedirectUri,
@@ -52,7 +52,7 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
                         Neo4jIdentityServer4ClientClaim,
                         Neo4jIdentityServer4ClientCorsOrigin,
                         Neo4jIdentityServer4ClientScope,
-                        Neo4jIdentityServer4ClienTIDPRestriction,
+                        Neo4JIdentityServer4ClientIdpRestriction,
                         Neo4jIdentityServer4ClientProperty,
                         Neo4jIdentityServer4ClientPostLogoutRedirectUri,
                         Neo4jIdentityServer4ClientRedirectUri,
@@ -151,9 +151,9 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
             };
         }
 
-        protected override Neo4jIdentityServer4ClienTIDPRestriction CreateTesTIDPRestriction()
+        protected override Neo4JIdentityServer4ClientIdpRestriction CreateTesTIDPRestriction()
         {
-            return new Neo4jIdentityServer4ClienTIDPRestriction()
+            return new Neo4JIdentityServer4ClientIdpRestriction()
             {
                 Provider = Unique.S
             };

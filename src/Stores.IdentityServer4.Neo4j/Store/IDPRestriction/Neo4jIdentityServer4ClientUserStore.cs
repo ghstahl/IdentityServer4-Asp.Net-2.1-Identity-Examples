@@ -16,7 +16,7 @@ namespace StoresIdentityServer4.Neo4j
         private static readonly string IdSrv4ClienTIDPRestriction;
 
         public async Task<IdentityResult> AddIdPRestrictionToClientAsync(Neo4jIdentityServer4Client client,
-            Neo4jIdentityServer4ClienTIDPRestriction idpRestriction,
+            Neo4JIdentityServer4ClientIdpRestriction idpRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -42,7 +42,7 @@ namespace StoresIdentityServer4.Neo4j
         }
 
         public async Task<IdentityResult> DeleteIDPRestrictionAsync(Neo4jIdentityServer4Client client,
-            Neo4jIdentityServer4ClienTIDPRestriction idpRestriction,
+            Neo4JIdentityServer4ClientIdpRestriction idpRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -100,9 +100,9 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<Neo4jIdentityServer4ClienTIDPRestriction> FindIDPRestrictionAsync(
+        public async Task<Neo4JIdentityServer4ClientIdpRestriction> FindIDPRestrictionAsync(
             Neo4jIdentityServer4Client client,
-            Neo4jIdentityServer4ClienTIDPRestriction idpRestriction,
+            Neo4JIdentityServer4ClientIdpRestriction idpRestriction,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -123,12 +123,12 @@ namespace StoresIdentityServer4.Neo4j
                 ));
 
             var foundRecord =
-                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClienTIDPRestriction>("idp"));
+                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4JIdentityServer4ClientIdpRestriction>("idp"));
 
             return foundRecord;
         }
 
-        public async Task<IList<Neo4jIdentityServer4ClienTIDPRestriction>> GetIDPRestrictionsAsync(
+        public async Task<IList<Neo4JIdentityServer4ClientIdpRestriction>> GetIDPRestrictionsAsync(
             Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -145,7 +145,7 @@ namespace StoresIdentityServer4.Neo4j
 
             var result = await Session.RunAsync(cypher, Params.Create(client.ClientId));
 
-            var ipds = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ClienTIDPRestriction>("idp"));
+            var ipds = await result.ToListAsync(r => r.MapTo<Neo4JIdentityServer4ClientIdpRestriction>("idp"));
             return ipds;
         }
 

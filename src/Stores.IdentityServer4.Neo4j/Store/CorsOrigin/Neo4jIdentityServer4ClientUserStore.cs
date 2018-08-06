@@ -27,8 +27,10 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
-                MERGE (corsOrigin:{IdSrv4ClientCorsOrigin} {"$p1".AsMapForNoNull<Neo4jIdentityServer4ClientCorsOrigin>(corsOrigin)})
-                MERGE (client)-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->(corsOrigin)";
+                CREATE UNIQUE(
+                    (client)-[:{Neo4jConstants.Relationships.HasCorsOrigin}]->
+                    (:{IdSrv4ClientCorsOrigin} {"$p1".AsMapForNoNull(corsOrigin)}))";
+
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, corsOrigin));
                 await RaiseClientChangeEventAsync(client);

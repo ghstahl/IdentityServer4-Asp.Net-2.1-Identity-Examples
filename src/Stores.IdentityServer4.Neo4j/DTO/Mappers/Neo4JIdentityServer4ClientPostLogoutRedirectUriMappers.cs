@@ -2,13 +2,14 @@
 
 namespace StoresIdentityServer4.Neo4j.DTO.Mappers
 {
-    public static class Neo4JIdentityServer4ClientIdpRestrictionMappers
+
+    public static class Neo4JIdentityServer4ClientPostLogoutRedirectUriMappers
     {
-        static Neo4JIdentityServer4ClientIdpRestrictionMappers()
+        static Neo4JIdentityServer4ClientPostLogoutRedirectUriMappers()
         {
             Mapper = new MapperConfiguration(
                     cfg => cfg.AddProfile<
-                        Neo4JIdentityServer4ClientIdpRestrictionMapperProfile
+                        Neo4JIdentityServer4ClientPostLogoutRedirectUriMapperProfile
                     >())
                 .CreateMapper();
         }
@@ -21,7 +22,7 @@ namespace StoresIdentityServer4.Neo4j.DTO.Mappers
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
         public static string ToModel(
-            this Neo4JIdentityServer4ClientIdpRestriction entity)
+            this Neo4jIdentityServer4ClientPostLogoutRedirectUri entity)
         {
             return Mapper.Map<string>(entity);
         }
@@ -31,11 +32,11 @@ namespace StoresIdentityServer4.Neo4j.DTO.Mappers
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        public static Neo4JIdentityServer4ClientIdpRestriction ToNeo4JClientIdpRestrictionEntity(
+        public static Neo4jIdentityServer4ClientPostLogoutRedirectUri ToNeo4jClientPostLogoutRedirectUriEntity(
             this string model)
         {
-            return Mapper.Map<Neo4JIdentityServer4ClientIdpRestriction>(model);
+            return Mapper.Map<Neo4jIdentityServer4ClientPostLogoutRedirectUri>(model);
         }
-         
+
     }
 }

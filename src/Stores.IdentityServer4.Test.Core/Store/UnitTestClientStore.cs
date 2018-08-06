@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -135,16 +136,43 @@ namespace StoresIdentityServer4.Test.Core.Store
             {
                 new ClientExtra
                 {
+                    UpdateAccessTokenClaimsOnRefresh = true,
+                    RequireConsent = true,
+                    RequireClientSecret = true,
+
+                    AllowAccessTokensViaBrowser = true,
+
+                    AbsoluteRefreshTokenLifetime = 3600,
+                    AccessTokenLifetime = 3600,
+                    AccessTokenType = AccessTokenType.Jwt,
+
+                    AllowPlainTextPkce = true,
+                    AllowRememberConsent = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    AlwaysSendClientClaims = true,
+                    AuthorizationCodeLifetime = 3600,
+                    BackChannelLogoutSessionRequired = true,
+                    BackChannelLogoutUri = Unique.Url,
+                    ClientClaimsPrefix = "doggy_",
+                    ClientUri = Unique.Url,
+                    ConsentLifetime = 3600,
+                    EnableLocalLogin = true,
+                    Enabled = true,
+                    FrontChannelLogoutSessionRequired = true,
+                    FrontChannelLogoutUri = Unique.Url,
+                    IdentityTokenLifetime = 3600,
+                    IncludeJwtId = true,
+                    LogoUri = Unique.Url,
+                    PairWiseSubjectSalt = "pairThis",
                     AllowArbitraryLocalRedirectUris = true,
                     ClientId = "native.hybrid",
                     ClientName = "Native Client (Hybrid with PKCE)",
 
-                    RedirectUris = {"https://test.com", "https://test.com"},
-                    PostLogoutRedirectUris = {"https://test.com", "https://test.com"},
+                    RedirectUris = {"https://test.com", "https://test.com", "https://test2.com"},
+                    PostLogoutRedirectUris = {"https://test.com", "https://test.com", "https://test2.com"},
 
-                    RequireClientSecret = false,
 
-                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    AllowedGrantTypes = new List<string> {GrantType.AuthorizationCode, GrantType.ClientCredentials},
                     RequirePkce = true,
                     AllowedScopes =
                     {
@@ -157,6 +185,7 @@ namespace StoresIdentityServer4.Test.Core.Store
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256()),
+                        new Secret("secret2".Sha256()),
                         new Secret("secret".Sha256())
                     },
                     AllowOfflineAccess = true,
@@ -165,22 +194,22 @@ namespace StoresIdentityServer4.Test.Core.Store
                     {
                         new Claim("A", "B"),
                         new Claim("A", "B"),
+                        new Claim("B", "C"),
                     },
                     IdentityProviderRestrictions = new HashSet<string>()
                     {
                         "test",
-                        "test"
+                        "test",
+                        "test2"
                     },
                     AllowedCorsOrigins = new List<string>()
-                        {"https://test.com", "https://test.com"},
+                        {"https://test.com", "https://test.com", "https://test2.com"},
                     Properties = new Dictionary<string, string>()
                     {
-                        { "A","B"},
-                        { "B","C"}
+                        {"A", "B"},
+                        {"B", "C"}
                     }
-                   
-
-        }
+                }
             };
         }
 
@@ -1072,13 +1101,20 @@ namespace StoresIdentityServer4.Test.Core.Store
             var createUserResult = await _userStore.CreateAsync(
                 testUser, CancellationToken.None);
 
-            var clients = GetClient();
+            var clients = GetClient().ToList();
 
 
             var result = await _clientUserStore.InsertClients(testUser,clients);
             result.ShouldNotBeNull();
             result.Succeeded.ShouldBeTrue();
 
+            var foundClient = await _clientUserStore.GetClientsAsync(testUser);
+            foundClient.ShouldNotBeNull();
+            foundClient.Count.ShouldBe(clients.Count);
+
+            var foundMod = await _clientUserStore.GetRollupAsync(foundClient[0]);
+            foundMod.ShouldNotBeNull();
+            
             
         }
 
