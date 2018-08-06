@@ -27,7 +27,7 @@ namespace StoresIdentityServer4.Neo4j
                 var cypher = $@"
                 MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
                 MERGE (postLogoutRedirectUri:{IdSrv4ClientPostLogoutRedirectUri} {
-                        "$p1".AsMapFor<Neo4jIdentityServer4ClientPostLogoutRedirectUri>()
+                        "$p1".AsMapForNoNull<Neo4jIdentityServer4ClientPostLogoutRedirectUri>(postLogoutRedirectUri)
                     })
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasPostLogoutRedirectUri}]->(postLogoutRedirectUri)";
 

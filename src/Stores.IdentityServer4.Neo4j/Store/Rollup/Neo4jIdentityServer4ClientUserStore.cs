@@ -198,7 +198,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH (c:{IdSrv4Client} {{ClientId: $p0}})
-                MERGE (rollup:{IdSrv4ClientRollup} {"$p1".AsMapFor<Neo4jIdentityServer4ClientRollup>()})
+                MERGE (rollup:{IdSrv4ClientRollup} {"$p1".AsMapForNoNull(rollup)})
                 MERGE (c)-[:{Neo4jConstants.Relationships.HasRollup}]->(rollup)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, rollup));

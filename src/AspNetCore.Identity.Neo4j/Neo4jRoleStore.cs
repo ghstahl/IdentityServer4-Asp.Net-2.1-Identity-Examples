@@ -327,7 +327,7 @@ namespace AspNetCore.Identity.Neo4j
 
             var cypher = $@"
                 MATCH (r:{Role} {{Id: $p0}})
-                MERGE (c:{Claim} {"$p1".AsMapFor<TRoleClaim>()})
+                MERGE (c:{Claim} {"$p1".AsMapForNoNull(claim)})
                 MERGE (r)-[:{HasClaim}]->(c)";
 
             await Session.RunAsync(cypher, Params.Create(role.Id, CreateRoleClaim(role, claim)));

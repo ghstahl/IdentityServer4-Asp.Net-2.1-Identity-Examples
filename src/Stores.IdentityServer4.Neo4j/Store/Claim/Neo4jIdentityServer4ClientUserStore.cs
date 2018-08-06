@@ -17,7 +17,8 @@ namespace StoresIdentityServer4.Neo4j
         private static readonly string IdSrv4ClientClaim;
     
 
-        public async Task<IdentityResult> AddClaimToClientAsync(Neo4jIdentityServer4Client client,
+        public async Task<IdentityResult> AddClaimToClientAsync(
+            Neo4jIdentityServer4Client client,
             Neo4jIdentityServer4ClientClaim claim,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -29,9 +30,9 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
-                MERGE (claim:{IdSrv4ClientClaim} {"$p1".AsMapFor<Neo4jIdentityServer4ClientClaim>()})
-                MERGE (client)-[:{Neo4jConstants.Relationships.HasClaim}]->(claim)";
+                CREATE UNIQUE((client)-[:{Neo4jConstants.Relationships.HasClaim}]->(claim:{IdSrv4ClientClaim} {"$p1".AsMapForNoNull(claim)}))";
 
+          
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, claim));
 
                 await RaiseClientChangeEventAsync(client);

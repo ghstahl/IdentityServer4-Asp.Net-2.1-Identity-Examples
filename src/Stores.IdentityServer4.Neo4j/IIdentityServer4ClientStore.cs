@@ -36,7 +36,6 @@ namespace StoresIdentityServer4.Neo4j
         IIdentityServer4IdentityResourceStore<
             TIdentityResource,
             TIdentityClaim>,
-        IIdentityServer4ModelsPopulation,
         IDisposable
         where TClient : StoresIdentityServer4.Neo4j.Entities.ClientExtra
         where TSecret : StoresIdentityServer4.Neo4j.Entities.Secret

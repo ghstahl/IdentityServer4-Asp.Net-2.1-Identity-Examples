@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using IdentityServer4;
+using Newtonsoft.Json;
 
 namespace StoresIdentityServer4.Neo4j.Entities
 {
@@ -10,32 +11,31 @@ namespace StoresIdentityServer4.Neo4j.Entities
     {
         private string _description;
 
-        public string Description
-        {
-            get
-            {
-                return string.IsNullOrEmpty(_description) ? "" : _description;
-            }
-            set { _description = value; }
-        }
+        public string Description { get; set; }
 
         public string Value { get; set; }
-        private DateTime _expiration;
-
-        public DateTime? Expiration
+       
+     
+        public string ExpirationJson { get; set; }
+        /*
         {
             get
             {
-                if (_expiration == null)
+                if (Expiration != null)
                 {
-                    _expiration = DateTime.ParseExact("01/01/2100", "d", CultureInfo.InvariantCulture);
+                    var dateTime = ((DateTime) Expiration).ToString("MM'/'dd'/'yyyy HH':'mm");
+                    return dateTime;
                 }
 
-                return _expiration;
+                return null;
             }
-            set { value = _expiration; }
-        }
+            set
+            {
+                Expiration =  DateTime.ParseExact(value, "MM'/'dd'/'yyyy HH':'mm", CultureInfo.InstalledUICulture);
 
+            }
+        }
+*/
         public string Type { get; set; } = IdentityServerConstants.SecretTypes.SharedSecret;
     }
 }

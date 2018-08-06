@@ -26,7 +26,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
-                MERGE (property:{IdSrv4ClientProperty} {"$p1".AsMapFor<Neo4jIdentityServer4ClientProperty>()})
+                MERGE (property:{IdSrv4ClientProperty} {"$p1".AsMapForNoNull<Neo4jIdentityServer4ClientProperty>(property)})
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasProperty}]->(property)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, property));

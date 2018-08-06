@@ -27,8 +27,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
-                MERGE (scope:{IdSrv4ClientScope} {"$p1".AsMapFor<Neo4jIdentityServer4ClientScope>()})
-                MERGE (client)-[:{Neo4jConstants.Relationships.HasScope}]->(scope)";
+                CREATE UNIQUE((client)-[:{Neo4jConstants.Relationships.HasScope}]->(scope:{IdSrv4ClientScope} {"$p1".AsMapForNoNull<Neo4jIdentityServer4ClientScope>(scope)}))";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, scope));
                 await RaiseClientChangeEventAsync(client);

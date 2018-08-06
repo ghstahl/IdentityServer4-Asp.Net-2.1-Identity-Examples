@@ -6,7 +6,11 @@ namespace StoresIdentityServer4.Neo4j.DTO.Mappers
     {
         static Neo4jIdentityServer4ApiScopeMappers()
         {
-            Mapper = Neo4jIdentityServer4Mappers<Neo4JIdentityServer4ApiScopeMapperProfile>.CreateMapper();
+            Mapper = new MapperConfiguration(
+                    cfg => cfg.AddProfile<
+                        Neo4JIdentityServer4ApiScopeMapperProfile
+                    >())
+                .CreateMapper();
         }
 
         internal static IMapper Mapper { get; }

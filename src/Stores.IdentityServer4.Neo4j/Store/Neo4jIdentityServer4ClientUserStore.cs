@@ -213,7 +213,7 @@ namespace StoresIdentityServer4.Neo4j
         }
 
         public Neo4jIdentityServer4ClientUserStore(
-            ISession session, 
+            ISession session,
             INeo4jEventService eventService)
         {
             Session = session;
@@ -278,7 +278,7 @@ namespace StoresIdentityServer4.Neo4j
         }
 
         public async Task<IdentityResult> InsertIdentityResources(
-            IEnumerable<IdentityResource> models, 
+            IEnumerable<IdentityResource> models,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -290,11 +290,12 @@ namespace StoresIdentityServer4.Neo4j
                 if (!result.Succeeded)
                     return result;
             }
+
             return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> InsertApiResource(
-            ApiResource model, 
+            ApiResource model,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -330,7 +331,7 @@ namespace StoresIdentityServer4.Neo4j
                         {
                             Type = claim
                         };
-                        result = await AddApiScopeClaimAsync(dto, dtoScope,dtoClaim, cancellationToken);
+                        result = await AddApiScopeClaimAsync(dto, dtoScope, dtoClaim, cancellationToken);
                         if (!result.Succeeded)
                             return result;
                     }
@@ -338,7 +339,7 @@ namespace StoresIdentityServer4.Neo4j
 
                 foreach (var apiSecret in model.ApiSecrets)
                 {
-                    var dtoSecret = apiSecret.ToNeo4jEntity();
+                    var dtoSecret = apiSecret.ToNeo4jApiSecretEntity();
                     result = await AddApiSecretAsync(dto, dtoSecret, cancellationToken);
                     if (!result.Succeeded)
                         return result;
@@ -353,7 +354,7 @@ namespace StoresIdentityServer4.Neo4j
         }
 
         public async Task<IdentityResult> InsertApiResources(
-            IEnumerable<ApiResource> models, 
+            IEnumerable<ApiResource> models,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -365,11 +366,13 @@ namespace StoresIdentityServer4.Neo4j
                 if (!result.Succeeded)
                     return result;
             }
+
             return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> InsertClient(
-            ClientExtra model, 
+            TUser user,
+            ClientExtra model,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -377,27 +380,58 @@ namespace StoresIdentityServer4.Neo4j
             model.ThrowIfNull(nameof(model));
             try
             {
+                var dto = model.ToNeo4jEntity();
+                var result = await AddClientToUserAsync(user, dto, cancellationToken);
+                if (!result.Succeeded)
+                    return result;
+                foreach (var modelClaim in model.Claims)
+                {
+                    var dtoClaim = modelClaim.ToNeo4jEntity();
+                    result = await AddClaimToClientAsync(dto, dtoClaim, cancellationToken);
+                    if (!result.Succeeded)
+                        return result;
+                }
+                foreach (var modelAllowedScope in model.AllowedScopes)
+                {
+                    var dtoScope = modelAllowedScope.ToNeo4jClientScopeEntity();
+                    result = await AddScopeToClientAsync(dto, dtoScope, cancellationToken);
+                    if (!result.Succeeded)
+                        return result;
+
+                }
+                foreach (var clientSecret in model.ClientSecrets)
+                {
+                    var dtoSecret = clientSecret.ToNeo4jClientSecretEntity();
+                    result = await AddSecretToClientAsync(dto, dtoSecret, cancellationToken);
+                    if (!result.Succeeded)
+                        return result;
+                }
+               
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
             {
                 return ex.ToIdentityResult();
             }
+
+            //            AddClientToUserAsync
+
         }
 
-        public async Task<IdentityResult> InsertClients(IEnumerable<ClientExtra> models, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IdentityResult> InsertClients(TUser user, IEnumerable<ClientExtra> models,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             models.ThrowIfNull(nameof(models));
             foreach (var model in models)
             {
-                var result = await InsertClient(model, cancellationToken);
+                var result = await InsertClient(user, model, cancellationToken);
                 if (!result.Succeeded)
                     return result;
             }
+
             return IdentityResult.Success;
         }
     }
-
 }

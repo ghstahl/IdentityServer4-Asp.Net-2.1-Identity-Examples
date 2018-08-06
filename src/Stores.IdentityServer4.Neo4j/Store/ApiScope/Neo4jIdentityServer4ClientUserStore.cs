@@ -47,7 +47,7 @@ namespace StoresIdentityServer4.Neo4j
                 MATCH 
                     (r:{IdSrv4ApiResource}{{Name: $p0}})
                 MERGE 
-                    (l:{IdSrv4ClientApiScope} {"$p1".AsMapFor<Neo4jIdentityServer4ApiScope>()})
+                    (l:{IdSrv4ClientApiScope} {"$p1".AsMapForNoNull<Neo4jIdentityServer4ApiScope>(apiScope)})
                 MERGE 
                     (r)-[:{Neo4jConstants.Relationships.HasScope}]->(l)";
 
@@ -193,7 +193,7 @@ namespace StoresIdentityServer4.Neo4j
                     -[:{Neo4jConstants.Relationships.HasScope}]->
                     (apiScope:{IdSrv4ClientApiScope}{{Name: $p1}})
                 MERGE 
-                    (l:{IdSrv4ClientApiScopeClaim} {"$p2".AsMapFor<Neo4jIdentityServer4ApiScopeClaim>()})
+                    (l:{IdSrv4ClientApiScopeClaim} {"$p2".AsMapForNoNull<Neo4jIdentityServer4ApiScopeClaim>(apiScopeClaim)})
                 MERGE 
                     (apiScope)-[:{Neo4jConstants.Relationships.HasClaim}]->(l)";
 
@@ -373,7 +373,7 @@ namespace StoresIdentityServer4.Neo4j
                         (:{IdSrv4ApiResource}{{Name: $p0}})
                         -[:{Neo4jConstants.Relationships.HasScope}]->
                         (c:{IdSrv4ClientApiScope}{{Name: $p1}})
-                MERGE (rollup:{IdSrv4ApiScopeRollup} {"$p2".AsMapFor<Neo4jIdentityServer4ApiScopeRollup>()})
+                MERGE (rollup:{IdSrv4ApiScopeRollup} {"$p2".AsMapForNoNull<ApiScopeRollup>(rollup)})
                 MERGE (c)-[:{Neo4jConstants.Relationships.HasRollup}]->(rollup)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(apiResource.Name, apiScope.Name, rollup));

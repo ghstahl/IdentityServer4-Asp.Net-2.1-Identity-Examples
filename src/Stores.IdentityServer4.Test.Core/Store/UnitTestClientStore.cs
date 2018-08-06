@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
@@ -12,7 +13,10 @@ using StoresIdentityServer4.Neo4j;
 using StoresIdentityServer4.Neo4j.DTO.Mappers;
 using StoresIdentityServer4.Neo4j.Entities;
 using StoresIdentityServer4.Neo4j.Mappers;
- 
+using Client = IdentityServer4.Models.Client;
+using ClientExtra = IdentityServer4.Models.ClientExtra;
+using Secret = IdentityServer4.Models.Secret;
+
 
 namespace StoresIdentityServer4.Test.Core.Store
 {
@@ -123,6 +127,250 @@ namespace StoresIdentityServer4.Test.Core.Store
         protected abstract TApiResourceClaim CreateTestApiResourceClaim();
         protected abstract TIdentityResource CreateTestIdentityResource();
         protected abstract TIdentityClaim CreateTestIdentityClaim();
+
+        public static IEnumerable<ClientExtra> GetClient()
+        {
+            // client credentials client
+            return new List<ClientExtra>
+            {
+                new ClientExtra
+                {
+                    AllowArbitraryLocalRedirectUris = true,
+                    ClientId = "native.hybrid",
+                    ClientName = "Native Client (Hybrid with PKCE)",
+
+                    RedirectUris = {"https://test.com", "https://test.com"},
+                    PostLogoutRedirectUris = {"https://test.com", "https://test.com"},
+
+                    RequireClientSecret = false,
+
+                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    RequirePkce = true,
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        "profile",
+                        "email",
+                        "native_api"
+                    },
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256()),
+                        new Secret("secret".Sha256())
+                    },
+                    AllowOfflineAccess = true,
+                    RefreshTokenUsage = TokenUsage.ReUse,
+                    Claims = new List<Claim>()
+                    {
+                        new Claim("A", "B"),
+                        new Claim("A", "B"),
+                    },
+                    IdentityProviderRestrictions = new List<string>()
+                    {
+                        "test",
+                        "test"
+                    },
+                    AllowedCorsOrigins = new List<string>()
+                        {"https://test.com", "https://test.com"}
+
+                }
+            };
+        }
+
+        public static IEnumerable<ClientExtra> GetClients()
+        {
+            // client credentials client
+            return new List<ClientExtra>
+            {
+                new ClientExtra
+                {
+                    AllowArbitraryLocalRedirectUris = true,
+                    ClientId = "native.hybrid",
+                    ClientName = "Native Client (Hybrid with PKCE)",
+
+                    RedirectUris = {"https://notused"},
+                    PostLogoutRedirectUris = {"https://notused"},
+
+                    RequireClientSecret = false,
+
+                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    RequirePkce = true,
+                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.OpenId, "profile", "email", "native_api"},
+
+                    AllowOfflineAccess = true,
+                    RefreshTokenUsage = TokenUsage.ReUse
+                },
+                new ClientExtra
+                {
+                    AllowArbitraryLocalRedirectUris = true,
+                    ClientId = "native.code.wpf",
+                    ClientName = "Native Client (Code with PKCE)",
+
+                    RedirectUris = {"http://127.0.0.1/sample-wpf-app"},
+                    PostLogoutRedirectUris = {"http://127.0.0.1/sample-wpf-app"},
+
+                    RequireClientSecret = false,
+
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.OpenId, "profile", "native_api"},
+
+                    AllowOfflineAccess = true,
+                    RefreshTokenUsage = TokenUsage.ReUse
+                },
+                new ClientExtra
+                {
+                    AllowArbitraryLocalRedirectUris = true,
+                    ClientId = "native.code",
+                    ClientName = "Native Client (Code with PKCE)",
+
+                    RedirectUris = {"http://notreal"},
+                    PostLogoutRedirectUris = {"http://notreal"},
+
+                    RequireClientSecret = false,
+
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.OpenId, "profile", "native_api"},
+
+                    AllowOfflineAccess = true,
+                    RefreshTokenUsage = TokenUsage.ReUse
+                },
+                new ClientExtra
+                {
+                    ClientId = "client",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    AllowedScopes = {"api1"}
+                },
+
+                // resource owner password grant client
+                new ClientExtra
+                {
+                    ClientId = "ro.client",
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    AllowedScopes = {"api1"}
+                },
+
+                // OpenID Connect hybrid flow and client credentials client (MVC)
+                new ClientExtra
+                {
+                    ClientId = "mvc",
+                    ClientName = "MVC Client",
+                    AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
+
+                    RequireConsent = false,
+
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    RedirectUris = {"http://localhost:5002/signin-oidc"},
+                    PostLogoutRedirectUris = {"http://localhost:5002/signout-callback-oidc"},
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "api1"
+                    },
+                    AllowOfflineAccess = true
+                },
+                new ClientExtra
+                {
+                    ClientId = "mvc2",
+                    ClientName = "MVC2 Client",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    RequireConsent = true,
+                    RedirectUris =
+                    {
+                        "https://localhost:44343/signin-oidc-pages-webapp"
+                    },
+                    PostLogoutRedirectUris =
+                    {
+
+                        "https://localhost:44343/Account/SignoutCallbackOidc"
+                    },
+                    FrontChannelLogoutSessionRequired = true,
+                    FrontChannelLogoutUri = "https://localhost:44343/Account/SignoutFrontChannel",
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile
+                    },
+                    AllowOfflineAccess = true
+                },
+                new ClientExtra
+                {
+                    ClientId = "PagesWebAppClient",
+                    ClientName = "PagesWebAppClient Client",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    RequireConsent = true,
+                    RedirectUris =
+                    {
+                        "https://localhost:44307/signin-oidc-pages-webapp-client"
+                    },
+                    PostLogoutRedirectUris =
+                    {
+
+                        "https://localhost:44307/Identity/Account/SignoutCallbackOidc"
+                    },
+                    FrontChannelLogoutSessionRequired = true,
+                    FrontChannelLogoutUri = "https://localhost:44307/Identity/Account/SignoutFrontChannel",
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile
+                    },
+                    AllowOfflineAccess = true
+                },
+                new ClientExtra
+                {
+                    ClientId = "Neo4j.PagesWebAppClient.NoUserDatabase",
+                    ClientName = "Neo4j.PagesWebAppClient.NoUserDatabase Client",
+                    AllowedGrantTypes =  new[] { GrantType.Hybrid },
+                    RequireConsent = true,
+                    RedirectUris =
+                    {
+                        "https://localhost:44308/signin-oidc-Neo4j"
+                    },
+                    PostLogoutRedirectUris =
+                    {
+
+                        "https://localhost:44308/Identity/Account/SignoutCallbackOidc"
+                    },
+                    FrontChannelLogoutSessionRequired = true,
+                    FrontChannelLogoutUri = "https://localhost:44308/Identity/Account/SignoutFrontChannel",
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        IdentityServerConstants.StandardScopes.Email
+                    },
+                    AllowOfflineAccess = true,
+                    AllowAccessTokensViaBrowser = true,
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    RequireClientSecret = true,
+                    AlwaysIncludeUserClaimsInIdToken = true
+
+                }
+            };
+        }
         [TestInitialize]
         public async Task Initialize()
         {
@@ -135,11 +383,17 @@ namespace StoresIdentityServer4.Test.Core.Store
         {
             var entityOriginal = CreateTestClient();
             var model = ClientMappers.ToModel(entityOriginal);
-            var entity = ClientMappers.ToEntity(model);
-
-            // Assert
-            entity.ShouldNotBeNull();
             model.ShouldNotBeNull();
+
+            var entity = ClientMappers.ToEntity(model);
+            entity.ShouldNotBeNull();
+            entity.ClientId.ShouldBe(entityOriginal.ClientId);
+
+            var neo4jEntity = model.ToNeo4jEntity();
+            neo4jEntity.ShouldNotBeNull();
+            neo4jEntity.ClientId.ShouldBe(entityOriginal.ClientId);
+            // Assert
+           
 
         }
 
@@ -175,8 +429,7 @@ namespace StoresIdentityServer4.Test.Core.Store
         [TestMethod]
         public async Task Create_Client_Delete()
         {
-            var challenge = Unique.S;
-            var challengeResponse = Unique.S;
+ 
             TClient client = CreateTestClient();
             var result = await _clientUserStore.CreateClientAsync(client);
 
@@ -411,6 +664,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             secrets.ShouldNotBeNull();
             secrets.Count.ShouldBe(1);
 
+            var secretModel = secrets[0].ToModel();
             var secretResult = await _clientUserStore.FindSecretAsync(client, secret);
             secretResult.ShouldNotBeNull();
             secretResult.Value.ShouldBe(secret.Value);
@@ -795,6 +1049,33 @@ namespace StoresIdentityServer4.Test.Core.Store
             identityResources.ShouldNotBeNull();
             identityResources.Count.ShouldBe(count);
         }
+        [TestMethod]
+        public async Task Mapper_ClientExtra()
+        {
+            var testClient = CreateTestClient();
+            var model = ClientMappers.ToModel(testClient);
+            var cc = ClientMappers.ToEntity(model);
+            var dd = Neo4jIdentityServer4ClientExtraMappers.ToNeo4jEntity(cc);
+            var ee = Neo4jIdentityServer4ClientExtraMappers.ToNeo4jEntity(model);
+
+        }
+        [TestMethod] public async Task Insert_Model_ClientExtra()
+        {
+            var testUser = CreateTestUser();
+
+            var createUserResult = await _userStore.CreateAsync(
+                testUser, CancellationToken.None);
+
+            var clients = GetClient();
+
+
+            var result = await _clientUserStore.InsertClients(testUser,clients);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            
+        }
+
         [TestMethod]
         public async Task Insert_Model_ApiResorces()
         {

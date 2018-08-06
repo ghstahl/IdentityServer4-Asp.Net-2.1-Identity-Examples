@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace StoresIdentityServer4.Neo4j
 {
-    public interface IIdentityServer4ModelsPopulation
+    public interface IIdentityServer4ModelsPopulation<TUser>
+        where TUser : class
     {
         Task<IdentityResult> EnsureStandardAsync(
             CancellationToken cancellationToken = default(CancellationToken));
@@ -27,9 +28,11 @@ namespace StoresIdentityServer4.Neo4j
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IdentityResult> InsertClient(
+            TUser user,
             IdentityServer4.Models.ClientExtra model,
             CancellationToken cancellationToken = default(CancellationToken));
         Task<IdentityResult> InsertClients(
+            TUser user,
             IEnumerable<IdentityServer4.Models.ClientExtra> models,
             CancellationToken cancellationToken = default(CancellationToken));
     }

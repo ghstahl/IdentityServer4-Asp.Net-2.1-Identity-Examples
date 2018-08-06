@@ -155,7 +155,7 @@ namespace StoresIdentityServer4.Neo4j
                 MATCH 
                     (r:{IdSrv4IdentityResource}{{Name: $p0}}) 
                 MERGE 
-                    (l:{IdSrv4IdentityClaim} {"$p1".AsMapFor<Neo4jIdentityServer4IdentityClaim>()})
+                    (l:{IdSrv4IdentityClaim} {"$p1".AsMapForNoNull<Neo4jIdentityServer4IdentityClaim>(identityClaim)})
                 MERGE 
                     (r)-[:{Neo4jConstants.Relationships.HasClaim}]->(l)";
 
@@ -306,7 +306,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                     MATCH (c:{IdSrv4IdentityResource}{{Name: $p0}})        
-                    MERGE (rollup:{IdSrv4IdentityResourceRollup} {"$p1".AsMapFor<Neo4jIdentityServer4IdentityResourceRollup>()})
+                    MERGE (rollup:{IdSrv4IdentityResourceRollup} {"$p1".AsMapForNoNull(rollup)})
                     MERGE (c)-[:{Neo4jConstants.Relationships.HasRollup}]->(rollup)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(identityResource.Name, rollup));

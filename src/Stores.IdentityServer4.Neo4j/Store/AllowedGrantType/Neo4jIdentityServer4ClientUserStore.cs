@@ -28,7 +28,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH (u:{IdSrv4Client} {{ClientId: $p0}})
-                MERGE (l:{IdSrv4ClientGrantType} {"$p1".AsMapFor<Neo4jIdentityServer4ClientGrantType>()})
+                MERGE (l:{IdSrv4ClientGrantType} {"$p1".AsMapForNoNull(grantType)})
                 MERGE (u)-[:{Neo4jConstants.Relationships.HasGrantType}]->(l)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, grantType));

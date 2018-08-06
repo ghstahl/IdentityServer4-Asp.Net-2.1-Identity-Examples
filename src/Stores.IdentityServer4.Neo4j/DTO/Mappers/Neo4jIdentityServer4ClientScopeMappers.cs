@@ -2,13 +2,13 @@
 
 namespace StoresIdentityServer4.Neo4j.DTO.Mappers
 {
-    public static class Neo4jIdentityServer4ApiSecretMappers
+    public static class Neo4jIdentityServer4ClientScopeMappers
     {
-        static Neo4jIdentityServer4ApiSecretMappers()
+        static Neo4jIdentityServer4ClientScopeMappers()
         {
             Mapper = new MapperConfiguration(
                     cfg => cfg.AddProfile<
-                        Neo4JIdentityServer4ApiSecretMapperProfile
+                        Neo4JIdentityServer4ClientScopeMapperProfile
                     >())
                 .CreateMapper();
         }
@@ -20,9 +20,10 @@ namespace StoresIdentityServer4.Neo4j.DTO.Mappers
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public static IdentityServer4.Models.Secret ToModel(this Neo4jIdentityServer4ApiSecret entity)
+        public static IdentityServer4.Models.Scope ToModel(
+            this Neo4jIdentityServer4ClientScope entity)
         {
-            return Mapper.Map<IdentityServer4.Models.Secret>(entity);
+            return Mapper.Map<IdentityServer4.Models.Scope>(entity);
         }
 
         /// <summary>
@@ -30,20 +31,20 @@ namespace StoresIdentityServer4.Neo4j.DTO.Mappers
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        public static Neo4jIdentityServer4ApiSecret ToNeo4jApiSecretEntity(
-            this IdentityServer4.Models.Secret model)
+        public static Neo4jIdentityServer4ClientScope ToNeo4jClientScopeEntity(
+            this string model)
         {
-            return Mapper.Map<Neo4jIdentityServer4ApiSecret>(model);
+            return Mapper.Map<Neo4jIdentityServer4ClientScope>(model);
         }
         /// <summary>
         /// Maps a model to an entity.
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public static Neo4jIdentityServer4ApiSecret ToNeo4jEntity(
-            this StoresIdentityServer4.Neo4j.Entities.ApiSecret entity)
+        public static Neo4jIdentityServer4ClientScope ToNeo4jEntity(
+            this StoresIdentityServer4.Neo4j.Entities.ClientScope entity)
         {
-            return Mapper.Map<Neo4jIdentityServer4ApiSecret>(entity);
+            return Mapper.Map<Neo4jIdentityServer4ClientScope>(entity);
         }
     }
 }

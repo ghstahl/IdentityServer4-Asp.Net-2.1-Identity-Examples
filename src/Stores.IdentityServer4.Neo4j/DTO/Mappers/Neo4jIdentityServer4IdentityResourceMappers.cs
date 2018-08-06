@@ -7,7 +7,11 @@ namespace StoresIdentityServer4.Neo4j.DTO.Mappers
     {
         static Neo4jIdentityServer4IdentityResourceMappers()
         {
-            Mapper = Neo4jIdentityServer4Mappers<Neo4jIdentityServer4IdentityResourceMapperProfile>.CreateMapper();
+            Mapper = new MapperConfiguration(
+                    cfg => cfg.AddProfile<
+                        Neo4jIdentityServer4IdentityResourceMapperProfile
+                    >())
+                .CreateMapper();
         }
 
         internal static IMapper Mapper { get; }

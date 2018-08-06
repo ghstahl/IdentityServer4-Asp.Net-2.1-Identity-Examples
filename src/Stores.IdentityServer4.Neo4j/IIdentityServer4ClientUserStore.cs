@@ -44,6 +44,7 @@ namespace StoresIdentityServer4.Neo4j
             TRedirectUri,
             TIdentityResource,
             TIdentityClaim>,
+        IIdentityServer4ModelsPopulation<TUser>,
         IDisposable
         where TUser : class
         where TClient : StoresIdentityServer4.Neo4j.Entities.ClientExtra

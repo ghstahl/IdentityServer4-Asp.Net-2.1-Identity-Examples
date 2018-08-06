@@ -26,7 +26,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
-                MERGE (redirectUri:{IdSrv4ClientRedirectUri} {"$p1".AsMapFor<Neo4jIdentityServer4ClientRedirectUri>()})
+                MERGE (redirectUri:{IdSrv4ClientRedirectUri} {"$p1".AsMapForNoNull<Neo4jIdentityServer4ClientRedirectUri>(redirectUri)})
                 MERGE (client)-[:{Neo4jConstants.Relationships.HasRedirectUri}]->(redirectUri)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, redirectUri));

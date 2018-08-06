@@ -14,7 +14,9 @@ namespace StoresIdentityServer4.Neo4j
     public partial class Neo4jIdentityServer4ClientUserStore<TUser> where TUser : Neo4jIdentityUser
     {
         private static readonly string IdSrv4Client;
-        public async Task<IdentityResult> AddClientToUserAsync(TUser user, Neo4jIdentityServer4Client client,
+        public async Task<IdentityResult> AddClientToUserAsync(
+            TUser user, 
+            Neo4jIdentityServer4Client client,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -25,7 +27,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH (u:{User} {{Id: $p0}})
-                MERGE (l:{IdSrv4Client} {"$p1".AsMapFor<Neo4jIdentityServer4Client>()})
+                MERGE (l:{IdSrv4Client} {"$p1".AsMapForNoNull(client)})
                 MERGE (u)-[:{Neo4jConstants.Relationships.HasClient}]->(l)";
 
                 var result = await Session.RunAsync(cypher, Params.Create(user.Id, client));

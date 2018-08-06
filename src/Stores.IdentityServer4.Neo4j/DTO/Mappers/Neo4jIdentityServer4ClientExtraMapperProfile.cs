@@ -15,29 +15,17 @@ namespace StoresIdentityServer4.Neo4j.DTO.Mappers
         /// </summary>
         public Neo4jIdentityServer4ClientExtraMapperProfile()
         {
-
-            CreateMap<
-                Neo4jIdentityServer4Client,
-                StoresIdentityServer4.Neo4j.Entities.ClientExtra
-            >(MemberList.Source);
-            CreateMap<
-                StoresIdentityServer4.Neo4j.Entities.ClientExtra,
-                Neo4jIdentityServer4Client
-            >(MemberList.Source);
-            // entity to model
-            CreateMap<Neo4jIdentityServer4Client, IdentityServer4.Models.ClientExtra>(MemberList.Destination)
-                .ForMember(x => x.AllowedCorsOrigins, opt => opt.Ignore())
-                .ForMember(x => x.AllowedGrantTypes, opt => opt.Ignore())
-                .ForMember(x => x.AllowedScopes, opt => opt.Ignore())
-                .ForMember(x => x.Claims, opt => opt.Ignore())
-                .ForMember(x => x.ClientSecrets, opt => opt.Ignore())
-                .ForMember(x => x.IdentityProviderRestrictions, opt => opt.Ignore())
-                .ForMember(x => x.PostLogoutRedirectUris, opt => opt.Ignore())
-                .ForMember(x => x.Properties, opt => opt.Ignore())
-                .ForMember(x => x.RedirectUris, opt => opt.Ignore());
-
             // model to entity
-            CreateMap<IdentityServer4.Models.ClientExtra, Neo4jIdentityServer4Client>(MemberList.Source);
+            CreateMap<
+                    IdentityServer4.Models.ClientExtra,
+                    Neo4jIdentityServer4Client>(MemberList.Destination)
+                .ForMember(x => x.Description, opt => opt.Ignore());
+
+            // entity to model
+            CreateMap< 
+                    Neo4jIdentityServer4Client,
+                    IdentityServer4.Models.ClientExtra
+                    >(MemberList.Source);
 
         }
     }

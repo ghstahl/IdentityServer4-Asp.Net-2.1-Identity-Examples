@@ -6,7 +6,11 @@ namespace StoresIdentityServer4.Neo4j.DTO.Mappers
     {
         static Neo4jIdentityServer4ClientExtraMappers()
         {
-            Mapper = Neo4jIdentityServer4Mappers<Neo4jIdentityServer4ClientExtraMapperProfile>.CreateMapper();
+            Mapper = new MapperConfiguration(
+                    cfg => cfg.AddProfile<
+                        Neo4jIdentityServer4ClientExtraMapperProfile
+                    >())
+                .CreateMapper();
         }
 
         internal static IMapper Mapper { get; }
@@ -16,7 +20,8 @@ namespace StoresIdentityServer4.Neo4j.DTO.Mappers
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public static IdentityServer4.Models.ClientExtra ToModel(this Neo4jIdentityServer4Client entity)
+        public static IdentityServer4.Models.ClientExtra ToModel(
+            this Neo4jIdentityServer4Client entity)
         {
             return Mapper.Map<IdentityServer4.Models.ClientExtra>(entity);
         }
@@ -41,5 +46,6 @@ namespace StoresIdentityServer4.Neo4j.DTO.Mappers
         {
             return Mapper.Map<Neo4jIdentityServer4Client>(entity);
         }
+         
     }
 }

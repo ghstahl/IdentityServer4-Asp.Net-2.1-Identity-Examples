@@ -29,8 +29,9 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"
                 MATCH (c:{IdSrv4Client} {{ClientId: $p0}})
-                MERGE (s:{IdSrv4ClientSecret} {"$p1".AsMapFor<Neo4jIdentityServer4ClientSecret>()})
-                MERGE (c)-[:{Neo4jConstants.Relationships.HasSecret}]->(s)";
+                CREATE UNIQUE 
+                    (c)-[:{Neo4jConstants.Relationships.HasSecret}]->
+                    (s:{IdSrv4ClientSecret} {"$p1".AsMapForNoNull(secret)})";
                 
                 var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, secret));
 

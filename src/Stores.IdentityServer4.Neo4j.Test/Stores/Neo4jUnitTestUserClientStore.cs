@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
 using IdentityServer4;
 using IdentityServer4.Models;
@@ -10,6 +12,7 @@ using StoresIdentityServer4.Test.Core.Store;
 
 namespace StoresIdentityServer4.Neo4j.Test.Stores
 {
+
     [TestClass]
     public class Neo4jUnitTestUserClientStore :
         UnitTestClientStore<
@@ -93,7 +96,7 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
                 Value = Unique.S.Sha256(),
                 Description = Unique.S,
 
-                Expiration = DateTime.Now.AddDays(1),
+                ExpirationJson = DateTime.UtcNow.AddDays(1).ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"),
                 Type = IdentityServerConstants.SecretTypes.SharedSecret
             };
         }
@@ -225,7 +228,7 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
                 Value = Unique.S.Sha256(),
                 Description = Unique.S,
 
-                Expiration = DateTime.Now.AddDays(1),
+                ExpirationJson = DateTime.UtcNow.AddDays(1).ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"),
                 Type = IdentityServerConstants.SecretTypes.SharedSecret
             };
         }
