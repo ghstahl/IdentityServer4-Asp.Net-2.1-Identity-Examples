@@ -172,7 +172,12 @@ namespace StoresIdentityServer4.Test.Core.Store
                         "test"
                     },
                     AllowedCorsOrigins = new List<string>()
-                        {"https://test.com", "https://test.com"}
+                        {"https://test.com", "https://test.com"},
+                    Properties = new Dictionary<string, string>()
+                    {
+                        { "A","B"},
+                        { "B","C"}
+                    }
                    
 
         }

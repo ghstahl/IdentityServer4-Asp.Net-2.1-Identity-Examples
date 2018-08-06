@@ -413,6 +413,14 @@ namespace StoresIdentityServer4.Neo4j
                     if (!result.Succeeded)
                         return result;
                 }
+                foreach (var property in model.Properties)
+                {
+                  
+                    var propertyDTO = property.ToNeo4jClientPropertyEntity();
+                    result = await AddPropertyToClientAsync(dto, propertyDTO, cancellationToken);
+                    if (!result.Succeeded)
+                        return result;
+                }
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
