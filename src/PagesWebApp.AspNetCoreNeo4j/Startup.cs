@@ -22,6 +22,7 @@ using Neo4j.Driver.V1;
 using PagesWebApp.Services;
 using IdentityServer4Extras.Extensions;
 using IdentityServer4Extras.Validation;
+using StoresIdentityServer4.Neo4j;
 
 namespace PagesWebApp
 {
@@ -69,6 +70,7 @@ namespace PagesWebApp
             services.AddSingleton(s => GraphDatabase.Driver(neo4JConnectionConfiguration.ConnectionString,
                 AuthTokens.Basic(neo4JConnectionConfiguration.UserName, neo4JConnectionConfiguration.Password)));
             services.AddScoped(s => s.GetService<IDriver>().Session());
+            services.AddNeo4jClientStore<ApplicationUser>();
 
             services.AddIdentity<ApplicationUser, Neo4jIdentityRole>()
                 .AddNeo4jDataStores()
