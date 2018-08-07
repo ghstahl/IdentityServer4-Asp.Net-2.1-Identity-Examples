@@ -45,6 +45,7 @@ namespace StoresIdentityServer4.Neo4j
             TIdentityResource,
             TIdentityClaim>,
         IIdentityServer4ModelsPopulation<TUser>,
+        INeo4jIdentityServer4Database,
         IDisposable
         where TUser : class
         where TClient : StoresIdentityServer4.Neo4j.Entities.ClientExtra
@@ -65,9 +66,7 @@ namespace StoresIdentityServer4.Neo4j
         where TPostLogoutRedirectUri : StoresIdentityServer4.Neo4j.Entities.ClientPostLogoutRedirectUri
         where TRedirectUri : StoresIdentityServer4.Neo4j.Entities.ClientRedirectUri
     {
-        Task CreateConstraintsAsync(CancellationToken cancellationToken = default(CancellationToken));
-
-        Task<IdentityResult> AddClientToUserAsync(TUser user, TClient client,
+           Task<IdentityResult> AddClientToUserAsync(TUser user, TClient client,
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IList<TClient>> GetClientsAsync(TUser user,
