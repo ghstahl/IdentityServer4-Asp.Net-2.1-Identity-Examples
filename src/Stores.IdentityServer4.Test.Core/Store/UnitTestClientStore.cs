@@ -1094,7 +1094,7 @@ namespace StoresIdentityServer4.Test.Core.Store
             var ee = Neo4jIdentityServer4ClientExtraMappers.ToNeo4jEntity(model);
 
         }
-        [TestMethod] public async Task Insert_Model_ClientExtra()
+        [TestMethod] public async Task Insert_Model_ClientExtra1()
         {
             var testUser = CreateTestUser();
 
@@ -1117,7 +1117,30 @@ namespace StoresIdentityServer4.Test.Core.Store
             
             
         }
+        [TestMethod]
+        public async Task Insert_Model_ClientExtra()
+        {
+            var testUser = CreateTestUser();
+            testUser.Email = "testUser@gmail.com";
+            var createUserResult = await _userStore.CreateAsync(
+                testUser, CancellationToken.None);
 
+            var clients = GetClients().ToList();
+
+
+            var result = await _clientUserStore.InsertClients(testUser, clients);
+            result.ShouldNotBeNull();
+            result.Succeeded.ShouldBeTrue();
+
+            var foundClient = await _clientUserStore.GetClientsAsync(testUser);
+            foundClient.ShouldNotBeNull();
+            foundClient.Count.ShouldBe(clients.Count);
+
+            var foundMod = await _clientUserStore.GetRollupAsync(foundClient[0]);
+            foundMod.ShouldNotBeNull();
+
+
+        }
         [TestMethod]
         public async Task Insert_Model_ApiResorces()
         {

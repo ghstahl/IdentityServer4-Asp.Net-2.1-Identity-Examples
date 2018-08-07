@@ -204,8 +204,7 @@ namespace StoresIdentityServer4.Neo4j
         {
             var cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4Client}) ASSERT r.ClientId IS UNIQUE";
             await Session.RunAsync(cypher);
-            cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4ClientGrantType}) ASSERT r.GrantType IS UNIQUE";
-            await Session.RunAsync(cypher);
+     
             cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4ApiResource}) ASSERT r.Name IS UNIQUE";
             await Session.RunAsync(cypher);
             cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4IdentityResource}) ASSERT r.Name IS UNIQUE";
