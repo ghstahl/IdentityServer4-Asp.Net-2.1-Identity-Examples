@@ -21,5 +21,14 @@ namespace StoresIdentityServer4.Neo4j
             cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4IdentityResource}) ASSERT r.Name IS UNIQUE";
             await Session.RunAsync(cypher);
         }
+        public async Task DropDatabaseAsync()
+        {
+            //MATCH (client)-[r]->() DELETE r;
+            var cypher = @"MATCH (client)-[r]->() DELETE r";
+            await Session.RunAsync(cypher);
+            cypher = @"MATCH (n) DELETE n";
+            await Session.RunAsync(cypher);
+
+        }
     }
 }

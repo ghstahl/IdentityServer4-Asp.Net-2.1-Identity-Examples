@@ -35,10 +35,10 @@ namespace PagesWebApp
         }
 
         // clients want to access resources (aka scopes)
-        public static IEnumerable<Client> GetClients()
+        public static IEnumerable<ClientExtra> GetClients()
         {
             // client credentials client
-            return new List<Client>
+            return new List<ClientExtra>
             {
                 new ClientExtra
                 {
