@@ -366,13 +366,6 @@ namespace StoresIdentityServer4.Neo4j
             return IdentityResult.Success;
         }
 
-        public async Task<Client> FindClientByIdAsync(string clientId)
-        {
-            var client = await GetRollupAsync(new Neo4jIdentityServer4Client()
-            {
-                ClientId = clientId
-            });
-            return client;
-        }
+
     }
 }

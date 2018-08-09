@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Identity;
 
 
@@ -46,6 +47,7 @@ namespace StoresIdentityServer4.Neo4j
             TIdentityClaim>,
         IIdentityServer4ModelsPopulation<TUser>,
         INeo4jIdentityServer4Database,
+        IClientStore,
         IDisposable
         where TUser : class
         where TClient : StoresIdentityServer4.Neo4j.Entities.ClientExtra
