@@ -29,6 +29,8 @@ namespace Stores.IdentityServer4Neo4j.Events
             {
                 IdentityResourceChangeEvent<Neo4jIdentityServer4IdentityResource> identityResourceChangeEvent = evt
                     as IdentityResourceChangeEvent<Neo4jIdentityServer4IdentityResource>;
+                await _accessor.IdentityServer4ClientUserStore.DeleteIdentityResoucesRollupAsync();
+                
                 await _accessor.IdentityServer4ClientUserStore.DeleteRollupAsync(
                     identityResourceChangeEvent.IdentityResource);
             }

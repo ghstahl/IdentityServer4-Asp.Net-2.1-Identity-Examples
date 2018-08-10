@@ -13,6 +13,16 @@ namespace StoresIdentityServer4.Neo4j
         where TIdentityResource : StoresIdentityServer4.Neo4j.Entities.IdentityResource
         where TIdentityClaim : StoresIdentityServer4.Neo4j.Entities.IdentityClaim
     {
+        Task<List<IdentityServer4.Models.IdentityResource>> RollupIdentityResourcesAsync(
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<List<IdentityServer4.Models.IdentityResource>> GetIdentityResoucesRollupAsync(
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IdentityResult> DeleteIdentityResoucesRollupAsync(
+            CancellationToken cancellationToken = default(CancellationToken));
+
+
         Task<IdentityResult> CreateIdentityResourceAsync(
             TIdentityResource identityResource,
             CancellationToken cancellationToken = default(CancellationToken));

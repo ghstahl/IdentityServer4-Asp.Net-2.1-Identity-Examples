@@ -6,6 +6,7 @@ namespace StoresIdentityServer4.Neo4j
         {
             public const string IdentityClaim = "IdSrv4IdentityClaim";
             public const string IdentityResource = "IdSrv4IdentityResource";
+
             public const string ApiResource = "IdSrv4ApiResource";
             public const string ApiResourceClaim = "IdSrv4ApiResourceClaim";
             public const string ApiScope = "IdSrv4ApiScope";
@@ -16,7 +17,9 @@ namespace StoresIdentityServer4.Neo4j
             public const string ApiResourcesRollup = "IdSrv4ApiResourcesRollup";
             
             public const string IdentityResourceRollup = "IdSrv4IdentityResourceRollup";
-            
+            public const string IdentityResourcesRollup = "IdSrv4IdentityResourcesRollup";
+ 
+
             public const string ApiScopeRollup = "IdSrv4ApiScopeRollup";
             public const string Client = "IdSrv4Client";
             public const string Secret = "IdSrv4ClientSecret";

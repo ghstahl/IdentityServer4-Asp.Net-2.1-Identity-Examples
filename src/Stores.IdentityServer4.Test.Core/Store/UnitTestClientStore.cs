@@ -1313,8 +1313,8 @@ namespace StoresIdentityServer4.Test.Core.Store
         [TestMethod]
         public async Task Create_IdentityResource_Many_Claims_Rollup()
         {
-            var challenge = Unique.S;
-            var challengeResponse = Unique.S;
+         
+
             var identityResource = CreateTestIdentityResource();
 
 
@@ -1348,7 +1348,67 @@ namespace StoresIdentityServer4.Test.Core.Store
             rollup.Name.ShouldBe(identityResource.Name);
             rollup.UserClaims.Count.ShouldBe(nCount+1);
         }
+        [TestMethod]
+        public async Task Create_IdentityResources_Many_Claims_Rollup()
+        {
 
+            var nIRCount = 2;
+            for (int i = 0; i < nIRCount; ++i)
+            {
+                var identityResource = CreateTestIdentityResource();
+
+
+                var result = await _clientUserStore.CreateIdentityResourceAsync(identityResource);
+
+                var nCount = 10;
+                for (int ii = 0; ii < nCount; ++ii)
+                {
+                    var identityClaim = CreateTestIdentityClaim();
+                    result = await _clientUserStore.AddIdentityClaimAsync(identityResource, identityClaim);
+                    result.ShouldNotBeNull();
+                    result.Succeeded.ShouldBeTrue();
+                }
+            }
+
+
+
+            var rollup =
+                await _clientUserStore.GetIdentityResoucesRollupAsync();
+            rollup.ShouldNotBeNull();
+            rollup.Count.ShouldBe(nIRCount);
+
+            rollup =
+                await _clientUserStore.GetIdentityResoucesRollupAsync();
+            rollup.ShouldNotBeNull();
+            rollup.Count.ShouldBe(nIRCount);
+
+            for (int i = 0; i < nIRCount; ++i)
+            {
+                var identityResource = CreateTestIdentityResource();
+
+
+                var result = await _clientUserStore.CreateIdentityResourceAsync(identityResource);
+
+                var nCount = 10;
+                for (int ii = 0; ii < nCount; ++ii)
+                {
+                    var identityClaim = CreateTestIdentityClaim();
+                    result = await _clientUserStore.AddIdentityClaimAsync(identityResource, identityClaim);
+                    result.ShouldNotBeNull();
+                    result.Succeeded.ShouldBeTrue();
+                }
+            }
+
+            rollup =
+                await _clientUserStore.GetIdentityResoucesRollupAsync();
+            rollup.ShouldNotBeNull();
+            rollup.Count.ShouldBe(nIRCount*2);
+
+            rollup =
+                await _clientUserStore.GetIdentityResoucesRollupAsync();
+            rollup.ShouldNotBeNull();
+            rollup.Count.ShouldBe(nIRCount * 2);
+        }
 
         [TestMethod]
         public async Task Create_GrantType_Assure_Unique()

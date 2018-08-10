@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Stores.IdentityServer4Neo4j.Events;
 using StoresIdentityServer4.Neo4j.Entities;
 using StoresIdentityServer4.Neo4j.Mappers;
+using ApiResource = IdentityServer4.Models.ApiResource;
 using IdentityResource = IdentityServer4.Models.IdentityResource;
 
 namespace StoresIdentityServer4.Neo4j
@@ -19,13 +20,96 @@ namespace StoresIdentityServer4.Neo4j
     public partial class Neo4jIdentityServer4ClientUserStore<TUser>
         where TUser : Neo4jIdentityUser
     {
+ 
         private static readonly string IdSrv4IdentityResource;
         private static readonly string IdSrv4IdentityClaim;
         private static readonly string IdSrv4IdentityResourceRollup;
+        private static readonly string IdSrv4IdentityResourcesRollup;
+        
 
         private async Task RaiseIdentityResourceChangeEventAsync(Neo4jIdentityServer4IdentityResource IdentityResource)
         {
             await _eventService.RaiseAsync(new IdentityResourceChangeEvent<Neo4jIdentityServer4IdentityResource>(IdentityResource));
+        }
+
+        public async Task<List<IdentityResource>> RollupIdentityResourcesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+
+            var foundRecords = await GetIdentityResourcesAsync(cancellationToken);
+            List<IdentityServer4.Models.IdentityResource> model = new List<IdentityServer4.Models.IdentityResource>();
+            foreach (var item in foundRecords)
+            {
+                var rollup = await GetRollupAsync(item, cancellationToken);
+                model.Add(rollup);
+            }
+
+            var json = JsonConvert.SerializeObject(model);
+            var neo4jObject = new Neo4jIdentityServer4IdentityResourcesRollup()
+            {
+                Name = "OneAndOnly",
+                IdentityResourcesJson = json
+            };
+            try
+            {
+                var cypher = $@"CREATE (r:{IdSrv4IdentityResourcesRollup} $p0)";
+                await Session.RunAsync(cypher, Params.Create(neo4jObject.ConvertToMap()));
+                return model;
+            }
+            catch (ClientException ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<IdentityResource>> GetIdentityResoucesRollupAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+
+
+            var cypher = $@"
+                MATCH 
+                    (r:{IdSrv4IdentityResourcesRollup}{{Name: 'OneAndOnly'}})
+                RETURN r{{ .* }}";
+
+            var result = await Session.RunAsync(cypher);
+            List<IdentityServer4.Models.IdentityResource> model = null;
+            var foundRecord =
+                await result.SingleOrDefaultAsync(r => r.MapTo<IdentityResourcesRollup>("r"));
+
+            if (foundRecord == null)
+            {
+                model = await RollupIdentityResourcesAsync(cancellationToken);
+            }
+            else
+            {
+                model = JsonConvert.DeserializeObject<List<IdentityResource>>(foundRecord.IdentityResourcesJson);
+            }
+
+            return model;
+        }
+
+        public async Task<IdentityResult> DeleteIdentityResoucesRollupAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+
+            try
+            {
+                var cypher = $@"
+                MATCH 
+                    (r:{IdSrv4IdentityResourcesRollup}{{Name: 'OneAndOnly'}}) 
+                DETACH DELETE r";
+
+                await Session.RunAsync(cypher);
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return ex.ToIdentityResult();
+            }
         }
 
         public async Task<IdentityResult> CreateIdentityResourceAsync(
@@ -39,6 +123,7 @@ namespace StoresIdentityServer4.Neo4j
             {
                 var cypher = $@"CREATE (r:{IdSrv4IdentityResource} $p0)";
                 await Session.RunAsync(cypher, Params.Create(identityResource.ConvertToMap()));
+                await RaiseIdentityResourceChangeEventAsync(identityResource);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -61,6 +146,7 @@ namespace StoresIdentityServer4.Neo4j
                 SET r = $p1";
 
                 await Session.RunAsync(cypher, Params.Create(identityResource.Name, identityResource.ConvertToMap()));
+                await RaiseIdentityResourceChangeEventAsync(identityResource);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -84,6 +170,7 @@ namespace StoresIdentityServer4.Neo4j
                 DETACH DELETE r";
 
                 await Session.RunAsync(cypher, Params.Create(identityResource.Name));
+                await RaiseIdentityResourceChangeEventAsync(identityResource);
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
