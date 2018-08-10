@@ -1722,6 +1722,17 @@ namespace StoresIdentityServer4.Test.Core.Store
             rollup.ShouldNotBeNull();
             rollup.Count.ShouldBe(nApiResourceCount);
 
+            for (int i = 0; i < nApiResourceCount; ++i)
+            {
+                var apiResouce2 = CreateTestApiResource();
+                await _clientUserStore.CreateApiResourceAsync(apiResouce2);
+                // should delete the main rollup
+            }
+
+            rollup = await _clientUserStore.GetApiResoucesRollupAsync();
+            rollup.ShouldNotBeNull();
+            rollup.Count.ShouldBe(nApiResourceCount*2);
+
         }
         [TestMethod]
         public async Task Create_ApiResource_ApiScope_Many_Claims_Delete()
