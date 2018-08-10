@@ -39,7 +39,7 @@ namespace StoresIdentityServer4.Neo4j
         IDisposable
         where TClient : StoresIdentityServer4.Neo4j.Entities.ClientExtra
         where TSecret : StoresIdentityServer4.Neo4j.Entities.Secret
-        where TGrantType : StoresIdentityServer4.Neo4j.Entities.ClientGrantType
+        where TGrantType : StoresIdentityServer4.Neo4j.Entities.IdentityServer4GrantType
         where TApiResource : StoresIdentityServer4.Neo4j.Entities.ApiResource
         where TApiResourceClaim : StoresIdentityServer4.Neo4j.Entities.ApiResourceClaim
         where TIdentityResource : StoresIdentityServer4.Neo4j.Entities.IdentityResource
@@ -100,7 +100,9 @@ namespace StoresIdentityServer4.Neo4j
         Task<IdentityResult> AddAllowedGrantTypeToClientAsync(TClient client,
             TGrantType grantType,
             CancellationToken cancellationToken = default(CancellationToken));
-
+        Task<IdentityResult> DeleteAllowedGrantTypeToClientAsync(TClient client,
+            TGrantType grantType,
+            CancellationToken cancellationToken = default(CancellationToken));
         Task<IList<TGrantType>> GetAllowedGrantTypesAsync(TClient client,
             CancellationToken cancellationToken = default(CancellationToken));
         #endregion

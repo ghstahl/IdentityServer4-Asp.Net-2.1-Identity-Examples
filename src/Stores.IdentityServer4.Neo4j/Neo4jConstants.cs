@@ -21,6 +21,7 @@ namespace StoresIdentityServer4.Neo4j
             public const string Client = "IdSrv4Client";
             public const string Secret = "IdSrv4ClientSecret";
             public const string GrantType = "IdSrv4ClientGrantType";
+            public const string AllowedGrantType = "IdSrv4AllowedGrantType";
             public const string RedirectUri = "IdSrv4ClientRedirectUri";
             public const string PostLogoutRedirectUri = "IdSrv4ClientPostLogoutRedirectUri";
             public const string Scope = "IdSrv4ClientScope";

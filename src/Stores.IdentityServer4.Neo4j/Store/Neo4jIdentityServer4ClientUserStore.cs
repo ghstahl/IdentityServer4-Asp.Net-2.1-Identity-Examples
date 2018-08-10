@@ -23,7 +23,7 @@ namespace StoresIdentityServer4.Neo4j
             TUser,
             Neo4jIdentityServer4Client,
             Neo4jIdentityServer4ClientSecret,
-            Neo4jIdentityServer4ClientGrantType,
+            Neo4JIdentityServer4IdentityServer4GrantType,
             Neo4jIdentityServer4ApiResource,
             Neo4jIdentityServer4ApiResourceClaim,
             Neo4jIdentityServer4ApiSecret,
@@ -87,7 +87,10 @@ namespace StoresIdentityServer4.Neo4j
 
             IdSrv4Client = typeof(Neo4jIdentityServer4Client).GetNeo4jLabelName();
             IdSrv4ClientSecret = typeof(Neo4jIdentityServer4ClientSecret).GetNeo4jLabelName();
-            IdSrv4ClientGrantType = typeof(Neo4jIdentityServer4ClientGrantType).GetNeo4jLabelName();
+            IdSrv4GrantType = typeof(Neo4JIdentityServer4IdentityServer4GrantType).GetNeo4jLabelName();
+            IdSrv4AllowedGrantType = typeof(Neo4JIdentityServer4AllowedIdentityServer4GrantType).GetNeo4jLabelName();
+
+            
             IdSrv4ClientClaim = typeof(Neo4jIdentityServer4ClientClaim).GetNeo4jLabelName();
             IdSrv4ClientCorsOrigin = typeof(Neo4jIdentityServer4ClientCorsOrigin).GetNeo4jLabelName();
             IdSrv4ClientScope = typeof(Neo4jIdentityServer4ClientScope).GetNeo4jLabelName();

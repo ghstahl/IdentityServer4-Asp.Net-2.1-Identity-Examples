@@ -7,7 +7,7 @@ namespace StoresIdentityServer4.Neo4j
 {
     public interface IIdentityServer4GrantTypeStore<TGrantType> :
         IDisposable
-        where TGrantType : StoresIdentityServer4.Neo4j.Entities.ClientGrantType
+        where TGrantType : StoresIdentityServer4.Neo4j.Entities.IdentityServer4GrantType
     {
         Task<IdentityResult> CreateGrantTypeAsync(TGrantType grantType,
             CancellationToken cancellationToken = default(CancellationToken));

@@ -13,27 +13,57 @@ namespace StoresIdentityServer4.Neo4j
 {
     public partial class Neo4jIdentityServer4ClientUserStore<TUser> where TUser : Neo4jIdentityUser
     {
-        private static readonly string IdSrv4ClientGrantType;
+        private static readonly string IdSrv4GrantType;
+        private static readonly string IdSrv4AllowedGrantType;
+
+        
 
         public async Task<IdentityResult> AddAllowedGrantTypeToClientAsync(
             Neo4jIdentityServer4Client client,
-            Neo4jIdentityServer4ClientGrantType grantType,
+            Neo4JIdentityServer4IdentityServer4GrantType identityServer4GrantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             client.ThrowIfNull(nameof(client));
-            grantType.ThrowIfNull(nameof(grantType));
+            identityServer4GrantType.ThrowIfNull(nameof(identityServer4GrantType));
             try
             {
                 var cypher = $@"
                 MATCH (client:{IdSrv4Client} {{ClientId: $p0}})
                 CREATE UNIQUE(
                     (client)-[:{Neo4jConstants.Relationships.HasGrantType}]->
-                    (:{IdSrv4ClientGrantType} {"$p1".AsMapForNoNull(grantType)}))";
+                    (:{IdSrv4AllowedGrantType} {"$p1".AsMapForNoNull(identityServer4GrantType)}))";
 
 
-                var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, grantType));
+                var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, identityServer4GrantType));
+                await RaiseClientChangeEventAsync(client);
+                return IdentityResult.Success;
+            }
+            catch (ClientException ex)
+            {
+                return ex.ToIdentityResult();
+            }
+        }
+
+        public async Task<IdentityResult> DeleteAllowedGrantTypeToClientAsync(Neo4jIdentityServer4Client client,
+            Neo4JIdentityServer4IdentityServer4GrantType identityServer4GrantType, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            client.ThrowIfNull(nameof(client));
+            identityServer4GrantType.ThrowIfNull(nameof(identityServer4GrantType));
+            try
+            {
+                var cypher = $@"
+                MATCH 
+                    (client:{IdSrv4Client})
+                    -[:{Neo4jConstants.Relationships.HasGrantType}]->
+                    (allowedGT:{IdSrv4AllowedGrantType})
+                WHERE client.ClientId = $p0 AND allowedGT.IdentityServer4GrantType = $p1 
+                DETACH DELETE allowedGT";
+ 
+                var result = await Session.RunAsync(cypher, Params.Create(client.ClientId, identityServer4GrantType.GrantType));
                 await RaiseClientChangeEventAsync(client);
                 return IdentityResult.Success;
             }
@@ -44,16 +74,16 @@ namespace StoresIdentityServer4.Neo4j
         }
 
         public async Task<IdentityResult> CreateGrantTypeAsync(
-            Neo4jIdentityServer4ClientGrantType grantType,
+            Neo4JIdentityServer4IdentityServer4GrantType identityServer4GrantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-            grantType.ThrowIfNull(nameof(grantType));
+            identityServer4GrantType.ThrowIfNull(nameof(identityServer4GrantType));
             try
             {
-                var cypher = $@"CREATE (r:{IdSrv4ClientGrantType} $p0)";
-                await Session.RunAsync(cypher, Params.Create(grantType.ConvertToMap()));
+                var cypher = $@"CREATE (r:{IdSrv4GrantType} $p0)";
+                await Session.RunAsync(cypher, Params.Create(identityServer4GrantType.ConvertToMap()));
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -63,20 +93,20 @@ namespace StoresIdentityServer4.Neo4j
         }
 
         public async Task<IdentityResult> UpdateGrantTypeAsync(
-            Neo4jIdentityServer4ClientGrantType grantType,
+            Neo4JIdentityServer4IdentityServer4GrantType identityServer4GrantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-            grantType.ThrowIfNull(nameof(grantType));
+            identityServer4GrantType.ThrowIfNull(nameof(identityServer4GrantType));
             try
             {
                 var cypher = $@"
-                MATCH (r:{IdSrv4ClientGrantType})
-                WHERE r.GrantType = $p0
+                MATCH (r:{IdSrv4GrantType})
+                WHERE r.IdentityServer4GrantType = $p0
                 SET r = $p1";
 
-                await Session.RunAsync(cypher, Params.Create(grantType.GrantType, grantType.ConvertToMap()));
+                await Session.RunAsync(cypher, Params.Create(identityServer4GrantType.GrantType, identityServer4GrantType.ConvertToMap()));
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -86,20 +116,20 @@ namespace StoresIdentityServer4.Neo4j
         }
 
         public async Task<IdentityResult> DeleteGrantTypeAsync(
-            Neo4jIdentityServer4ClientGrantType grantType,
+            Neo4JIdentityServer4IdentityServer4GrantType identityServer4GrantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-            grantType.ThrowIfNull(nameof(grantType));
+            identityServer4GrantType.ThrowIfNull(nameof(identityServer4GrantType));
             try
             {
                 var cypher = $@"
-                MATCH (r:{IdSrv4ClientGrantType})
+                MATCH (r:{IdSrv4GrantType})
                 WHERE r.GrantType = $p0
                 DETACH DELETE r";
 
-                await Session.RunAsync(cypher, Params.Create(grantType.GrantType));
+                await Session.RunAsync(cypher, Params.Create(identityServer4GrantType.GrantType));
                 return IdentityResult.Success;
             }
             catch (ClientException ex)
@@ -117,7 +147,7 @@ namespace StoresIdentityServer4.Neo4j
             try
             {
                 var cypher = $@"
-                MATCH (r:{IdSrv4ClientGrantType})
+                MATCH (r:{IdSrv4GrantType})
                 DETACH DELETE r";
 
                 await Session.RunAsync(cypher);
@@ -129,26 +159,26 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<Neo4jIdentityServer4ClientGrantType> FindGrantTypeAsync(
-            Neo4jIdentityServer4ClientGrantType grantType,
+        public async Task<Neo4JIdentityServer4IdentityServer4GrantType> FindGrantTypeAsync(
+            Neo4JIdentityServer4IdentityServer4GrantType identityServer4GrantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-            grantType.ThrowIfNull(nameof(grantType));
+            identityServer4GrantType.ThrowIfNull(nameof(identityServer4GrantType));
 
             var cypher = $@"
-                MATCH (r:{IdSrv4ClientGrantType})
+                MATCH (r:{IdSrv4GrantType})
                 WHERE r.GrantType = $p0
                 RETURN r {{ .* }}";
 
-            var result = await Session.RunAsync(cypher, Params.Create(grantType.GrantType));
+            var result = await Session.RunAsync(cypher, Params.Create(identityServer4GrantType.GrantType));
             var grantTypeRecord =
-                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4ClientGrantType>("r"));
+                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4JIdentityServer4IdentityServer4GrantType>("r"));
             return grantTypeRecord;
         }
 
-        public async Task<IList<Neo4jIdentityServer4ClientGrantType>> GetAllowedGrantTypesAsync(
+        public async Task<IList<Neo4JIdentityServer4IdentityServer4GrantType>> GetAllowedGrantTypesAsync(
             Neo4jIdentityServer4Client client, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -157,13 +187,13 @@ namespace StoresIdentityServer4.Neo4j
             client.ThrowIfNull(nameof(client));
 
             var cypher = $@"
-                MATCH (c:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasGrantType}]->(g:{IdSrv4ClientGrantType})
+                MATCH (c:{IdSrv4Client})-[:{Neo4jConstants.Relationships.HasGrantType}]->(g:{IdSrv4AllowedGrantType})
                 WHERE c.ClientId = $p0
                 RETURN g{{ .* }}";
 
             var result = await Session.RunAsync(cypher, Params.Create(client.ClientId));
 
-            var grantTypes = await result.ToListAsync(r => r.MapTo<Neo4jIdentityServer4ClientGrantType>("g"));
+            var grantTypes = await result.ToListAsync(r => r.MapTo<Neo4JIdentityServer4IdentityServer4GrantType>("g"));
             return grantTypes;
 
         }

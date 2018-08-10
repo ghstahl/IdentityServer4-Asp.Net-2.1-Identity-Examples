@@ -25,7 +25,7 @@ namespace StoresIdentityServer4.Neo4j.Entities
         public bool AllowRememberConsent { get; set; } = true;
         public bool AlwaysIncludeUserClaimsInIdToken { get; set; }
 
-        //List<ClientGrantType> AllowedGrantTypes { get; set; }
+        //List<IdentityServer4GrantType> AllowedGrantTypes { get; set; }
         public bool RequirePkce { get; set; }
         public bool AllowPlainTextPkce { get; set; }
 

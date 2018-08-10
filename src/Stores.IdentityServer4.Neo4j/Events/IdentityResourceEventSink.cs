@@ -33,7 +33,7 @@ namespace Stores.IdentityServer4Neo4j.Events
                     identityResourceChangeEvent.IdentityResource);
             }
         }
-        public IdentityResourceEventSink(IIdentityServer4ClientUserStoreAccessor<TUser, Neo4jIdentityServer4Client, Neo4jIdentityServer4ClientSecret, Neo4jIdentityServer4ClientGrantType, Neo4jIdentityServer4ApiResource, Neo4jIdentityServer4ApiResourceClaim, Neo4jIdentityServer4ApiSecret, Neo4jIdentityServer4ApiScope, Neo4jIdentityServer4ApiScopeClaim, Neo4jIdentityServer4ClientClaim, Neo4jIdentityServer4ClientCorsOrigin, Neo4jIdentityServer4ClientScope, Neo4JIdentityServer4ClientIdpRestriction, Neo4jIdentityServer4ClientProperty, Neo4jIdentityServer4ClientPostLogoutRedirectUri, Neo4jIdentityServer4ClientRedirectUri, Neo4jIdentityServer4IdentityResource, Neo4jIdentityServer4IdentityClaim> accessor) : base(accessor)
+        public IdentityResourceEventSink(IIdentityServer4ClientUserStoreAccessor<TUser, Neo4jIdentityServer4Client, Neo4jIdentityServer4ClientSecret, Neo4JIdentityServer4IdentityServer4GrantType, Neo4jIdentityServer4ApiResource, Neo4jIdentityServer4ApiResourceClaim, Neo4jIdentityServer4ApiSecret, Neo4jIdentityServer4ApiScope, Neo4jIdentityServer4ApiScopeClaim, Neo4jIdentityServer4ClientClaim, Neo4jIdentityServer4ClientCorsOrigin, Neo4jIdentityServer4ClientScope, Neo4JIdentityServer4ClientIdpRestriction, Neo4jIdentityServer4ClientProperty, Neo4jIdentityServer4ClientPostLogoutRedirectUri, Neo4jIdentityServer4ClientRedirectUri, Neo4jIdentityServer4IdentityResource, Neo4jIdentityServer4IdentityClaim> accessor) : base(accessor)
         {
         }
     }

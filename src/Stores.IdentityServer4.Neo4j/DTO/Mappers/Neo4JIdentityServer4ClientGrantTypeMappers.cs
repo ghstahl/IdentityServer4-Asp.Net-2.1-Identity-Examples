@@ -21,7 +21,7 @@ namespace StoresIdentityServer4.Neo4j.DTO.Mappers
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
         public static string ToModel(
-            this Neo4jIdentityServer4ClientGrantType entity)
+            this Neo4JIdentityServer4IdentityServer4GrantType entity)
         {
             return Mapper.Map<string>(entity);
         }
@@ -31,10 +31,10 @@ namespace StoresIdentityServer4.Neo4j.DTO.Mappers
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        public static Neo4jIdentityServer4ClientGrantType ToNeo4jClientAllowedGrantTypeEntity(
+        public static Neo4JIdentityServer4IdentityServer4GrantType ToNeo4jClientAllowedGrantTypeEntity(
             this string model)
         {
-            return Mapper.Map<Neo4jIdentityServer4ClientGrantType>(model);
+            return Mapper.Map<Neo4JIdentityServer4IdentityServer4GrantType>(model);
         }
 
     }
