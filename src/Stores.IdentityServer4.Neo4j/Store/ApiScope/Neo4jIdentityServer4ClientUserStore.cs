@@ -30,7 +30,7 @@ namespace StoresIdentityServer4.Neo4j
         private static readonly string IdSrv4ClientApiScope;
         private static readonly string IdSrv4ClientApiScopeClaim;
         private static readonly string IdSrv4ApiScopeRollup;
-        private static readonly string IdSrv4ApiResourceRollup;
+
 
         public async Task<IdentityResult> AddApiScopeAsync(
             Neo4jIdentityServer4ApiResource apiResource,

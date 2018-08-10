@@ -13,6 +13,8 @@ namespace StoresIdentityServer4.Neo4j
             public const string ApiSecret = "IdSrv4ApiSecret";
             public const string ClientRollup = "IdSrv4ClientRollup";
             public const string ApiResourceRollup = "IdSrv4ApiResourceRollup";
+            public const string ApiResourcesRollup = "IdSrv4ApiResourcesRollup";
+            
             public const string IdentityResourceRollup = "IdSrv4IdentityResourceRollup";
             
             public const string ApiScopeRollup = "IdSrv4ApiScopeRollup";
