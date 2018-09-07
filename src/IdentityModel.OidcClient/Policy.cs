@@ -53,12 +53,6 @@ namespace IdentityModel.OidcClient
         public bool RequireIdentityTokenSignature { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the identity token issuer name should match.
-        /// </summary>
-        /// <value><c>true</c> if identity token issuer name should match; otherwise, <c>false</c>.</value>
-        public bool ValidateTokenIssuerName { get; set; } = true;
-
-        /// <summary>
         /// Gets or sets the supported identity token signing algorithms.
         /// </summary>
         /// <value>
