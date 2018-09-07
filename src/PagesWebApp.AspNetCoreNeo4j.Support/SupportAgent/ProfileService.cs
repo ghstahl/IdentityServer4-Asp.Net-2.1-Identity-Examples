@@ -43,7 +43,7 @@ namespace PagesWebApp.SupportAgent
             IUserClaimsPrincipalFactory<TUser> claimsFactory,
             ILogger<IdentityServer4.AspNetIdentity.ProfileService<TUser>> logger)
         {
-            _delegateProfileService = new IdentityServer4.AspNetIdentity.ProfileService<TUser>(userManager, claimsFactory, logger);
+            _delegateProfileService = new IdentityServer4.AspNetIdentity.ProfileService<TUser>(userManager, claimsFactory);
             _logger = logger;
         }
 
