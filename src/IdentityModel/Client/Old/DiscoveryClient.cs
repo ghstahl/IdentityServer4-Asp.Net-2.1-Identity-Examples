@@ -123,19 +123,6 @@ namespace IdentityModel.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DiscoveryClient"/> class.
-        /// </summary>
-        /// <param name="authority">The authority.</param>
-        /// <param name="innerHandler">The inner handler.</param>
-        public DiscoveryClient(string authority, HttpClient httpClient)
-        {
-            var parsed = ParseUrl(authority);
-            Authority = parsed.Authority;
-            Url = parsed.Url;
-
-            Client = httpClient;
-        }
-        /// <summary>
         /// Retrieves the discovery document.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
