@@ -97,7 +97,7 @@ namespace PagesWebApp
                 .AddInMemoryPersistedGrants()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
-                .AddInMemoryClients(Config.GetClients())
+         //       .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<ApplicationUser>();
             
             // My Overrides.

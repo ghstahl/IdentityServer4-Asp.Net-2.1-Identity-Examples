@@ -1,4 +1,5 @@
 ﻿using AspNetCore.Identity.Neo4j;
+using IdentityServer4.Stores;
 using IdentityServer4Extras;
 using Microsoft.Extensions.DependencyInjection;
 using Stores.IdentityServer4Neo4j.Events;
@@ -33,14 +34,18 @@ namespace StoresIdentityServer4.Neo4j
                             Neo4jIdentityServer4IdentityResource,
                             Neo4jIdentityServer4IdentityClaim>>
                     (x => { return x.GetService<Neo4jIdentityServer4ClientUserStore<TUser>>(); });
+
+            serviceCollection.AddScoped<IClientStore>
+                (x => { return x.GetService<Neo4jIdentityServer4ClientUserStore<TUser>>(); });
+
             //   serviceCollection.AddScoped<INeo4jEventSink>(x => { return x.GetService<Neo4jIdentityServer4ClientUserStore<TUser>>(); });
             serviceCollection
                 .AddTransient<
-                    INeo4jIdentityServer4Database, 
+                    INeo4jIdentityServer4Database,
                     Neo4jIdentityServer4ClientUserStore<TUser>>();
             serviceCollection
                 .AddTransient<
-                    IIdentityServer4ModelsPopulation<TUser>, 
+                    IIdentityServer4ModelsPopulation<TUser>,
                     Neo4jIdentityServer4ClientUserStore<TUser>>();
 
 
