@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
@@ -39,9 +40,7 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClientRedirectUri,
             Neo4jIdentityServer4IdentityResource,
             Neo4jIdentityServer4IdentityClaim
-        >,
-        IClientStore,
-        IResourceStore
+        >
         where TUser : Neo4jIdentityUser
     {
         private bool _disposed;
@@ -376,23 +375,49 @@ namespace StoresIdentityServer4.Neo4j
             return IdentityResult.Success;
         }
 
-        public async Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeAsync(IEnumerable<string> scopeNames)
+        public async Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeAsync(
+            IEnumerable<string> scopeNames)
         {
-            throw new NotImplementedException();
+            if (scopeNames == null)
+            {
+                throw new ArgumentNullException(nameof(scopeNames));
+            }
+
+            var rollup = await GetIdentityResoucesRollupAsync();
+
+            var identity = from i in rollup
+                where scopeNames.Contains(i.Name)
+                select i;
+            return identity;
+
         }
 
         public async Task<IEnumerable<ApiResource>> FindApiResourcesByScopeAsync(IEnumerable<string> scopeNames)
         {
-            throw new NotImplementedException();
+            if (scopeNames == null)
+            {
+                throw new ArgumentNullException(nameof(scopeNames));
+            }
+
+            var rollup = await GetApiResoucesRollupAsync();
+
+            var api = from a in rollup
+                let scopes = (from s in a.Scopes where scopeNames.Contains(s.Name) select s)
+                where scopes.Any()
+                select a;
+
+            return api;
+
         }
 
         public async Task<ApiResource> FindApiResourceAsync(string name)
         {
-            var apiResource = await GetRollupAsync(new Neo4jIdentityServer4ApiResource()
-            {
-                Name = name
-            });
-            return apiResource;
+            var rollup = await GetApiResoucesRollupAsync();
+            var query = from item in rollup
+                where item.Name == name
+                select item;
+            var result = query.FirstOrDefault();
+            return result;
         }
 
         public async Task<Resources> GetAllResourcesAsync()

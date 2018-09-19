@@ -40,6 +40,10 @@ namespace StoresIdentityServer4.Neo4j
         Task<TIdentityResource> GetIdentityResourceAsync(
             TIdentityResource identityResource,
             CancellationToken cancellationToken = default(CancellationToken));
+        Task<TIdentityResource> FindIdentityResourceByNameAsync(
+            string name,
+            CancellationToken cancellationToken = default(CancellationToken));
+        
         Task<IList<TIdentityResource>> GetIdentityResourcesAsync(
             CancellationToken cancellationToken = default(CancellationToken));
 

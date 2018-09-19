@@ -14,6 +14,7 @@ using StoresIdentityServer4.Neo4j;
 using StoresIdentityServer4.Neo4j.DTO.Mappers;
 using StoresIdentityServer4.Neo4j.Entities;
 using StoresIdentityServer4.Neo4j.Mappers;
+using ApiResource = IdentityServer4.Models.ApiResource;
 using Client = IdentityServer4.Models.Client;
 using ClientExtra = IdentityServer4.Models.ClientExtra;
 using GrantType = IdentityServer4.Models.GrantType;
@@ -1200,6 +1201,47 @@ namespace StoresIdentityServer4.Test.Core.Store
             result.Succeeded.ShouldBeFalse();
         }
         [TestMethod]
+        public async Task Create_IdentityResource_FULL_Rollup()
+        {
+            List<TIdentityResource> identityResources = new List<TIdentityResource>();
+
+
+            var nIRCount = 2;
+            for (int i = 0; i < nIRCount; ++i)
+            {
+                var identityResource = CreateTestIdentityResource();
+                identityResources.Add(identityResource);
+
+                var result = await _clientUserStore.CreateIdentityResourceAsync(identityResource);
+
+                var nCount = 10;
+                for (int ii = 0; ii < nCount; ++ii)
+                {
+                    var identityClaim = CreateTestIdentityClaim();
+                    result = await _clientUserStore.AddIdentityClaimAsync(identityResource, identityClaim);
+                    result.ShouldNotBeNull();
+                    result.Succeeded.ShouldBeTrue();
+                }
+            }
+
+
+            var rollup =
+                await _clientUserStore.GetIdentityResoucesRollupAsync();
+            rollup.ShouldNotBeNull();
+            rollup.Count.ShouldBe(nIRCount);
+
+            
+
+            foreach (var ir in identityResources)
+            {
+                var identityResource = await _clientUserStore.FindIdentityResourceByNameAsync(ir.Name);
+                identityResource.ShouldNotBeNull();
+                identityResource.Name.ShouldBe(ir.Name);
+            }
+
+
+        }
+        [TestMethod]
         public async Task Create_IdentityResource_Delete()
         {
             var challenge = Unique.S;
@@ -1740,11 +1782,14 @@ namespace StoresIdentityServer4.Test.Core.Store
         [TestMethod]
         public async Task Create_ApiResources_FULL_Rollup()
         {
+            List<TApiResource> apiResources = new List<TApiResource>();
+
             var nApiResourceCount = 2;
             for (int i = 0; i < nApiResourceCount; ++i)
             {
 
                 var apiResouce = CreateTestApiResource();
+                apiResources.Add(apiResouce);
                 await _clientUserStore.CreateApiResourceAsync(apiResouce);
 
                 var apiScope = CreateTestApiScope();
@@ -1793,6 +1838,14 @@ namespace StoresIdentityServer4.Test.Core.Store
             rollup = await _clientUserStore.GetApiResoucesRollupAsync();
             rollup.ShouldNotBeNull();
             rollup.Count.ShouldBe(nApiResourceCount*2);
+
+            foreach (var ar in apiResources)
+            {
+                var apiResource = await _clientUserStore.FindApiResourceAsync(ar.Name);
+                apiResource.ShouldNotBeNull();
+                apiResource.Name.ShouldBe(ar.Name);
+            }
+           
 
         }
         [TestMethod]

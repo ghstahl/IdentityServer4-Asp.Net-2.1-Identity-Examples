@@ -201,16 +201,25 @@ namespace StoresIdentityServer4.Neo4j
             ThrowIfDisposed();
             identityResource.ThrowIfNull(nameof(identityResource));
 
+            return await FindIdentityResourceByNameAsync(identityResource.Name, cancellationToken);
+        }
+        public async Task<Neo4jIdentityServer4IdentityResource> FindIdentityResourceByNameAsync(
+            string name,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            name.ThrowIfNull(nameof(name));
+
             var cypher = $@"
                 MATCH (r:{IdSrv4IdentityResource}{{Name: $p0}})
                 RETURN r {{ .* }}";
 
-            var result = await Session.RunAsync(cypher, Params.Create(identityResource.Name));
+            var result = await Session.RunAsync(cypher, Params.Create(name));
             var record =
                 await result.SingleOrDefaultAsync(r => r.MapTo<Neo4jIdentityServer4IdentityResource>("r"));
             return record;
         }
-
         public async Task<IList<Neo4jIdentityServer4IdentityResource>> GetIdentityResourcesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();

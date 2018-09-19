@@ -48,6 +48,7 @@ namespace StoresIdentityServer4.Neo4j
         IIdentityServer4ModelsPopulation<TUser>,
         INeo4jIdentityServer4Database,
         IClientStore,
+        IResourceStore,
         IDisposable
         where TUser : class
         where TClient : StoresIdentityServer4.Neo4j.Entities.ClientExtra
