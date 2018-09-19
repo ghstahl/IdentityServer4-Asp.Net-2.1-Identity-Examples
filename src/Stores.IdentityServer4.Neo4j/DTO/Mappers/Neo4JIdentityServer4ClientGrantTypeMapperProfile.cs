@@ -16,22 +16,22 @@ namespace StoresIdentityServer4.Neo4j.DTO.Mappers
         public Neo4JIdentityServer4ClientGrantTypeMapperProfile()
         {
             // entity to model
-            CreateMap<Neo4JIdentityServer4IdentityServer4GrantType, string>()
+            CreateMap<Neo4JIdentityServer4GrantType, string>()
                 .ConvertUsing(r => r.GrantType);
 
 
             // model to entity
-            CreateMap<string, Neo4JIdentityServer4IdentityServer4GrantType>(MemberList.Source)
+            CreateMap<string, Neo4JIdentityServer4GrantType>(MemberList.Source)
                 .ForMember(dest => dest.GrantType, opt => opt.ResolveUsing(src => src.ToString()));
 
             CreateMap<
-                Neo4JIdentityServer4IdentityServer4GrantType,
+                Neo4JIdentityServer4GrantType,
                 StoresIdentityServer4.Neo4j.Entities.IdentityServer4GrantType
             >(MemberList.Source);
 
             CreateMap<
                 StoresIdentityServer4.Neo4j.Entities.IdentityServer4GrantType,
-                Neo4JIdentityServer4IdentityServer4GrantType
+                Neo4JIdentityServer4GrantType
             >(MemberList.Source);
 
         }

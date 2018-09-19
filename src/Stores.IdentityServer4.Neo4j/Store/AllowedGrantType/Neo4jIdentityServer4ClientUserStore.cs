@@ -20,7 +20,7 @@ namespace StoresIdentityServer4.Neo4j
 
         public async Task<IdentityResult> AddAllowedGrantTypeToClientAsync(
             Neo4jIdentityServer4Client client,
-            Neo4JIdentityServer4IdentityServer4GrantType identityServer4GrantType,
+            Neo4JIdentityServer4GrantType identityServer4GrantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -47,7 +47,7 @@ namespace StoresIdentityServer4.Neo4j
         }
 
         public async Task<IdentityResult> DeleteAllowedGrantTypeToClientAsync(Neo4jIdentityServer4Client client,
-            Neo4JIdentityServer4IdentityServer4GrantType identityServer4GrantType, CancellationToken cancellationToken = default(CancellationToken))
+            Neo4JIdentityServer4GrantType identityServer4GrantType, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -74,7 +74,7 @@ namespace StoresIdentityServer4.Neo4j
         }
 
         public async Task<IdentityResult> CreateGrantTypeAsync(
-            Neo4JIdentityServer4IdentityServer4GrantType identityServer4GrantType,
+            Neo4JIdentityServer4GrantType identityServer4GrantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -93,7 +93,7 @@ namespace StoresIdentityServer4.Neo4j
         }
 
         public async Task<IdentityResult> UpdateGrantTypeAsync(
-            Neo4JIdentityServer4IdentityServer4GrantType identityServer4GrantType,
+            Neo4JIdentityServer4GrantType identityServer4GrantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -116,7 +116,7 @@ namespace StoresIdentityServer4.Neo4j
         }
 
         public async Task<IdentityResult> DeleteGrantTypeAsync(
-            Neo4JIdentityServer4IdentityServer4GrantType identityServer4GrantType,
+            Neo4JIdentityServer4GrantType identityServer4GrantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -159,8 +159,8 @@ namespace StoresIdentityServer4.Neo4j
             }
         }
 
-        public async Task<Neo4JIdentityServer4IdentityServer4GrantType> FindGrantTypeAsync(
-            Neo4JIdentityServer4IdentityServer4GrantType identityServer4GrantType,
+        public async Task<Neo4JIdentityServer4GrantType> FindGrantTypeAsync(
+            Neo4JIdentityServer4GrantType identityServer4GrantType,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -174,11 +174,11 @@ namespace StoresIdentityServer4.Neo4j
 
             var result = await Session.RunAsync(cypher, Params.Create(identityServer4GrantType.GrantType));
             var grantTypeRecord =
-                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4JIdentityServer4IdentityServer4GrantType>("r"));
+                await result.SingleOrDefaultAsync(r => r.MapTo<Neo4JIdentityServer4GrantType>("r"));
             return grantTypeRecord;
         }
 
-        public async Task<IList<Neo4JIdentityServer4IdentityServer4GrantType>> GetAllowedGrantTypesAsync(
+        public async Task<IList<Neo4JIdentityServer4GrantType>> GetAllowedGrantTypesAsync(
             Neo4jIdentityServer4Client client, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -193,7 +193,7 @@ namespace StoresIdentityServer4.Neo4j
 
             var result = await Session.RunAsync(cypher, Params.Create(client.ClientId));
 
-            var grantTypes = await result.ToListAsync(r => r.MapTo<Neo4JIdentityServer4IdentityServer4GrantType>("g"));
+            var grantTypes = await result.ToListAsync(r => r.MapTo<Neo4JIdentityServer4GrantType>("g"));
             return grantTypes;
 
         }

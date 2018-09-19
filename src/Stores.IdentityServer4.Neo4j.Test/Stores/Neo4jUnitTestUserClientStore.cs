@@ -19,7 +19,7 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
             TestUser,
             Neo4jIdentityServer4Client,
             Neo4jIdentityServer4ClientSecret,
-            Neo4JIdentityServer4IdentityServer4GrantType,
+            Neo4JIdentityServer4GrantType,
             Neo4jIdentityServer4ApiResource,
             Neo4jIdentityServer4ApiResourceClaim,
             Neo4jIdentityServer4ApiSecret,
@@ -43,7 +43,7 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
                         TestUser,
                         Neo4jIdentityServer4Client,
                         Neo4jIdentityServer4ClientSecret,
-                        Neo4JIdentityServer4IdentityServer4GrantType,
+                        Neo4JIdentityServer4GrantType,
                         Neo4jIdentityServer4ApiResource,
                         Neo4jIdentityServer4ApiResourceClaim,
                         Neo4jIdentityServer4ApiSecret,
@@ -81,9 +81,9 @@ namespace StoresIdentityServer4.Neo4j.Test.Stores
             };
         }
 
-        protected override Neo4JIdentityServer4IdentityServer4GrantType CreateTestGrantType()
+        protected override Neo4JIdentityServer4GrantType CreateTestGrantType()
         {
-            return new Neo4JIdentityServer4IdentityServer4GrantType()
+            return new Neo4JIdentityServer4GrantType()
             {
                 GrantType = Unique.S
             };

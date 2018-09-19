@@ -4,7 +4,7 @@ using StoresIdentityServer4.Neo4j.Entities;
 namespace StoresIdentityServer4.Neo4j
 {
     [Neo4jLabel(Neo4jConstants.Labels.GrantType)]
-    public class Neo4JIdentityServer4IdentityServer4GrantType : IdentityServer4GrantType
+    public class Neo4JIdentityServer4GrantType : IdentityServer4GrantType
     {
     }
 }
