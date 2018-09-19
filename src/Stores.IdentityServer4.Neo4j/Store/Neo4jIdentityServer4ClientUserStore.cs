@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
 using IdentityServer4.Events;
 using IdentityServer4.Models;
+using IdentityServer4.Stores;
 using IdentityServer4Extras;
 using Microsoft.AspNetCore.Identity;
 using Neo4j.Driver.V1;
@@ -38,7 +39,9 @@ namespace StoresIdentityServer4.Neo4j
             Neo4jIdentityServer4ClientRedirectUri,
             Neo4jIdentityServer4IdentityResource,
             Neo4jIdentityServer4IdentityClaim
-        >
+        >,
+        IClientStore,
+        IResourceStore
         where TUser : Neo4jIdentityUser
     {
         private bool _disposed;
@@ -373,6 +376,45 @@ namespace StoresIdentityServer4.Neo4j
             return IdentityResult.Success;
         }
 
+        public async Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeAsync(IEnumerable<string> scopeNames)
+        {
+            throw new NotImplementedException();
+        }
 
+        public async Task<IEnumerable<ApiResource>> FindApiResourcesByScopeAsync(IEnumerable<string> scopeNames)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ApiResource> FindApiResourceAsync(string name)
+        {
+            var apiResource = await GetRollupAsync(new Neo4jIdentityServer4ApiResource()
+            {
+                Name = name
+            });
+            return apiResource;
+        }
+
+        public async Task<Resources> GetAllResourcesAsync()
+        {
+            var apiResources = await GetApiResourcesAsync();
+            var finalApiResources = new List<ApiResource>();
+
+            foreach (var item in apiResources)
+            {
+                var rollup = await GetRollupAsync(item);
+                finalApiResources.Add(rollup);
+            }
+
+            var identityResources = await GetIdentityResourcesAsync();
+            var finalIdentityResources = new List<IdentityResource>();
+
+            foreach (var item in identityResources)
+            {
+                var rollup = await GetRollupAsync(item);
+                finalIdentityResources.Add(rollup);
+            }
+            return new Resources(finalIdentityResources, finalApiResources);
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace StoresIdentityServer4.Neo4j
             cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4ApiResourcesRollup}) ASSERT r.Name IS UNIQUE";
             await Session.RunAsync(cypher);
 
-            cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4GrantType}) ASSERT r.IdentityServer4GrantType IS UNIQUE";
+            cypher = $@"CREATE CONSTRAINT ON (r:{IdSrv4GrantType}) ASSERT r.GrantType IS UNIQUE";
             await Session.RunAsync(cypher);
         }
         public async Task DropDatabaseAsync()
