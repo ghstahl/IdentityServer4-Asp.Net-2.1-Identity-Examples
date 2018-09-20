@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -491,7 +493,18 @@ namespace StoresIdentityServer4.Neo4j
                 return ex.ToIdentityResult();
             }
         }
+        public class ModelsScopeComparer : IEqualityComparer<IdentityServer4.Models.Scope>
+        {
+            public bool Equals(IdentityServer4.Models.Scope x, IdentityServer4.Models.Scope y)
+            {
+                return x.Name == y.Name;
+            }
 
+            public int GetHashCode(IdentityServer4.Models.Scope obj)
+            {
+                return obj.Name.GetHashCode();
+            }
+        }
         public async Task<ApiResource> RollupAsync(
             Neo4jIdentityServer4ApiResource apiResource,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -523,6 +536,9 @@ namespace StoresIdentityServer4.Neo4j
                     model.Scopes.Add(apiScopeModel);
                 }
 
+                var distinctList = model.Scopes.Distinct(new ModelsScopeComparer());
+                model.Scopes = distinctList.ToList();
+               
                 var rollup = new ApiResourceRollup()
                 {
                     ApiResourceJson = JsonConvert.SerializeObject(model),

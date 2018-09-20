@@ -37,6 +37,8 @@ namespace StoresIdentityServer4.Neo4j
 
             serviceCollection.AddScoped<IClientStore>
                 (x => { return x.GetService<Neo4jIdentityServer4ClientUserStore<TUser>>(); });
+            serviceCollection.AddScoped<IResourceStore>
+                (x => { return x.GetService<Neo4jIdentityServer4ClientUserStore<TUser>>(); });
 
             //   serviceCollection.AddScoped<INeo4jEventSink>(x => { return x.GetService<Neo4jIdentityServer4ClientUserStore<TUser>>(); });
             serviceCollection

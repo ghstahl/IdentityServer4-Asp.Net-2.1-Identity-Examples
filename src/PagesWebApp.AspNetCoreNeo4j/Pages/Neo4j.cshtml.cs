@@ -49,6 +49,12 @@ namespace PagesWebApp.AspNetCoreNeo4j.Pages
                     var clients = Config.GetClients();
                     await _neo4JIdentityServer4Database.CreateConstraintsAsync();
                     var result = await _identityServer4ModelsPopulation.InsertClients(user, clients);
+
+                    var apiResource = Config.GetApiResources();
+                    result = await _identityServer4ModelsPopulation.InsertApiResources(apiResource);
+
+                    var identityResources = Config.GetIdentityResources();
+                    result = await _identityServer4ModelsPopulation.InsertIdentityResources(identityResources);
                     break;
 
             }

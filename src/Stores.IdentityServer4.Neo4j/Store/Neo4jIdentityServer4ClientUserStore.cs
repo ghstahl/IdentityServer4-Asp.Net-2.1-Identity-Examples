@@ -422,23 +422,8 @@ namespace StoresIdentityServer4.Neo4j
 
         public async Task<Resources> GetAllResourcesAsync()
         {
-            var apiResources = await GetApiResourcesAsync();
-            var finalApiResources = new List<ApiResource>();
-
-            foreach (var item in apiResources)
-            {
-                var rollup = await GetRollupAsync(item);
-                finalApiResources.Add(rollup);
-            }
-
-            var identityResources = await GetIdentityResourcesAsync();
-            var finalIdentityResources = new List<IdentityResource>();
-
-            foreach (var item in identityResources)
-            {
-                var rollup = await GetRollupAsync(item);
-                finalIdentityResources.Add(rollup);
-            }
+            var finalApiResources = await GetApiResoucesRollupAsync();
+            var finalIdentityResources = await GetIdentityResoucesRollupAsync();
             return new Resources(finalIdentityResources, finalApiResources);
         }
     }
