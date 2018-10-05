@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
  
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
- 
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Neo4j.Driver.V1;
 using PagesWebApp.ClaimsFactory;
 using PagesWebApp.Extensions;
@@ -25,6 +25,14 @@ using PagesWebApp.Services;
 
 namespace PagesWebApp
 {
+    public class OAuth2SchemeRecord
+    {
+        public string Scheme { get; set; }
+        public string ClientId { get; set; }
+        public string Authority { get; set; }
+        public string CallbackPath { get; set; }
+        public List<string> AdditionalEndpointBaseAddresses { get; set; }
+    }
     public class Startup
     {
         /*
@@ -92,9 +100,39 @@ namespace PagesWebApp
                 .AddAspNetIdentity<ApplicationUser>();
 
             // Now my overrides
-
+            var authenticationBuilder = services.AddAuthentication();
             identityBuilder.AddSupportAgentAspNetIdentity<ApplicationUser>();
+            var section = Configuration.GetSection("oauth2");
+            var oAuth2SchemeRecords = new List<OAuth2SchemeRecord>();
+            section.Bind(oAuth2SchemeRecords);
+            foreach (var record in oAuth2SchemeRecords)
+            {
+                var scheme = record.Scheme;
+                authenticationBuilder.P7AddOpenIdConnect(scheme, scheme, options =>
+                {
+                    options.Authority = record.Authority;
+                    options.CallbackPath = record.CallbackPath;
+                    options.RequireHttpsMetadata = false;
 
+                    options.ClientId = record.ClientId;
+                    options.SaveTokens = true;
+
+                    options.Events.OnRedirectToIdentityProvider = context =>
+                    {
+                        if (context.ProtocolMessage.RequestType == OpenIdConnectRequestType.Authentication)
+                        {
+                            context.ProtocolMessage.AcrValues = "some-acr=some-value";
+                        }
+                        return Task.CompletedTask;
+                    };
+                    options.Events.OnRemoteFailure = context =>
+                    {
+                        context.Response.Redirect("/");
+                        context.HandleResponse();
+                        return Task.CompletedTask;
+                    };
+                });
+            }
 
         }
 

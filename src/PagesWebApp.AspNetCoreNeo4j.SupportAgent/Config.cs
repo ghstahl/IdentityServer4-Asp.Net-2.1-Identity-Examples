@@ -57,28 +57,26 @@ namespace PagesWebApp
                  
                 new Client
                 {
-                    ClientId = "support",
+                    ClientId = "support-agent",
                     ClientName = "Support Client",
                     AllowedGrantTypes = GrantTypes.Implicit,
                     RequireConsent = false,
                     RedirectUris =
                     {
-                        "https://localhost:44317/signin-support"
+                        "https://localhost:44318/signin-supportAgent"
                     },
                     PostLogoutRedirectUris =
                     {
 
-                        "https://localhost:44317/Identity/Account/SignoutCallbackOidc"
+                        "https://localhost:44318/Identity/Account/SignoutCallbackOidc"
                     },
                     FrontChannelLogoutSessionRequired = true,
-                    FrontChannelLogoutUri = "https://localhost:44317/Identity/Account/SignoutFrontChannel",
+                    FrontChannelLogoutUri = "https://localhost:44318/Identity/Account/SignoutFrontChannel",
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        "supportagent"
-                    }
-                    
+                        IdentityServerConstants.StandardScopes.Profile
+                    } 
                 }
             };
         }
