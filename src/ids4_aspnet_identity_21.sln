@@ -63,6 +63,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stores.IdentityServer4.Neo4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stores.IdentityServer4.Test.Core", "Stores.IdentityServer4.Test.Core\Stores.IdentityServer4.Test.Core.csproj", "{8008E3FC-BDE3-4246-AC4A-5F27D4EC0C39}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PagesWebApp.AspNetCoreNeo4j.SupportAgent", "PagesWebApp.AspNetCoreNeo4j.SupportAgent\PagesWebApp.AspNetCoreNeo4j.SupportAgent.csproj", "{6BA0C4C5-D10C-49F8-9563-D4DAC8AD8520}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +167,10 @@ Global
 		{8008E3FC-BDE3-4246-AC4A-5F27D4EC0C39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8008E3FC-BDE3-4246-AC4A-5F27D4EC0C39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8008E3FC-BDE3-4246-AC4A-5F27D4EC0C39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BA0C4C5-D10C-49F8-9563-D4DAC8AD8520}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BA0C4C5-D10C-49F8-9563-D4DAC8AD8520}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BA0C4C5-D10C-49F8-9563-D4DAC8AD8520}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BA0C4C5-D10C-49F8-9563-D4DAC8AD8520}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -188,6 +194,7 @@ Global
 		{FF2C8974-A503-481B-B6B4-7DACFEEEE8BB} = {EAD7FB7F-9F16-4834-8394-14F5D659E481}
 		{AA5C40CF-A688-474C-866F-B355B17A8B3B} = {25AD9ACD-3497-46B1-8FDB-306880344953}
 		{8008E3FC-BDE3-4246-AC4A-5F27D4EC0C39} = {25AD9ACD-3497-46B1-8FDB-306880344953}
+		{6BA0C4C5-D10C-49F8-9563-D4DAC8AD8520} = {835BE01D-776C-4462-9CBA-31E8344A069F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EC514A87-9B40-4AB3-A606-F2A2A58C4FB7}
