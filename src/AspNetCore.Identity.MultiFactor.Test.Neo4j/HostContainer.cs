@@ -7,6 +7,10 @@ using Neo4j.Driver.V1;
 
 namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
 {
+    class TenantStore : ITenantStore
+    {
+        public string TenantId { get; set; }
+    }
     public static class HostContainer
     {
         private static ServiceProvider _serviceProvider;
@@ -25,7 +29,11 @@ namespace AspNetCore.Identity.MultiFactor.Test.Neo4j
                     serviceCollection.AddScoped<IUserStore<TestUser>, Neo4jUserStore<TestUser>>();
                     serviceCollection.AddNeo4jMultiFactorStore<TestUser,TestFactor>();
                     serviceCollection.AddNeo4jTest();
-                    
+                    serviceCollection.AddScoped<ITenantStore>(s =>
+                    {
+                        var d = new TenantStore() { TenantId = "TestTenant" };
+                        return d;
+                    });
                     serviceCollection.AddTransient<IdentityErrorDescriber>();
                     //  serviceCollection.AddNeo4jRestHook();
 

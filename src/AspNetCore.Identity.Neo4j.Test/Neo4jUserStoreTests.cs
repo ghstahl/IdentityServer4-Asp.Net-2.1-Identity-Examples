@@ -14,7 +14,11 @@ namespace AspNetCore.Identity.Neo4j.Test
         [Fact]
         public void ISession_Null_Exception()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => new Neo4jUserStore<TestUser, TestRole>(null, new IdentityErrorDescriber()));
+            var exception = Assert.Throws<ArgumentNullException>(() => 
+                new Neo4jUserStore<TestUser, TestRole>(null, new TenantStore()
+                {
+                    TenantId = "TestTenant"
+                },new IdentityErrorDescriber()));
             Assert.Equal(exception.ParamName, "session");
         }
 
@@ -22,7 +26,11 @@ namespace AspNetCore.Identity.Neo4j.Test
         public async Task Throw_Disposed()
         {
             var identityErrorDescriber = new IdentityErrorDescriber();
-            var store = new Neo4jUserStore<TestUser, TestRole>(new Mock<ISession>().Object, identityErrorDescriber);
+            var store = new Neo4jUserStore<TestUser, TestRole>(new Mock<ISession>().Object,
+                new TenantStore()
+                {
+                    TenantId = "TestTenant"
+                },identityErrorDescriber);
             store.Dispose();
 
             Assert.Equal(identityErrorDescriber, store.ErrorDescriber);

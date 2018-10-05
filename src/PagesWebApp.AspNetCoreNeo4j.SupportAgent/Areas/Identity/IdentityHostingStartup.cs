@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PagesWebApp.AspNetCoreNeo4j.SupportAgent.Data;
+using PagesWebApp.Data;
 
-[assembly: HostingStartup(typeof(PagesWebApp.AspNetCoreNeo4j.SupportAgent.Areas.Identity.IdentityHostingStartup))]
-namespace PagesWebApp.AspNetCoreNeo4j.SupportAgent.Areas.Identity
+[assembly: HostingStartup(typeof(PagesWebApp.Areas.Identity.IdentityHostingStartup))]
+namespace PagesWebApp.Areas.Identity
 {
     public class IdentityHostingStartup : IHostingStartup
     {

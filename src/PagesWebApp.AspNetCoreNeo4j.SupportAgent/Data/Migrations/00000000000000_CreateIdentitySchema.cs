@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace PagesWebApp.AspNetCoreNeo4j.SupportAgent.Data.Migrations
+namespace PagesWebApp.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

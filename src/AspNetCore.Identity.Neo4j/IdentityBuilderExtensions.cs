@@ -3,10 +3,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AspNetCore.Identity.Neo4j
 {
+    class TenantStore:ITenantStore
+    {
+        public string TenantId { get; set; }
+    }
     public static class IdentityBuilderExtensions
     {
-        public static IdentityBuilder AddNeo4jDataStores(this IdentityBuilder builder)
+        public static IdentityBuilder AddNeo4jDataStores(this IdentityBuilder builder, string tenantId)
         {
+            builder.Services.AddScoped<ITenantStore>(s =>
+            {
+                var d = new TenantStore() {TenantId = tenantId};
+                return d;
+            });
             return builder
                 .AddNeo4jUserStore()
                 .AddNeo4jRoleStore();

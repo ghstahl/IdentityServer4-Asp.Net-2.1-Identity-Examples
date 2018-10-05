@@ -7,6 +7,10 @@ using StoresIdentityServer4.Neo4j;
 
 namespace StoresIdentityServer4.Neo4j.Test
 {
+    class TenantStore : ITenantStore
+    {
+        public string TenantId { get; set; }
+    }
     public static class HostContainer
     {
         private static ServiceProvider _serviceProvider;
@@ -23,7 +27,11 @@ namespace StoresIdentityServer4.Neo4j.Test
                         GraphDatabase.Driver("bolt://127.0.0.1:7687", AuthTokens.Basic("neo4j", "password")));
                     serviceCollection.AddScoped(s => s.GetService<IDriver>().Session());
                     serviceCollection.AddScoped<IUserStore<TestUser>, Neo4jUserStore<TestUser>>();
-
+                    serviceCollection.AddScoped<ITenantStore>(s =>
+                    {
+                        var d = new TenantStore() { TenantId = "TestTenant" };
+                        return d;
+                    });
                     serviceCollection.AddNeo4jClientStore<TestUser>();
                     serviceCollection.AddNeo4jTest();
 

@@ -5,6 +5,10 @@ using Neo4j.Driver.V1;
 
 namespace AspNetCore.Identity.Neo4j.Test.Common
 {
+    class TenantStore : ITenantStore
+    {
+        public string TenantId { get; set; }
+    }
     public class DatabaseFixture : IDisposable
     {
         private readonly IDriver _driver;
@@ -16,7 +20,10 @@ namespace AspNetCore.Identity.Neo4j.Test.Common
             _session = _driver.Session();
             var identityErrorDescriber = new IdentityErrorDescriber();
 
-            UserStore = new Neo4jUserStore<TestUser, TestRole>(_session, identityErrorDescriber);
+            UserStore = new Neo4jUserStore<TestUser, TestRole>(_session,new TenantStore()
+            {
+                TenantId = "TestTenant"
+            }, identityErrorDescriber);
             RoleStore = new Neo4jRoleStore<TestRole>(_session, identityErrorDescriber);
         }
 

@@ -26,7 +26,10 @@ namespace AspNetCore.Identity.Neo4j
         /// </summary>
         /// <param name="session">The <see cref="ISession"/>.</param>
         /// <param name="describer">The <see cref="IdentityErrorDescriber"/>.</param>
-        public Neo4jUserStore(ISession session, IdentityErrorDescriber describer = null) : base(session, describer) { }
+        public Neo4jUserStore(
+            ISession session,
+            ITenantStore tenantStore, 
+            IdentityErrorDescriber describer = null) : base(session, tenantStore, describer) { }
     }
 
     /// <summary>
@@ -44,7 +47,10 @@ namespace AspNetCore.Identity.Neo4j
         /// </summary>
         /// <param name="session">The <see cref="ISession"/>.</param>
         /// <param name="describer">The <see cref="IdentityErrorDescriber"/>.</param>
-        public Neo4jUserStore(ISession session, IdentityErrorDescriber describer = null) : base(session, describer) { }
+        public Neo4jUserStore(
+            ISession session, 
+            ITenantStore tenantStore,
+            IdentityErrorDescriber describer = null) : base(session, tenantStore,describer) { }
     }
 
     /// <summary>
@@ -85,7 +91,10 @@ namespace AspNetCore.Identity.Neo4j
         /// </summary>
         /// <param name="session">The context used to access the store.</param>
         /// <param name="describer">The <see cref="IdentityErrorDescriber"/> used to describe store errors.</param>
-        public Neo4jUserStore(ISession session, IdentityErrorDescriber describer = null) : base(describer ?? new IdentityErrorDescriber())
+        public Neo4jUserStore(
+            ISession session, 
+            ITenantStore tenantStore,
+            IdentityErrorDescriber describer = null) : base(tenantStore,describer ?? new IdentityErrorDescriber())
         {
             Session = session ?? throw new ArgumentNullException(nameof(session));
         }
@@ -109,6 +118,8 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentNullException(nameof(user));
             }
+
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $"CREATE (u:{User} $p0)";
             await Session.RunAsync(cypher, Params.Create(user.ConvertToMap()));
             return IdentityResult.Success;
@@ -128,12 +139,12 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentNullException(nameof(user));
             }
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
                 MATCH (u:{User})
-                WHERE u.Id = $p0
+                WHERE u.TenantId = $p0 AND r.Id = $p1
                 SET u = $p1";
-            await Session.RunAsync(cypher, Params.Create(user.Id, user.ConvertToMap()));
+            await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, user.ConvertToMap()));
 
             return IdentityResult.Success;
         }
@@ -152,14 +163,14 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentNullException(nameof(user));
             }
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
                 MATCH (u:{User})
                 OPTIONAL MATCH (u)-[:{HasLogin}]->(l:{Login})
-                WHERE u.Id = $p0
+                WHERE u.TenantId = $p0 AND u.Id = $p1
                 DETACH DELETE u, l";
 
-            await Session.RunAsync(cypher, Params.Create(user.Id));
+            await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id));
             return IdentityResult.Success;
         }
 
@@ -178,10 +189,10 @@ namespace AspNetCore.Identity.Neo4j
 
             var cypher = $@"
                 MATCH (u:{User})
-                WHERE u.Id = $p0
+                WHERE u.TenantId = $p0 AND u.Id = $p1
                 RETURN u {{ .* }}";
 
-            var result = await Session.RunAsync(cypher, Params.Create(userId));
+            var result = await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, userId));
             var user = await result.SingleOrDefaultAsync(r => r.MapTo<TUser>("u"));
             return user;
         }
@@ -201,10 +212,10 @@ namespace AspNetCore.Identity.Neo4j
 
             var cypher = $@"
                 MATCH (u:{User})
-                WHERE u.NormalizedUserName = $p0
+                WHERE u.TenantId = $p0 AND u.NormalizedUserName = $p1
                 RETURN u {{ .* }}";
 
-            var result = await Session.RunAsync(cypher, Params.Create(normalizedUserName));
+            var result = await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, normalizedUserName));
             var user = await result.SingleOrDefaultAsync(r => r.MapTo<TUser>("u"));
             return user;
         }
@@ -229,14 +240,14 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentException("Value cannot be null or empty.", nameof(normalizedRoleName));
             }
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
                 MATCH (u:{User}), (r:{Role})
-                WHERE u.Id = $p0 AND r.NormalizedName = $p1 AND NOT exists((u)-[:{InRole}]->(r))
+                WHERE u.TenantId = $p0 AND u.Id = $p1 AND r.NormalizedName = $p2 AND NOT exists((u)-[:{InRole}]->(r))
                 CREATE (u)-[ur:{InRole}]->(r)
                 RETURN ur";
 
-            var result = await Session.RunAsync(cypher, Params.Create(user.Id, normalizedRoleName));
+            var result = await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, normalizedRoleName));
             if (!await result.FetchAsync())
             {
                 throw new InvalidOperationException($"Role {normalizedRoleName} does not exist.");
@@ -262,12 +273,12 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentException("Value cannot be null or empty.", nameof(normalizedRoleName));
             }
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
                 MATCH (u:{User})-[ur:{InRole}]->(r:{Role})
-                WHERE u.Id = $p0 AND r.NormalizedName = $p1
+                WHERE u.TenantId = $p0 AND u.Id = $p1 AND r.NormalizedName = $p2
                 DELETE ur";
-            await Session.RunAsync(cypher, Params.Create(user.Id, normalizedRoleName));
+            await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, normalizedRoleName));
         }
 
         /// <summary>
@@ -285,13 +296,13 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentNullException(nameof(user));
             }
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
                 MATCH (u:{User})-[:{InRole}]->(r:{Role})
-                WHERE u.Id = $p0
+                WHERE u.TenantId = $p0 AND u.Id = $p1
                 RETURN r.Name as RoleName";
 
-            var result = await Session.RunAsync(cypher, Params.Create(user.Id));
+            var result = await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id));
             var roles = await result.ToListAsync(r => r["RoleName"].As<string>());
             return roles;
         }
@@ -318,13 +329,13 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentException("Value cannot be null or empty.", nameof(normalizedRoleName));
             }
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
                 MATCH (u:{User})-[ur:{InRole}]->(r:{Role})
-                WHERE u.Id = $p0 AND r.NormalizedName = $p1
+                WHERE u.TenantId = $p0 AND u.Id = $p1 AND r.NormalizedName = $p2
                 RETURN ur";
 
-            var result = await Session.RunAsync(cypher, Params.Create(user.Id, normalizedRoleName));
+            var result = await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, normalizedRoleName));
 
             var isInRole = await result.ToListAsync();
 
@@ -341,13 +352,13 @@ namespace AspNetCore.Identity.Neo4j
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
                 MATCH (u:{User})-[:{HasClaim}]->(c:{Claim})
-                WHERE u.Id = $p0
+                WHERE u.TenantId = $p0 AND u.Id = $p1
                 RETURN c {{ .* }}";
 
-            var result = await Session.RunAsync(cypher, Params.Create(user.Id));
+            var result = await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id));
             var claims = await result.ToListAsync(r => r.MapTo<TUserClaim>("c").ToClaim());
             return claims;
         }
@@ -373,14 +384,14 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentNullException(nameof(claims));
             }
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
-                MATCH (u:{User} {{Id: $p0}})
+                MATCH (u:{User} {{TenantId: $p0,Id: $p1}})
                 UNWIND $p1 AS claim
                 MERGE (c:{Claim} {"claim".AsMapFor<TUserClaim>()})
                 MERGE (u)-[:{HasClaim}]->(c)";
 
-            await Session.RunAsync(cypher, Params.Create(user.Id, claims.Select(c => CreateUserClaim(user, c)).ToList()));
+            await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, claims.Select(c => CreateUserClaim(user, c)).ToList()));
         }
 
         /// <summary>
@@ -410,13 +421,13 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentNullException(nameof(newClaim));
             }
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
                 MATCH (u:{User})-[:{HasClaim}]->(c:{Claim})
-                WHERE u.Id = $p0 AND c.ClaimType = $p1.ClaimType AND c.ClaimValue = $p1.ClaimValue
-                SET c.ClaimType = $p2.ClaimType, c.ClaimType = $p2.ClaimType";
+                WHERE u.TenantId = $p0 AND u.Id = $p1 AND c.ClaimType = $p2.ClaimType AND c.ClaimValue = $p2.ClaimValue
+                SET c.ClaimType = $p3.ClaimType, c.ClaimType = $p3.ClaimType";
 
-            await Session.RunAsync(cypher, Params.Create(user.Id, CreateUserClaim(user, claim), CreateUserClaim(user, newClaim)));
+            await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, CreateUserClaim(user, claim), CreateUserClaim(user, newClaim)));
         }
 
         /// <summary>
@@ -438,14 +449,14 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentNullException(nameof(claims));
             }
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
-                MATCH (u:{User} {{Id: $p0}})
+                MATCH (u:{User} {{TenantId: $p0,Id: $p1}})
                 UNWIND $p1 AS claim
                 MATCH (u)-[uc:{HasClaim}]->(c:{Claim} claim)
                 DELETE uc";
 
-            await Session.RunAsync(cypher, Params.Create(user.Id, claims.Select(c => CreateUserClaim(user, c)).ToList()));
+            await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, claims.Select(c => CreateUserClaim(user, c)).ToList()));
         }
 
         /// <summary>
@@ -467,13 +478,13 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentNullException(nameof(login));
             }
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
-                MATCH (u:{User} {{Id: $p0}})
+                MATCH (u:{User} {{TenantId: $p0,Id: $p1}})
                 MERGE (l:Login {"$p1".AsMapFor<TUserLogin>()})
                 MERGE (u)-[:{HasLogin}]->(l)";
 
-            await Session.RunAsync(cypher, Params.Create(user.Id, CreateUserLogin(user, login)));
+            await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, CreateUserLogin(user, login)));
         }
 
         /// <summary>
@@ -492,13 +503,13 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentNullException(nameof(user));
             }
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
                 MATCH (u:{User})-[:{HasLogin}]->(l:{Login})
-                WHERE u.Id = $p0 AND l.LoginProvider = $p1 AND l.ProviderKey = $p2
+                WHERE u.TenantId = $p0 AND u.Id = $p1 AND l.LoginProvider = $p2 AND l.ProviderKey = $p3
                 DETACH DELETE l";
 
-            await Session.RunAsync(cypher, Params.Create(user.Id, loginProvider, providerKey));
+            await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, loginProvider, providerKey));
         }
 
         /// <summary>
@@ -518,13 +529,13 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentNullException(nameof(user));
             }
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
                 MATCH (u:{User})-[:{HasLogin}]->(l:{Login})
-                WHERE u.Id = $p0
+                WHERE u.TenantId = $p0 AND u.Id = $p1
                 RETURN l {{ .* }}";
 
-            var result = await Session.RunAsync(cypher, Params.Create(user.Id));
+            var result = await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id));
             var logins = await result.ToListAsync(r =>
             {
                 var l = r.MapTo<TUserLogin>("l");
@@ -549,10 +560,10 @@ namespace AspNetCore.Identity.Neo4j
 
             var cypher = $@"
                 MATCH (u:{User})-[:{HasLogin}]->(l:{Login})
-                WHERE l.LoginProvider = $p0 AND l.ProviderKey = $p1
+                WHERE u.TenantId = $p0 AND l.LoginProvider = $p1 AND l.ProviderKey = $p2
                 RETURN u {{ .* }}";
 
-            var result = await Session.RunAsync(cypher, Params.Create(loginProvider, providerKey));
+            var result = await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, loginProvider, providerKey));
             var user = await result.SingleOrDefaultAsync(r => r.MapTo<TUser>("u"));
             return user;
         }
@@ -572,10 +583,10 @@ namespace AspNetCore.Identity.Neo4j
 
             var cypher = $@"
                 MATCH (u:{User})
-                WHERE u.NormalizedEmail = $p0
+                WHERE u.TenantId = $p0 AND u.NormalizedEmail = $p1
                 RETURN u {{ .* }}";
 
-            var result = await Session.RunAsync(cypher, Params.Create(normalizedEmail));
+            var result = await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, normalizedEmail));
             var user = await result.SingleOrDefaultAsync(r => r.MapTo<TUser>("u"));
             return user;
         }
@@ -599,10 +610,10 @@ namespace AspNetCore.Identity.Neo4j
 
             var cypher = $@"
                 MATCH (u:{User})-[:{HasClaim}]->(c:{Claim})
-                WHERE c.ClaimType = $p0 AND c.ClaimValue = $p1
+                WHERE u.TenantId = $p0 AND c.ClaimType = $p1 AND c.ClaimValue = $p2
                 RETURN u {{ .* }}";
 
-            var result = await Session.RunAsync(cypher, Params.Create(claim.Type, claim.Value));
+            var result = await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, claim.Type, claim.Value));
             var users = await result.ToListAsync(r => r.MapTo<TUser>("u"));
             return users;
         }
@@ -627,10 +638,10 @@ namespace AspNetCore.Identity.Neo4j
 
             var cypher = $@"
                 MATCH (u:{User})-[:{InRole}]->(r:{Role})
-                WHERE r.NormalizedName = $p0
+                WHERE u.TenantId = $p0 AND r.NormalizedName = $p1
                 RETURN u {{ .* }}";
 
-            var result = await Session.RunAsync(cypher, Params.Create(normalizedRoleName));
+            var result = await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, normalizedRoleName));
             var users = await result.ToListAsync(r => r.MapTo<TUser>("u"));
             return users;
         }
@@ -652,13 +663,13 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentNullException(nameof(user));
             }
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
-                MATCH (u:{User} {{Id: $p0}})
+                MATCH (u:{User} {{TenantId: $p0,Id: $p1}})
                 MERGE (t:{Token} {"$p1".AsMapFor<TUserToken>()})
                 MERGE (u)-[:{HasToken}]->(t)";
 
-            await Session.RunAsync(cypher, Params.Create(user.Id, CreateUserToken(user, loginProvider, name, value)));
+            await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, CreateUserToken(user, loginProvider, name, value)));
         }
 
         /// <summary>
@@ -677,13 +688,13 @@ namespace AspNetCore.Identity.Neo4j
             {
                 throw new ArgumentNullException(nameof(user));
             }
-
+            user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
                 MATCH (u:{User})-[:{HasToken}]->(t:{Token})
-                WHERE u.Id = $p0 AND t.LoginProvider = $p1 AND t.Name = $p2
+                WHERE u.TenantId = $p0 AND u.Id = $p1 AND t.LoginProvider = $p2 AND t.Name = $p3
                 DETACH DELETE t";
 
-            await Session.RunAsync(cypher, Params.Create(user.Id, loginProvider, name));
+            await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, loginProvider, name));
         }
 
         /// <summary>
@@ -706,10 +717,10 @@ namespace AspNetCore.Identity.Neo4j
 
             var cypher = $@"
                 MATCH (u:{User})-[:{HasToken}]->(t:{Token})
-                WHERE u.Id = $p0 AND t.LoginProvider = $p1 AND t.Name = $p2
+                WHERE u.TenantId = $p0 AND u.Id = $p1 AND t.LoginProvider = $p2 AND t.Name = $p3
                 RETURN t.Value AS Value";
 
-            var result = await Session.RunAsync(cypher, Params.Create(user.Id, loginProvider, name));
+            var result = await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, loginProvider, name));
             var token = await result.SingleOrDefaultAsync(r => r["Value"].As<string>());
             return token;
         }

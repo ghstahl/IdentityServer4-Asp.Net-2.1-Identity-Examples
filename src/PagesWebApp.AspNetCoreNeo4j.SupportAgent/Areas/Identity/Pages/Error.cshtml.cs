@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-namespace PagesWebApp.AspNetCoreNeo4j.SupportAgent.Areas.Identity.Pages
+namespace PagesWebApp.Areas.Identity.Pages
 {
     [AllowAnonymous]
     public class ErrorModel : PageModel

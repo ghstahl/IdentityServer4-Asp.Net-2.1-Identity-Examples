@@ -28,6 +28,10 @@ namespace AspNetCore.Identity.Neo4j
         {
             UserName = userName;
         }
+        /// <summary>
+        /// Gets or sets the TenantId for this user.
+        /// </summary>
+        public virtual string TenantId { get; set; }
 
         /// <summary>
         /// Gets or sets the primary key for this user.

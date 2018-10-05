@@ -8,6 +8,11 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AspNetCore.Identity.Neo4j
 {
+    public interface ITenantStore
+    {
+        string TenantId { get; set; }
+    }
+
     /// <summary>
     /// Represents a new instance of a persistence store for the specified user and role types.
     /// </summary>
@@ -36,12 +41,14 @@ namespace AspNetCore.Identity.Neo4j
         /// Creates a new instance.
         /// </summary>
         /// <param name="describer">The <see cref="IdentityErrorDescriber"/> used to describe store errors.</param>
-        protected Neo4jUserStoreBase(IdentityErrorDescriber describer)
+        protected Neo4jUserStoreBase(ITenantStore tenantStore,IdentityErrorDescriber describer)
         {
+            _tenantStore = tenantStore;
             ErrorDescriber = describer ?? throw new ArgumentNullException(nameof(describer));
         }
 
         private bool _disposed;
+        protected ITenantStore _tenantStore;
 
         /// <summary>
         /// Gets or sets the <see cref="IdentityErrorDescriber"/> for any error that occurred with the current operation.
@@ -914,6 +921,8 @@ namespace AspNetCore.Identity.Neo4j
             }
             return false;
         }
+
+
     }
 
     /// <summary>
@@ -939,7 +948,7 @@ namespace AspNetCore.Identity.Neo4j
         /// Creates a new instance.
         /// </summary>
         /// <param name="describer">The <see cref="IdentityErrorDescriber"/> used to describe store errors.</param>
-        protected Neo4jUserStoreBase(IdentityErrorDescriber describer) : base(describer) { }
+        protected Neo4jUserStoreBase(ITenantStore tenantStore,IdentityErrorDescriber describer) : base(tenantStore,describer) { }
 
 
         /// <summary>
