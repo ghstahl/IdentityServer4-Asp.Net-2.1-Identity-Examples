@@ -53,6 +53,7 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
+      
         public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);

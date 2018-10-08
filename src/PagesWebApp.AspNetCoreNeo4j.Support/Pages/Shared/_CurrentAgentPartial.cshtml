@@ -1,0 +1,56 @@
+﻿@using Microsoft.AspNetCore.Http.Features
+@using PagesWebApp.Agent
+@inject IAgentTracker agentTracker
+@{
+ 
+    var isLoggedIn = agentTracker?.IsLoggedIn ?? false;
+    var userName = agentTracker?.UserName ?? "";
+
+}
+
+@if (true)
+{
+    <nav id="cookieConsent" class="navbar navbar-default " role="alert">
+        <div class="container">
+ 
+            <div class="collapse navbar-collapse">
+                @if (isLoggedIn)
+                {
+                    <p class="navbar-text">
+
+                        Agent Logged In.
+                    </p>
+
+                }
+                else
+                {
+                    <p class="navbar-text">
+                        Agent is not logged in!
+                    </p>
+
+                }
+                <div class="navbar-right">
+                    @if (!isLoggedIn)
+                    {
+                        <a href="/Identity/Account/ExternalAgentLogins?returnUrl=/Identity/Account/Login" class="btn btn-info navbar-btn">Login Agent</a>
+                    }
+                    else
+                    {
+                            @userName
+                            <a href="/Identity/Account/ExternalAgentLogins?handler=Logout&returnUrl=/Identity/Account/Login" class="btn btn-info navbar-btn">Logout Agent</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script>
+        (function() {
+            document.querySelector("#cookieConsent button[data-cookie-string]").addEventListener("click",
+                function(el) {
+                    document.cookie = el.target.dataset.cookieString;
+                    document.querySelector("#cookieConsent").classList.add("hidden");
+                },
+                false);
+        })();
+    </script>
+}

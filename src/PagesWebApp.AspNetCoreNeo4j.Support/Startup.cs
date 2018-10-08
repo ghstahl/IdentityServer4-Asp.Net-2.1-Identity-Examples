@@ -16,15 +16,20 @@ using Microsoft.EntityFrameworkCore;
  
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Neo4j.Driver.V1;
+using PagesWebApp.Agent;
 using PagesWebApp.ClaimsFactory;
 using PagesWebApp.Extensions;
+using PagesWebApp.MiddleWare;
 using PagesWebApp.Services;
- 
+using ILogger = Neo4j.Driver.V1.ILogger;
+
 
 namespace PagesWebApp
 {
+ 
     public class OAuth2SchemeRecord
     {
         public string Scheme { get; set; }
@@ -35,6 +40,7 @@ namespace PagesWebApp
     }
     public class Startup
     {
+       
         /*
         private static IGraphClient GetGraphClient()
         {
@@ -44,15 +50,16 @@ namespace PagesWebApp
             return graphClient;
         }
         */
-        public Startup(IConfiguration configuration)
+        public Startup(ILoggerFactory loggerFactory, IConfiguration configuration)
         {
+           
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -75,7 +82,8 @@ namespace PagesWebApp
 
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddTransient<IEmailSender, EmailSender>();
             
@@ -133,6 +141,10 @@ namespace PagesWebApp
                     };
                 });
             }
+            services.AddTransient<IAgentTracker, AgentTracker>();
+            var serviceProvider = services.BuildServiceProvider();
+            AppDependencyResolver.Init(serviceProvider);
+            return serviceProvider;
 
         }
 
@@ -150,6 +162,7 @@ namespace PagesWebApp
                 app.UseHsts();
             }
 
+            app.UseMiddleware<PageAuthMiddleware>( );
             app.UseHttpsRedirection();
             app.UseStaticFiles();
         //    app.UseCookiePolicy();
