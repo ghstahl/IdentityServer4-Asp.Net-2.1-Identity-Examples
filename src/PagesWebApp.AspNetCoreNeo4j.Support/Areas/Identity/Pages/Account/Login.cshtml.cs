@@ -14,9 +14,14 @@ using Microsoft.Extensions.Logging;
 
 namespace PagesWebApp.Areas.Identity.Pages.Account
 {
+    public static class LoginWellKnown
+    {
+        public static string LoginReturnUrlCookieName = "_login_returnUrl";
+    }
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
+      
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private IIdentityServerInteractionService _interaction;
@@ -56,6 +61,11 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
       
         public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
+            
+            returnUrl = returnUrl ?? "/Identity/Account/Login";
+
+            Response.SetCookie(LoginWellKnown.LoginReturnUrlCookieName, returnUrl, 360);
+
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
             if (context != null)
             {
@@ -91,6 +101,10 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string button, string returnUrl = null)
         {
+           
+            var returnUrlCookie = Request.Cookies[LoginWellKnown.LoginReturnUrlCookieName];
+            returnUrl = returnUrlCookie;
+
             if (button == "stepOne")
             {
                 return RedirectToPage("./LoginStepOne", routeValues: new
@@ -100,6 +114,7 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
             }
             if (button != "login")
             {
+                Response.RemoveCookie(LoginWellKnown.LoginReturnUrlCookieName);
                 // the user clicked the "cancel" button
                 var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
                 if (context != null)
@@ -110,6 +125,7 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
                     await _interaction.GrantConsentAsync(context, ConsentResponse.Denied);
 
                     // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+                 
                     return Redirect(returnUrl);
                 }
                 else
@@ -130,6 +146,7 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    Response.RemoveCookie(LoginWellKnown.LoginReturnUrlCookieName);
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -139,6 +156,7 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
+                    Response.RemoveCookie(LoginWellKnown.LoginReturnUrlCookieName);
                     return RedirectToPage("./Lockout");
                 }
                 else

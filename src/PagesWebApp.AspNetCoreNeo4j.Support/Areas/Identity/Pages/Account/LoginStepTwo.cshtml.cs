@@ -79,6 +79,9 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string button)
         {
+            var returnUrlCookie = Request.Cookies[LoginWellKnown.LoginReturnUrlCookieName];
+            var returnUrl = returnUrlCookie;
+
             if (button != "submit")
             {
                 // the user clicked the "cancel" button
@@ -126,7 +129,8 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
                 {
                     // we can now signin.
                      await _signInManager.SignInAsync(user,  false, IdentityConstants.ApplicationScheme);
-                    return LocalRedirect(ReturnUrl);
+                    Response.RemoveCookie(LoginWellKnown.LoginReturnUrlCookieName);
+                    return LocalRedirect(returnUrl);
                 }
             }
 
