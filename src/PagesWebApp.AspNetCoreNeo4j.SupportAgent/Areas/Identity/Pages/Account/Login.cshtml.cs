@@ -12,6 +12,10 @@ using Microsoft.Extensions.Logging;
 
 namespace PagesWebApp.Areas.Identity.Pages.Account
 {
+    public static class LoginWellKnown
+    {
+        public static string LoginReturnUrlCookieName = "_login_returnUrl";
+    }
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
@@ -50,6 +54,9 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            returnUrl = returnUrl ?? "/Identity/Account/Login";
+
+            Response.SetCookie(LoginWellKnown.LoginReturnUrlCookieName, returnUrl, 360);
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -67,6 +74,10 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            
+
+            var returnUrlCookie = Request.Cookies[LoginWellKnown.LoginReturnUrlCookieName];
+            returnUrl = returnUrlCookie;
             returnUrl = returnUrl ?? Url.Content("~/");
 
             if (ModelState.IsValid)
@@ -77,6 +88,7 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    Response.RemoveCookie(LoginWellKnown.LoginReturnUrlCookieName);
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)

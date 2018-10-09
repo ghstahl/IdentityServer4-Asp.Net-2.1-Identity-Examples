@@ -63,6 +63,8 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            var returnUrlCookie = Request.Cookies[LoginWellKnown.LoginReturnUrlCookieName];
+            returnUrl = returnUrlCookie;
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
@@ -83,6 +85,7 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
+                    Response.RemoveCookie(LoginWellKnown.LoginReturnUrlCookieName);
                     return LocalRedirect(returnUrl);
                 }
                 foreach (var error in result.Errors)

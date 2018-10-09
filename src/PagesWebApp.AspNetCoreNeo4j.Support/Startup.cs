@@ -162,7 +162,7 @@ namespace PagesWebApp
                 app.UseHsts();
             }
 
-            app.UseMiddleware<PageAuthMiddleware>( );
+       //     app.UseMiddleware<PageAuthMiddleware>( );
             app.UseHttpsRedirection();
             app.UseStaticFiles();
         //    app.UseCookiePolicy();

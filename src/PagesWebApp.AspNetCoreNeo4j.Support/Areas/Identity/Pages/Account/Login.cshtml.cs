@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
@@ -11,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using PagesWebApp.Agent;
 
 namespace PagesWebApp.Areas.Identity.Pages.Account
 {
@@ -25,10 +28,15 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private IIdentityServerInteractionService _interaction;
+        private IAgentTracker _agentTracker;
 
-        public LoginModel(IIdentityServerInteractionService interaction, 
-            SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(
+            IAgentTracker agentTracker,
+            IIdentityServerInteractionService interaction, 
+            SignInManager<ApplicationUser> signInManager, 
+            ILogger<LoginModel> logger)
         {
+            _agentTracker = agentTracker;
             _interaction = interaction;
             _signInManager = signInManager;
             _logger = logger;
@@ -61,10 +69,17 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
       
         public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
-            
             returnUrl = returnUrl ?? "/Identity/Account/Login";
 
+   
             Response.SetCookie(LoginWellKnown.LoginReturnUrlCookieName, returnUrl, 360);
+            if (!_agentTracker.IsLoggedIn)
+            {
+                var dd = $"/Identity/Account/Login?returnUrl={WebUtility.UrlEncode(returnUrl)}";
+                return Redirect($"/Identity/Account/ExternalAgentLogins?returnUrl={WebUtility.UrlEncode(dd)}");
+            }
+
+          
 
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
             if (context != null)
