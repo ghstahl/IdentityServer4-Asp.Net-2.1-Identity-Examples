@@ -143,7 +143,7 @@ namespace AspNetCore.Identity.Neo4j
             var cypher = $@"
                 MATCH (u:{User})
                 WHERE u.TenantId = $p0 AND r.Id = $p1
-                SET u = $p1";
+                SET u = $p2";
             await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, user.ConvertToMap()));
 
             return IdentityResult.Success;
@@ -481,7 +481,7 @@ namespace AspNetCore.Identity.Neo4j
             user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
                 MATCH (u:{User} {{TenantId: $p0,Id: $p1}})
-                MERGE (l:Login {"$p1".AsMapFor<TUserLogin>()})
+                MERGE (l:Login {"$p2".AsMapFor<TUserLogin>()})
                 MERGE (u)-[:{HasLogin}]->(l)";
 
             await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, CreateUserLogin(user, login)));
