@@ -142,7 +142,7 @@ namespace AspNetCore.Identity.Neo4j
             user.TenantId = this._tenantStore.TenantId;
             var cypher = $@"
                 MATCH (u:{User})
-                WHERE u.TenantId = $p0 AND r.Id = $p1
+                WHERE u.TenantId = $p0 AND u.Id = $p1
                 SET u = $p2";
             await Session.RunAsync(cypher, Params.Create(this._tenantStore.TenantId, user.Id, user.ConvertToMap()));
 
