@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityServer4.AspNetIdentity;
@@ -70,18 +71,25 @@ namespace PagesWebApp.SupportAgent
         public virtual async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             await _delegateProfileService.GetProfileDataAsync(context);
+            var query = from item in context.Subject.Claims
+                where item.Type.StartsWith("agent:", StringComparison.InvariantCultureIgnoreCase)
+                select item;
+            context.IssuedClaims.AddRange(query);
+            context.IssuedClaims.Add(new Claim("role", "agent_proxy"));
+            /*
             if (_agentTracker.IsLoggedIn)
             {
                 context.IssuedClaims.Add(new Claim("agent:username", _agentTracker.UserName));
             }
+            
 
-            context.IssuedClaims.Add(new Claim("role", "agent_proxy"));
 
             _challengeQuestionsTracker.Retrieve();
             foreach (var challengeQuestion in _challengeQuestionsTracker.ChallengeQuestions)
             {
                 context.IssuedClaims.Add(new Claim("agent:challengeQuestion", challengeQuestion.Key));
             }
+            */
             _challengeQuestionsTracker.Remove();
         }
 
