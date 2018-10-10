@@ -8,6 +8,7 @@ using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using ScopedHelpers;
 
 namespace PagesWebApp.SupportAgent
 {
@@ -21,16 +22,21 @@ namespace PagesWebApp.SupportAgent
     {
         private IdentityServer4.AspNetIdentity.ProfileService<TUser> _delegateProfileService;
         private readonly ILogger<IdentityServer4.AspNetIdentity.ProfileService<TUser>> _logger;
+        private IScopedOperation _scopedOperation;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IdentityServer4.AspNetIdentity.ProfileService{TUser}"/> class.
         /// </summary>
         /// <param name="userManager">The user manager.</param>
         /// <param name="claimsFactory">The claims factory.</param>
-        public ProfileService(UserManager<TUser> userManager,
+        public ProfileService(
+            IScopedOperation scopedOperation,
+            UserManager<TUser> userManager,
             IUserClaimsPrincipalFactory<TUser> claimsFactory)
         {
-            _delegateProfileService = new IdentityServer4.AspNetIdentity.ProfileService<TUser>(userManager, claimsFactory);
+            _scopedOperation = scopedOperation;
+            _delegateProfileService =
+                new IdentityServer4.AspNetIdentity.ProfileService<TUser>(userManager, claimsFactory);
         }
 
         /// <summary>
@@ -39,11 +45,15 @@ namespace PagesWebApp.SupportAgent
         /// <param name="userManager">The user manager.</param>
         /// <param name="claimsFactory">The claims factory.</param>
         /// <param name="logger">The logger.</param>
-        public ProfileService(UserManager<TUser> userManager,
+        public ProfileService(
+            IScopedOperation scopedOperation,
+            UserManager<TUser> userManager,
             IUserClaimsPrincipalFactory<TUser> claimsFactory,
             ILogger<IdentityServer4.AspNetIdentity.ProfileService<TUser>> logger)
         {
-            _delegateProfileService = new IdentityServer4.AspNetIdentity.ProfileService<TUser>(userManager, claimsFactory);
+            _scopedOperation = scopedOperation;
+            _delegateProfileService =
+                new IdentityServer4.AspNetIdentity.ProfileService<TUser>(userManager, claimsFactory);
             _logger = logger;
         }
 
@@ -55,7 +65,12 @@ namespace PagesWebApp.SupportAgent
         public virtual async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             await _delegateProfileService.GetProfileDataAsync(context);
-            context.IssuedClaims.Add(new Claim("role","support_agent"));
+            if (_scopedOperation.Dictionary.ContainsKey("agent:username"))
+            {
+                context.IssuedClaims.Add(new Claim("agent:username", _scopedOperation.Dictionary["agent:username"] as string));
+            }
+            _scopedOperation.Dictionary.Add("role", "agent_proxy");
+
         }
 
         /// <summary>

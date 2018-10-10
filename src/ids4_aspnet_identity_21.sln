@@ -63,11 +63,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stores.IdentityServer4.Neo4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stores.IdentityServer4.Test.Core", "Stores.IdentityServer4.Test.Core\Stores.IdentityServer4.Test.Core.csproj", "{8008E3FC-BDE3-4246-AC4A-5F27D4EC0C39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PagesWebApp.AspNetCoreNeo4j.SupportAgent", "PagesWebApp.AspNetCoreNeo4j.SupportAgent\PagesWebApp.AspNetCoreNeo4j.SupportAgent.csproj", "{6BA0C4C5-D10C-49F8-9563-D4DAC8AD8520}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PagesWebApp.AspNetCoreNeo4j.SupportAgent", "PagesWebApp.AspNetCoreNeo4j.SupportAgent\PagesWebApp.AspNetCoreNeo4j.SupportAgent.csproj", "{6BA0C4C5-D10C-49F8-9563-D4DAC8AD8520}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.2.0", "2.2.0", "{B08A8416-7D77-403F-B5ED-F034AA8CC4BF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4", "IdentityServer4\IdentityServer4.csproj", "{ED40BE93-F616-41C4-B7DB-A1828F1836BB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{00C285E4-7319-4429-B036-00D9C0ED2E3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScopedHelpers", "ScopedHelpers\ScopedHelpers.csproj", "{71377CC1-D01A-48D2-B66C-1385E3DB8114}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.1.0", "2.1.0", "{5803F0AD-CBD9-4208-9E11-7CF68341ED3E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.AspNetIdentity", "IdentityServer4.AspNetIdentity\IdentityServer4.AspNetIdentity.csproj", "{DE216F99-FAAC-463B-BC19-739CC24826BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -179,6 +187,14 @@ Global
 		{ED40BE93-F616-41C4-B7DB-A1828F1836BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED40BE93-F616-41C4-B7DB-A1828F1836BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED40BE93-F616-41C4-B7DB-A1828F1836BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71377CC1-D01A-48D2-B66C-1385E3DB8114}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71377CC1-D01A-48D2-B66C-1385E3DB8114}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71377CC1-D01A-48D2-B66C-1385E3DB8114}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71377CC1-D01A-48D2-B66C-1385E3DB8114}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE216F99-FAAC-463B-BC19-739CC24826BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE216F99-FAAC-463B-BC19-739CC24826BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE216F99-FAAC-463B-BC19-739CC24826BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE216F99-FAAC-463B-BC19-739CC24826BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -205,6 +221,9 @@ Global
 		{6BA0C4C5-D10C-49F8-9563-D4DAC8AD8520} = {835BE01D-776C-4462-9CBA-31E8344A069F}
 		{B08A8416-7D77-403F-B5ED-F034AA8CC4BF} = {EAD7FB7F-9F16-4834-8394-14F5D659E481}
 		{ED40BE93-F616-41C4-B7DB-A1828F1836BB} = {B08A8416-7D77-403F-B5ED-F034AA8CC4BF}
+		{71377CC1-D01A-48D2-B66C-1385E3DB8114} = {00C285E4-7319-4429-B036-00D9C0ED2E3B}
+		{5803F0AD-CBD9-4208-9E11-7CF68341ED3E} = {EAD7FB7F-9F16-4834-8394-14F5D659E481}
+		{DE216F99-FAAC-463B-BC19-739CC24826BF} = {5803F0AD-CBD9-4208-9E11-7CF68341ED3E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EC514A87-9B40-4AB3-A606-F2A2A58C4FB7}
