@@ -25,8 +25,6 @@ using PagesWebApp.ClaimsFactory;
 using PagesWebApp.Extensions;
 using PagesWebApp.MiddleWare;
 using PagesWebApp.Services;
-using ScopedHelpers;
-using ScopedHelpers.Extensions;
 using ILogger = Neo4j.Driver.V1.ILogger;
 
 
@@ -64,7 +62,6 @@ namespace PagesWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddScopedHelpers();
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -110,7 +107,6 @@ namespace PagesWebApp
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
-                .AddScopedHelpers()
                 .AddAspNetIdentity<ApplicationUser>();
 
             // Now my overrides
@@ -132,8 +128,6 @@ namespace PagesWebApp
                     options.SaveTokens = true;
                     options.Events.OnTokenValidated = async context =>
                     {
-                        var scopedOperation = AppDependencyResolver.Current.GetService<IScopedOperation>();
-                        var dict = scopedOperation.Dictionary;
                         var claims = new List<Claim>
                         {
                             new Claim(ClaimTypes.Role, "superadmin")

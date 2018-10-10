@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Neo4j;
 using Microsoft.AspNetCore.Authentication;
@@ -22,10 +23,19 @@ using Neo4j.Driver.V1;
 using PagesWebApp.Services;
 using IdentityServer4Extras.Extensions;
 using IdentityServer4Extras.Validation;
+using Newtonsoft.Json;
+using PagesWebApp.ClaimsFactory;
+using PagesWebApp.Extensions;
 using StoresIdentityServer4.Neo4j;
 
 namespace PagesWebApp
 {
+    public class ClaimHandle
+    {
+        public string Type { get; set; }
+        public string Value { get; set; }
+    }
+
     public class OAuth2SchemeRecord
     {
         public string Scheme { get; set; }
@@ -34,6 +44,7 @@ namespace PagesWebApp
         public string CallbackPath { get; set; }
         public List<string> AdditionalEndpointBaseAddresses { get; set; }
     }
+
     public class Startup
     {
         private IHostingEnvironment _hostingEnvironment;
@@ -47,7 +58,7 @@ namespace PagesWebApp
             return graphClient;
         }
         */
-        public Startup(IConfiguration configuration,IHostingEnvironment hostingEnvironment)
+        public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
             Configuration = configuration;
@@ -56,8 +67,9 @@ namespace PagesWebApp
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -65,7 +77,8 @@ namespace PagesWebApp
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            var neo4JConnectionConfiguration = Configuration.FromSection<Neo4JConnectionConfiguration>("neo4JConnectionConfiguration");
+            var neo4JConnectionConfiguration =
+                Configuration.FromSection<Neo4JConnectionConfiguration>("neo4JConnectionConfiguration");
 
             services.AddSingleton(s => GraphDatabase.Driver(neo4JConnectionConfiguration.ConnectionString,
                 AuthTokens.Basic(neo4JConnectionConfiguration.UserName, neo4JConnectionConfiguration.Password)));
@@ -83,7 +96,10 @@ namespace PagesWebApp
 
             services.AddTransient<IEmailSender, EmailSender>();
 
-           
+            services
+                .AddScoped
+                <Microsoft.AspNetCore.Identity.IUserClaimsPrincipalFactory<ApplicationUser>,
+                    AppClaimsPrincipalFactory<ApplicationUser, Neo4jIdentityRole>>();
 
             // configure identity server with in-memory stores, keys, clients and scopes
             var identityServerBuilder = services.AddIdentityServer(options =>
@@ -95,14 +111,11 @@ namespace PagesWebApp
                 })
                 .AddDeveloperSigningCredential()
                 .AddInMemoryPersistedGrants()
-         //       .AddInMemoryIdentityResources(Config.GetIdentityResources())
-         //       .AddInMemoryApiResources(Config.GetApiResources())
-         //       .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<ApplicationUser>();
-            
+
             // My Overrides.
             identityServerBuilder.ReplaceRedirectUriValidator<StrictRemoteRedirectUriValidator>();
-
+            identityServerBuilder.SwapOutProfileService<ApplicationUser>();
 
             var authenticationBuilder = services.AddAuthentication();
             var googleClientId = Configuration["Google-ClientId"];
@@ -136,13 +149,23 @@ namespace PagesWebApp
 
                     options.ClientId = record.ClientId;
                     options.SaveTokens = true;
-
+                    options.Events.OnTokenValidated = async context =>
+                    {
+                        var query = from item in context.Principal.Claims
+                            where item.Type.StartsWith("agent:")
+                            let c = new ClaimHandle { Type = item.Type,Value = item.Value}
+                            select c;
+                        var filteredClaims = query.ToList();
+                        var json = JsonConvert.SerializeObject(filteredClaims);
+                        context.HttpContext.Response.SetCookie("_tempfilteredClaims",json,2);
+                    };
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
                         if (context.ProtocolMessage.RequestType == OpenIdConnectRequestType.Authentication)
                         {
                             context.ProtocolMessage.AcrValues = "some-acr=some-value";
                         }
+
                         return Task.CompletedTask;
                     };
                     options.Events.OnRemoteFailure = context =>
@@ -154,6 +177,9 @@ namespace PagesWebApp
                 });
             }
 
+            var serviceProvider = services.BuildServiceProvider();
+            AppDependencyResolver.Init(serviceProvider);
+            return serviceProvider;
 
         }
 
@@ -163,7 +189,7 @@ namespace PagesWebApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                
+
             }
             else
             {
@@ -173,7 +199,7 @@ namespace PagesWebApp
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-   //         app.UseCookiePolicy();
+            //         app.UseCookiePolicy();
 
             // app.UseAuthentication(); // not needed, since UseIdentityServer adds the authentication middleware
             app.UseIdentityServer();

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using PagesWebApp.Agent;
-using ScopedHelpers;
 
 namespace PagesWebApp.ClaimsFactory
 {
@@ -13,12 +12,10 @@ namespace PagesWebApp.ClaimsFactory
         where TRole : class
     {
         private IHttpContextAccessor _httpContextAccessor;
-        private IScopedOperation _scopedOperation;
         private IAgentTracker _agentTracker;
         private IChallengeQuestionsTracker _challengeQuestionsTracker;
 
         public AppClaimsPrincipalFactory(
-            IScopedOperation scopedOperation,
             IAgentTracker agentTracker,
             IChallengeQuestionsTracker challengeQuestionsTracker,
             IHttpContextAccessor httpContextAccessor,
@@ -28,7 +25,6 @@ namespace PagesWebApp.ClaimsFactory
         )
             : base(userManager, roleManager, optionsAccessor)
         {
-            _scopedOperation = scopedOperation;
             _agentTracker = agentTracker;
             _challengeQuestionsTracker = challengeQuestionsTracker;
             _httpContextAccessor = httpContextAccessor;
@@ -36,11 +32,6 @@ namespace PagesWebApp.ClaimsFactory
 
         public override async Task<ClaimsPrincipal> CreateAsync(TUser user)
         {
-            if (!_scopedOperation.Dictionary.ContainsKey("agent:username"))
-            {
-                _scopedOperation.Dictionary.Add("agent:username", _agentTracker.UserName);
-            }
-
             var principal = await base.CreateAsync(user);
             var items = _httpContextAccessor.HttpContext.Items;
             ((ClaimsIdentity) principal.Identity).AddClaim(new Claim("role", "SupportAgent"));
@@ -50,7 +41,6 @@ namespace PagesWebApp.ClaimsFactory
             {
                 ((ClaimsIdentity)principal.Identity).AddClaim(new Claim("agent:challengeQuestion", challengeQuestion.Key));
             }
-
             return principal;
         }
     }
