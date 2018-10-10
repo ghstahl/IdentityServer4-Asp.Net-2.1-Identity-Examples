@@ -131,15 +131,14 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
 
                 if (challengeResponseValid)
                 {
-                    // we can now signin.
-                     await _signInManager.SignInAsync(user,  false, IdentityConstants.ApplicationScheme);
-                    Response.RemoveCookie(LoginWellKnown.LoginReturnUrlCookieName);
-
                     foreach (var inputFactor in Input.Factors)
                     {
-                        _challengeQuestionsTracker.ChallengeQuestions.Add(inputFactor.Challenge,true);
+                        _challengeQuestionsTracker.ChallengeQuestions.Add(inputFactor.Challenge, true);
                     }
                     _challengeQuestionsTracker.Store();
+                    // we can now signin.
+                    await _signInManager.SignInAsync(user,  false, IdentityConstants.ApplicationScheme);
+                    Response.RemoveCookie(LoginWellKnown.LoginReturnUrlCookieName);
 
                     return LocalRedirect(returnUrl);
                 }

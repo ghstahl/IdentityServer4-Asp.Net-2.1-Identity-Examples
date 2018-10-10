@@ -1,60 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using IdentityModel;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 
 namespace PagesWebApp.Agent
 {
-    public class ChallengeQuestionsTracker : IChallengeQuestionsTracker
-    {
-        private const string Purpose = "ChallengeQuestions.ProtectedStore";
-        private const string CookieName = "_cq_protected";
-        private IHttpContextAccessor _httpContextAccessor;
-        private readonly IDataProtector _protector;
-      
-        public ChallengeQuestionsTracker(IDataProtectionProvider provider, IHttpContextAccessor httpContextAccessor)
-        {
-            _protector = provider.CreateProtector(Purpose);
-            _httpContextAccessor = httpContextAccessor;
-        }
-
-        private Dictionary<string, bool> _challengeQuestions;
-        public Dictionary<string, bool> ChallengeQuestions => _challengeQuestions ?? (_challengeQuestions = new Dictionary<string, bool>());
-
-        public void Store()
-        {
-            var json = JsonConvert.SerializeObject(ChallengeQuestions);
-            var bytes = Encoding.UTF8.GetBytes(json);
-            bytes = _protector.Protect(bytes);
-            var value = Base64Url.Encode(bytes);
-            _httpContextAccessor.HttpContext.Response.SetCookie(CookieName, value, 1);
-        }
-
-        public void Retrieve()
-        {
-            string value;
-            _httpContextAccessor.HttpContext.Request.Cookies.TryGetValue(CookieName, out value);
-            if (!string.IsNullOrEmpty(value))
-            {
-                var bytes = Base64Url.Decode(value);
-                bytes = _protector.Unprotect(bytes);
-                var json = Encoding.UTF8.GetString(bytes);
-                var dict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(json);
-                _challengeQuestions = dict;
-            }
-        }
-
-        public void Remove()
-        {
-            _httpContextAccessor.HttpContext.Response.RemoveCookie(CookieName);
-        }
-    }
     public class AgentTracker : IAgentTracker
     {
+        private const string Purpose = "AgentTracker.ProtectedStore";
+        private const string CookieName = "_at_Protected";
         private IHttpContextAccessor _httpContextAccessor;
+        private IDataProtector _protector;
 
         public bool IsLoggedIn
         {
@@ -129,19 +85,20 @@ namespace PagesWebApp.Agent
 
         public void StoreIdToken(string idToken)
         {
-            _httpContextAccessor.HttpContext.Response.SetCookie("_agentIdToken", idToken, 10);
+            _httpContextAccessor.HttpContext.Response.SetCookie(CookieName, idToken, 10);
         }
 
         public void RemoveIdToken()
         {
-            _httpContextAccessor.HttpContext.Response.RemoveCookie("_agentIdToken");
+            _httpContextAccessor.HttpContext.Response.RemoveCookie(CookieName);
         }
 
-        public AgentTracker(IHttpContextAccessor httpContextAccessor)
+ 
+        public AgentTracker(IDataProtectionProvider provider, IHttpContextAccessor httpContextAccessor)
         {
+            _protector = provider.CreateProtector(Purpose);
             _httpContextAccessor = httpContextAccessor;
         }
-
 
 
         private JwtSecurityToken JwtSecurityToken
@@ -149,7 +106,7 @@ namespace PagesWebApp.Agent
             get
             {
 
-                string jwtInput = _httpContextAccessor.HttpContext.Request.Cookies["_agentIdToken"];
+                string jwtInput = _httpContextAccessor.HttpContext.Request.Cookies[CookieName];
                 if (string.IsNullOrEmpty(jwtInput))
                 {
                     return null;
