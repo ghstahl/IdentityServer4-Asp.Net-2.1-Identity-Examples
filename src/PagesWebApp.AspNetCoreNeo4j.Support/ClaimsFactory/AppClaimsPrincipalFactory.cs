@@ -15,10 +15,12 @@ namespace PagesWebApp.ClaimsFactory
         private IHttpContextAccessor _httpContextAccessor;
         private IScopedOperation _scopedOperation;
         private IAgentTracker _agentTracker;
+        private IChallengeQuestionsTracker _challengeQuestionsTracker;
 
         public AppClaimsPrincipalFactory(
             IScopedOperation scopedOperation,
             IAgentTracker agentTracker,
+            IChallengeQuestionsTracker challengeQuestionsTracker,
             IHttpContextAccessor httpContextAccessor,
             UserManager<TUser> userManager,
             RoleManager<TRole> roleManager,
@@ -28,6 +30,7 @@ namespace PagesWebApp.ClaimsFactory
         {
             _scopedOperation = scopedOperation;
             _agentTracker = agentTracker;
+            _challengeQuestionsTracker = challengeQuestionsTracker;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -37,10 +40,17 @@ namespace PagesWebApp.ClaimsFactory
             {
                 _scopedOperation.Dictionary.Add("agent:username", _agentTracker.UserName);
             }
+
             var principal = await base.CreateAsync(user);
             var items = _httpContextAccessor.HttpContext.Items;
             ((ClaimsIdentity) principal.Identity).AddClaim(new Claim("role", "SupportAgent"));
-            ((ClaimsIdentity)principal.Identity).AddClaim(new Claim("agent:username", _agentTracker.UserName));
+            ((ClaimsIdentity) principal.Identity).AddClaim(new Claim("agent:username", _agentTracker.UserName));
+            _challengeQuestionsTracker.Retrieve();
+            foreach (var challengeQuestion in _challengeQuestionsTracker.ChallengeQuestions)
+            {
+                ((ClaimsIdentity)principal.Identity).AddClaim(new Claim("agent:challengeQuestion", challengeQuestion.Key));
+            }
+
             return principal;
         }
     }

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using PagesWebApp.Agent;
 
 namespace PagesWebApp.Areas.Identity.Pages.Account
 {
@@ -21,6 +22,7 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
         private ILogger<LoginModel> _logger;
         private UserManager<ApplicationUser> _userManager;
         private IIdentityServerInteractionService _interaction;
+        private IChallengeQuestionsTracker _challengeQuestionsTracker;
 
         public class InputMultiFactorStepTwoModel
         {
@@ -44,12 +46,14 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             IMultiFactorUserStore<ApplicationUser, ApplicationFactor> multiFactorUserStore,
+            IChallengeQuestionsTracker challengeQuestionsTracker,
             ILogger<LoginModel> logger)
         {
             _interaction = interaction;
             _signInManager = signInManager;
             _userManager = userManager;
             _multiFactorUserStore = multiFactorUserStore;
+            _challengeQuestionsTracker = challengeQuestionsTracker;
             _logger = logger;
         }
 
@@ -130,6 +134,13 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
                     // we can now signin.
                      await _signInManager.SignInAsync(user,  false, IdentityConstants.ApplicationScheme);
                     Response.RemoveCookie(LoginWellKnown.LoginReturnUrlCookieName);
+
+                    foreach (var inputFactor in Input.Factors)
+                    {
+                        _challengeQuestionsTracker.ChallengeQuestions.Add(inputFactor.Challenge,true);
+                    }
+                    _challengeQuestionsTracker.Store();
+
                     return LocalRedirect(returnUrl);
                 }
             }

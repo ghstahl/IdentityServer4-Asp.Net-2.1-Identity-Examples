@@ -8,6 +8,7 @@ using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using PagesWebApp.Agent;
 using ScopedHelpers;
 
 namespace PagesWebApp.SupportAgent
@@ -23,6 +24,7 @@ namespace PagesWebApp.SupportAgent
         private IdentityServer4.AspNetIdentity.ProfileService<TUser> _delegateProfileService;
         private readonly ILogger<IdentityServer4.AspNetIdentity.ProfileService<TUser>> _logger;
         private IScopedOperation _scopedOperation;
+        private IChallengeQuestionsTracker _challengeQuestionsTracker;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IdentityServer4.AspNetIdentity.ProfileService{TUser}"/> class.
@@ -31,10 +33,12 @@ namespace PagesWebApp.SupportAgent
         /// <param name="claimsFactory">The claims factory.</param>
         public ProfileService(
             IScopedOperation scopedOperation,
+            IChallengeQuestionsTracker challengeQuestionsTracker,
             UserManager<TUser> userManager,
             IUserClaimsPrincipalFactory<TUser> claimsFactory)
         {
             _scopedOperation = scopedOperation;
+            _challengeQuestionsTracker = challengeQuestionsTracker;
             _delegateProfileService =
                 new IdentityServer4.AspNetIdentity.ProfileService<TUser>(userManager, claimsFactory);
         }
@@ -47,11 +51,13 @@ namespace PagesWebApp.SupportAgent
         /// <param name="logger">The logger.</param>
         public ProfileService(
             IScopedOperation scopedOperation,
+            IChallengeQuestionsTracker challengeQuestionsTracker,
             UserManager<TUser> userManager,
             IUserClaimsPrincipalFactory<TUser> claimsFactory,
             ILogger<IdentityServer4.AspNetIdentity.ProfileService<TUser>> logger)
         {
             _scopedOperation = scopedOperation;
+            _challengeQuestionsTracker = challengeQuestionsTracker;
             _delegateProfileService =
                 new IdentityServer4.AspNetIdentity.ProfileService<TUser>(userManager, claimsFactory);
             _logger = logger;
@@ -69,8 +75,14 @@ namespace PagesWebApp.SupportAgent
             {
                 context.IssuedClaims.Add(new Claim("agent:username", _scopedOperation.Dictionary["agent:username"] as string));
             }
-            _scopedOperation.Dictionary.Add("role", "agent_proxy");
+            context.IssuedClaims.Add(new Claim("role", "agent_proxy"));
 
+            _challengeQuestionsTracker.Retrieve();
+            foreach (var challengeQuestion in _challengeQuestionsTracker.ChallengeQuestions)
+            {
+                context.IssuedClaims.Add(new Claim("agent:challengeQuestion", challengeQuestion.Key));
+            }
+            _challengeQuestionsTracker.Remove();
         }
 
         /// <summary>

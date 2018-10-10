@@ -73,9 +73,10 @@ namespace PagesWebApp
             });
 
 
-            var neo4JConnectionConfiguration = Configuration.FromSection<Neo4JConnectionConfiguration>("neo4JConnectionConfiguration");
+            var neo4JConnectionConfiguration =
+                Configuration.FromSection<Neo4JConnectionConfiguration>("neo4JConnectionConfiguration");
 
-            services.AddSingleton(s => GraphDatabase.Driver(neo4JConnectionConfiguration.ConnectionString, 
+            services.AddSingleton(s => GraphDatabase.Driver(neo4JConnectionConfiguration.ConnectionString,
                 AuthTokens.Basic(neo4JConnectionConfiguration.UserName, neo4JConnectionConfiguration.Password)));
             services.AddScoped(s => s.GetService<IDriver>().Session());
 
@@ -90,7 +91,7 @@ namespace PagesWebApp
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddTransient<IEmailSender, EmailSender>();
-            
+
             services
                 .AddScoped
                 <Microsoft.AspNetCore.Identity.IUserClaimsPrincipalFactory<ApplicationUser>,
@@ -160,6 +161,8 @@ namespace PagesWebApp
             }
 
             services.AddScoped<IAgentTracker, AgentTracker>();
+            services.AddScoped<IChallengeQuestionsTracker, ChallengeQuestionsTracker>();
+
             var serviceProvider = services.BuildServiceProvider();
             AppDependencyResolver.Init(serviceProvider);
             return serviceProvider;
