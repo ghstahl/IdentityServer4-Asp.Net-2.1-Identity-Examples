@@ -13,8 +13,9 @@ All these examples are based on the following;
 2. [PagesWebApp.AspNetCoreNeo4j](src/PagesWebApp.AspNetCoreNeo4j)  
    The Federated Gateway
 3. [PagesWebApp.AspNetCoreNeo4j.Support](src/PagesWebApp.AspNetCoreNeo4j.Support)  
-   The External Support IDP  
-
+   The KBA End User IDP.  This points to the same user database as the federated gateway.  It uses the challenge factors to authenticate the user.
+4. [PagesWebApp.AspNetCoreNeo4j.SupportAgent](src/PagesWebApp.AspNetCoreNeo4j.SupportAgent)  
+   The External SupportAgent IDP.  This points to an isolated SupportAgent user data in neo4j. 
 
 
 ## Neo4j Setup
@@ -30,18 +31,18 @@ All these examples are based on the following;
 Make sure you create a project in Neo4j using the above settings.  The following projects require Neo4J;
 [PagesWebApp.AspNetCoreNeo4j](src/PagesWebApp.AspNetCoreNeo4j)  
 [PagesWebApp.AspNetCoreNeo4j.Support](src/PagesWebApp.AspNetCoreNeo4j.Support)  
-
+[PagesWebApp.AspNetCoreNeo4j.SupportAgent](src/PagesWebApp.AspNetCoreNeo4j.SupportAgent)  
 
 ## IdentityServer4 Federated Gateways 
 [PagesWebApp](src/PagesWebApp)  
 This Federated Gateway is using the out-of-the-box framework provided by Microsoft.  
 
 [PagesWebApp.AspNetCoreNeo4j](src/PagesWebApp.AspNetCoreNeo4j)  
-This Federated Gateway is using Neo4j as its user store.  It also points to our Support IDP as an external IDP.  
+This Federated Gateway is using Neo4j as its user store.  It also points to our End User KBA IDP as an external IDP.  
 
 ## External IDP
 [PagesWebApp.AspNetCoreNeo4j.Support](src/PagesWebApp.AspNetCoreNeo4j.Support)  
-This IDP shares the same Neo4j user database as [PagesWebApp.AspNetCoreNeo4j](src/PagesWebApp.AspNetCoreNeo4j).  The support IDP is used by a support agent to ask many factor questions which results in a login.  The Support idp is recorded in the id_token so that the final clients know the difference between a user login vs on that was done over the phone.
+This IDP shares the same Neo4j user database as [PagesWebApp.AspNetCoreNeo4j](src/PagesWebApp.AspNetCoreNeo4j).  The end user KBA IDP is used by a support agent to ask many factor questions which results in a login.  The KBA idp returns an id_token that has the end user as the subject, but it contains a bunch of claims that identifies the support agent and the KBA questions that where used to get this identity.
 
 Don't forget to add many factors to a user using the Federated Gateway [PagesWebApp.AspNetCoreNeo4j](src/PagesWebApp.AspNetCoreNeo4j);  
 
