@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PagesWebApp.Agent;
+using ScopedHelpers.Extensions;
 
 namespace PagesWebApp.Areas.Identity.Pages.Account
 {

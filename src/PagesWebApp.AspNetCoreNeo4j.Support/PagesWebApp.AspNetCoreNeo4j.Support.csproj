@@ -25,6 +25,7 @@
     <ProjectReference Include="..\IdentityServer4.AspNetIdentity.All\IdentityServer4.AspNetIdentity.All.csproj" />
     <ProjectReference Include="..\IdentityServer4Extras\IdentityServer4Extras.csproj" />
     <ProjectReference Include="..\P7.AspNetCore.Authentication.OpenIdConnect\P7.AspNetCore.Authentication.OpenIdConnect.csproj" />
+    <ProjectReference Include="..\ScopedHelpers\ScopedHelpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -24,7 +24,7 @@
     {
         <div class="col-md-3">
             <h2>User</h2>
-            
+
             <table class="table">
                 <thead>
                 <tr>
@@ -38,9 +38,40 @@
                     <tr>
                         <th scope="row">@claim.Type</th>
                         <td>@claim.Value</td>
-                          
+
                     </tr>
                 }
+                </tbody>
+            </table>
+        </div>
+    }
+
+</div>
+<div class="row">
+    <div class="col-md-3">
+       
+    </div>
+    @if (signedIn)
+    {
+        <div class="col-md-3">
+            <h2>Tokens</h2>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Type</th>
+                        <th scope="col">Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var token in Model.Tokens)
+                    {
+                        <tr>
+                            <th scope="row">@token.Key</th>
+                            <td>@token.Value</td>
+
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>

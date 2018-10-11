@@ -27,6 +27,7 @@ using Newtonsoft.Json;
 using PagesWebApp.Areas.Identity.Pages.Account;
 using PagesWebApp.ClaimsFactory;
 using PagesWebApp.Extensions;
+using ScopedHelpers.Extensions;
 using StoresIdentityServer4.Neo4j;
 
 namespace PagesWebApp
@@ -169,6 +170,8 @@ namespace PagesWebApp
                 });
             }
 
+            services.AddProtectedCookie();
+            services.AddTokenStore();
             services.AddScoped<IExternalLoginProvider, ExternalLoginProvider>();
             var serviceProvider = services.BuildServiceProvider();
             AppDependencyResolver.Init(serviceProvider);

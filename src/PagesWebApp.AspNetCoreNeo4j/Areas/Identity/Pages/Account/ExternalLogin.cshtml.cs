@@ -4,14 +4,20 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using ScopedHelpers;
 
 namespace PagesWebApp.Areas.Identity.Pages.Account
 {
+   
     public interface IExternalLoginProvider
     {
         ExternalLoginInfo ExternalLoginInfo { get; set; }
@@ -28,16 +34,19 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ExternalLoginModel> _logger;
         private IExternalLoginProvider _externalLoginProvider;
+        private ITokenStore _tokenStore;
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             IExternalLoginProvider externalLoginProvider,
+            ITokenStore tokenStore,
             ILogger<ExternalLoginModel> logger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _externalLoginProvider = externalLoginProvider;
+            _tokenStore = tokenStore;
             _logger = logger;
         }
 
@@ -87,7 +96,7 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
                 ErrorMessage = "Error loading external login information.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
-
+            _tokenStore.HarvestAndStore();
             // this is so that downstream handler in the pipeline can get access to the current Info.
             _externalLoginProvider.ExternalLoginInfo = info;
 
@@ -169,6 +178,24 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
             LoginProvider = info.LoginProvider;
             ReturnUrl = returnUrl;
             return Page();
+        }
+        private async Task<Dictionary<string, string>> HarvestOidcDataAsync()
+        {
+            var at = await HttpContext.GetTokenAsync(IdentityConstants.ExternalScheme, "access_token");
+            var idt = await HttpContext.GetTokenAsync(IdentityConstants.ExternalScheme, "id_token");
+            var rt = await HttpContext.GetTokenAsync(IdentityConstants.ExternalScheme, "refresh_token");
+            var tt = await HttpContext.GetTokenAsync(IdentityConstants.ExternalScheme, "token_type");
+            var ea = await HttpContext.GetTokenAsync(IdentityConstants.ExternalScheme, "expires_at");
+
+            var oidc = new Dictionary<string, string>
+            {
+                {"access_token", at},
+                {"id_token", idt},
+                {"refresh_token", rt},
+                {"token_type", tt},
+                {"expires_at", ea}
+            };
+            return oidc;
         }
     }
 }

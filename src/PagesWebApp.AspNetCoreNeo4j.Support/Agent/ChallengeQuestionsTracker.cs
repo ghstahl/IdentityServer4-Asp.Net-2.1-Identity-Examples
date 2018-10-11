@@ -4,9 +4,16 @@ using IdentityModel;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using ScopedHelpers.Extensions;
 
 namespace PagesWebApp.Agent
 {
+    public interface IProtectedCookieStore
+    {
+        void Store(string cookieName, string data);
+        string Read(string cookieName);
+    }
+
     public class ChallengeQuestionsTracker : IChallengeQuestionsTracker
     {
         private const string Purpose = "ChallengeQuestions.ProtectedStore";

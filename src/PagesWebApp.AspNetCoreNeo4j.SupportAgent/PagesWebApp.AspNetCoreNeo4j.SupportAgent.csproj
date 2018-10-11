@@ -26,6 +26,7 @@
     <ProjectReference Include="..\IdentityServer4.All\IdentityServer4.All.csproj" />
     <ProjectReference Include="..\IdentityServer4.AspNetIdentity.All\IdentityServer4.AspNetIdentity.All.csproj" />
     <ProjectReference Include="..\IdentityServer4Extras\IdentityServer4Extras.csproj" />
+    <ProjectReference Include="..\ScopedHelpers\ScopedHelpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

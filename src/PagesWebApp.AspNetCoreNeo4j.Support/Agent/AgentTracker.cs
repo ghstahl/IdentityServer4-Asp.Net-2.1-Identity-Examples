@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
+using ScopedHelpers.Extensions;
 
 namespace PagesWebApp.Agent
 {
