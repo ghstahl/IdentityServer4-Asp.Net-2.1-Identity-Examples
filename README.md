@@ -1,6 +1,6 @@
 # IdentityServer4 Asp.Net 2.1 Identity Examples
 
-![Architecture](./Apps.png)
+![Architecture](./End-User-KBA-IDPS.png)
 
 
 All these examples are based on the following;  
