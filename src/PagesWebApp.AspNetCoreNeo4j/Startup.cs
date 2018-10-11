@@ -24,6 +24,7 @@ using PagesWebApp.Services;
 using IdentityServer4Extras.Extensions;
 using IdentityServer4Extras.Validation;
 using Newtonsoft.Json;
+using PagesWebApp.Areas.Identity.Pages.Account;
 using PagesWebApp.ClaimsFactory;
 using PagesWebApp.Extensions;
 using StoresIdentityServer4.Neo4j;
@@ -69,7 +70,7 @@ namespace PagesWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -149,16 +150,7 @@ namespace PagesWebApp
 
                     options.ClientId = record.ClientId;
                     options.SaveTokens = true;
-                    options.Events.OnTokenValidated = async context =>
-                    {
-                        var query = from item in context.Principal.Claims
-                            where item.Type.StartsWith("agent:")
-                            let c = new ClaimHandle { Type = item.Type,Value = item.Value}
-                            select c;
-                        var filteredClaims = query.ToList();
-                        var json = JsonConvert.SerializeObject(filteredClaims);
-                        context.HttpContext.Response.SetCookie("_tempfilteredClaims",json,2);
-                    };
+                   
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
                         if (context.ProtocolMessage.RequestType == OpenIdConnectRequestType.Authentication)
@@ -177,6 +169,7 @@ namespace PagesWebApp
                 });
             }
 
+            services.AddScoped<IExternalLoginProvider, ExternalLoginProvider>();
             var serviceProvider = services.BuildServiceProvider();
             AppDependencyResolver.Init(serviceProvider);
             return serviceProvider;

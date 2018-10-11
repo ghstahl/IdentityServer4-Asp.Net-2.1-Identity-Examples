@@ -13,12 +13,12 @@ namespace PagesWebApp
         /// Models the standard openid scope
         /// </summary>
         /// <seealso cref="IdentityServer4.Models.IdentityResource" />
-        public class SupportAgent : IdentityResource
+        public class SupportAgentIdentityResource : IdentityResource
         {
             /// <summary>
-            /// Initializes a new instance of the <see cref="SupportAgent"/> class.
+            /// Initializes a new instance of the <see cref="SupportAgentIdentityResource"/> class.
             /// </summary>
-            public SupportAgent()
+            public SupportAgentIdentityResource()
             {
                 Name = "supportagent";
                 DisplayName = "Your support agent delegated user identifier";
@@ -36,7 +36,7 @@ namespace PagesWebApp
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResourcesExtra.SupportAgent(),
+                new IdentityResourcesExtra.SupportAgentIdentityResource(),
             };
         }
 

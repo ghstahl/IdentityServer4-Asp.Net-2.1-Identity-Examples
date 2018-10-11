@@ -34,7 +34,7 @@ namespace PagesWebApp.ClaimsFactory
         {
             var principal = await base.CreateAsync(user);
             var items = _httpContextAccessor.HttpContext.Items;
-            ((ClaimsIdentity) principal.Identity).AddClaim(new Claim("role", "SupportAgent"));
+            ((ClaimsIdentity) principal.Identity).AddClaim(new Claim("role", "KBADerived"));
             ((ClaimsIdentity) principal.Identity).AddClaim(new Claim("agent:username", _agentTracker.UserName));
             _challengeQuestionsTracker.Retrieve();
             foreach (var challengeQuestion in _challengeQuestionsTracker.ChallengeQuestions)

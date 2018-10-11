@@ -12,20 +12,32 @@ using Microsoft.Extensions.Logging;
 
 namespace PagesWebApp.Areas.Identity.Pages.Account
 {
+    public interface IExternalLoginProvider
+    {
+        ExternalLoginInfo ExternalLoginInfo { get; set; }
+    }
+
+    public class ExternalLoginProvider : IExternalLoginProvider
+    {
+        public ExternalLoginInfo ExternalLoginInfo { get; set; }
+    }
     [AllowAnonymous]
     public class ExternalLoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ExternalLoginModel> _logger;
+        private IExternalLoginProvider _externalLoginProvider;
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
+            IExternalLoginProvider externalLoginProvider,
             ILogger<ExternalLoginModel> logger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _externalLoginProvider = externalLoginProvider;
             _logger = logger;
         }
 
@@ -75,6 +87,9 @@ namespace PagesWebApp.Areas.Identity.Pages.Account
                 ErrorMessage = "Error loading external login information.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
+
+            // this is so that downstream handler in the pipeline can get access to the current Info.
+            _externalLoginProvider.ExternalLoginInfo = info;
 
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor : true);

@@ -13,14 +13,14 @@ namespace PagesWebApp
         /// Models the standard openid scope
         /// </summary>
         /// <seealso cref="IdentityServer4.Models.IdentityResource" />
-        public class SupportAgent : IdentityResource
+        public class EndUserKBAIdentityResource : IdentityResource
         {
             /// <summary>
-            /// Initializes a new instance of the <see cref="SupportAgent"/> class.
+            /// Initializes a new instance of the <see cref="EndUserKBAIdentityResource"/> class.
             /// </summary>
-            public SupportAgent()
+            public EndUserKBAIdentityResource()
             {
-                Name = "supportagent";
+                Name = "enduserkba";
                 DisplayName = "Your support agent delegated user identifier";
                 Required = true;
             }
@@ -36,7 +36,7 @@ namespace PagesWebApp
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResourcesExtra.SupportAgent(),
+                new IdentityResourcesExtra.EndUserKBAIdentityResource(),
             };
         }
 
@@ -57,13 +57,13 @@ namespace PagesWebApp
                  
                 new Client
                 {
-                    ClientId = "support",
-                    ClientName = "Support Client",
+                    ClientId = "federated-idp",
+                    ClientName = "Federated IDP",
                     AllowedGrantTypes = GrantTypes.Implicit,
                     RequireConsent = false,
                     RedirectUris =
                     {
-                        "https://localhost:44317/signin-support"
+                        "https://localhost:44317/signin-enduser-kba"
                     },
                     PostLogoutRedirectUris =
                     {
@@ -76,7 +76,7 @@ namespace PagesWebApp
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "supportagent"
+                        "enduserkba"
                     }
                     
                 }

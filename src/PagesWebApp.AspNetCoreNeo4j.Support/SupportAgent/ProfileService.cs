@@ -23,8 +23,6 @@ namespace PagesWebApp.SupportAgent
     {
         private IdentityServer4.AspNetIdentity.ProfileService<TUser> _delegateProfileService;
         private readonly ILogger<IdentityServer4.AspNetIdentity.ProfileService<TUser>> _logger;
-        private IChallengeQuestionsTracker _challengeQuestionsTracker;
-        private IAgentTracker _agentTracker;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IdentityServer4.AspNetIdentity.ProfileService{TUser}"/> class.
@@ -32,13 +30,9 @@ namespace PagesWebApp.SupportAgent
         /// <param name="userManager">The user manager.</param>
         /// <param name="claimsFactory">The claims factory.</param>
         public ProfileService(
-            IAgentTracker agentTracker,
-            IChallengeQuestionsTracker challengeQuestionsTracker,
             UserManager<TUser> userManager,
             IUserClaimsPrincipalFactory<TUser> claimsFactory)
         {
-            _agentTracker = agentTracker;
-            _challengeQuestionsTracker = challengeQuestionsTracker;
             _delegateProfileService =
                 new IdentityServer4.AspNetIdentity.ProfileService<TUser>(userManager, claimsFactory);
         }
@@ -50,14 +44,10 @@ namespace PagesWebApp.SupportAgent
         /// <param name="claimsFactory">The claims factory.</param>
         /// <param name="logger">The logger.</param>
         public ProfileService(
-            IAgentTracker agentTracker,
-            IChallengeQuestionsTracker challengeQuestionsTracker,
             UserManager<TUser> userManager,
             IUserClaimsPrincipalFactory<TUser> claimsFactory,
             ILogger<IdentityServer4.AspNetIdentity.ProfileService<TUser>> logger)
         {
-            _agentTracker = agentTracker;
-            _challengeQuestionsTracker = challengeQuestionsTracker;
             _delegateProfileService =
                 new IdentityServer4.AspNetIdentity.ProfileService<TUser>(userManager, claimsFactory);
             _logger = logger;
@@ -76,21 +66,6 @@ namespace PagesWebApp.SupportAgent
                 select item;
             context.IssuedClaims.AddRange(query);
             context.IssuedClaims.Add(new Claim("role", "agent_proxy"));
-            /*
-            if (_agentTracker.IsLoggedIn)
-            {
-                context.IssuedClaims.Add(new Claim("agent:username", _agentTracker.UserName));
-            }
-            
-
-
-            _challengeQuestionsTracker.Retrieve();
-            foreach (var challengeQuestion in _challengeQuestionsTracker.ChallengeQuestions)
-            {
-                context.IssuedClaims.Add(new Claim("agent:challengeQuestion", challengeQuestion.Key));
-            }
-            */
-            _challengeQuestionsTracker.Remove();
         }
 
         /// <summary>
