@@ -148,7 +148,8 @@ namespace StoresIdentityServer4.Neo4j
             }
             else
             {
-                model = JsonConvert.DeserializeObject<Client>(foundRecord.ClientJson);
+
+                model = JsonConvert.DeserializeObject<IdentityServer4.Models.ClientExtra>(foundRecord.ClientJson);
                 if (!string.IsNullOrEmpty(foundRecord.ClaimsJson))
                 {
                     var claims = JsonConvert.DeserializeObject<List<Neo4jIdentityServer4ClientClaim>>(foundRecord.ClaimsJson);
