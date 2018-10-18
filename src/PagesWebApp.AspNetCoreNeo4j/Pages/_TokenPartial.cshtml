@@ -1,0 +1,65 @@
+﻿
+@using IdentityServer4.Extensions
+@using ScopedHelpers
+@inject IAuthenticatedInformation authenticatedInformation
+@{
+    var authenticateResult = await authenticatedInformation.GetAuthenticateResultAsync();
+    string name = null;
+    if (!true.Equals(ViewData["signed-out"]))
+    {
+        name = Context.User?.GetDisplayName();
+    }
+}
+@if (authenticateResult != null && !string.IsNullOrWhiteSpace(name))
+{
+
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Tokens</h3>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal">
+                <div class="panel-group">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">AuthenticationResult Properties</div>
+                        <div class="panel-body">
+                            @foreach (var prop in authenticateResult.Properties.Items)
+                            {
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2">@prop.Key</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" id="email" value="@prop.Value" readonly>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-group">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Principal Claims</div>
+                        <div class="panel-body">
+                            @foreach (var claim in authenticateResult.Principal.Claims)
+                            {
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2">@claim.Type</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" id="email" value="@claim.Value" readonly>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+}
+
+
+
