@@ -20,11 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\2.1.2.P7.AspNetCore.Authentication.OpenIdConnect\2.1.2.P7.AspNetCore.Authentication.OpenIdConnect.csproj" />
     <ProjectReference Include="..\AspNetCore.Identity.Neo4jExtras\AspNetCore.Identity.Neo4jExtras.csproj" />
     <ProjectReference Include="..\AspNetCore.Identity.Neo4j\AspNetCore.Identity.Neo4j.csproj" />
     <ProjectReference Include="..\IdentityServer4.AspNetIdentity.All\IdentityServer4.AspNetIdentity.All.csproj" />
     <ProjectReference Include="..\IdentityServer4Extras\IdentityServer4Extras.csproj" />
+    <ProjectReference Include="..\P7.AspNetCore.Authentication.All\P7.AspNetCore.Authentication.All.csproj" />
     <ProjectReference Include="..\ScopedHelpers\ScopedHelpers.csproj" />
     <ProjectReference Include="..\Stores.IdentityServer4.Neo4j\Stores.IdentityServer4.Neo4j.csproj" />
   </ItemGroup>

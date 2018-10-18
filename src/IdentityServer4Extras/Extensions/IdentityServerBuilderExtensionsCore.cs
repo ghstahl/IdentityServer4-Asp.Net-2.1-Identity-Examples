@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using IdentityServer4Extras.Configuration.DependencyInjection;
+using IdentityServer4Extras.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityServer4Extras.Extensions
@@ -58,12 +60,22 @@ namespace IdentityServer4Extras.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
-        public static IIdentityServerBuilder ReplaceRedirectUriValidator<T>(this IIdentityServerBuilder builder)
+        public static IIdentityServerBuilder SwapOutRedirectUriValidator<T>(this IIdentityServerBuilder builder)
             where T : class, IRedirectUriValidator
         {
             builder.Services.Remove<IRedirectUriValidator>();
             builder.Services.AddTransient<IRedirectUriValidator, T>();
 
+            return builder;
+        }
+
+        public static IIdentityServerBuilder SwapOutAspNetIdentityProfileService<TUser>(this IIdentityServerBuilder builder)
+            where TUser : class
+        {
+            builder.Services.Remove<IProfileService>();
+            builder.Services.AddTransient<IdentityServer4.AspNetIdentity.ProfileService<TUser>>();
+            builder.Services.AddTransient<IProfileServicePlugin, EndUserKBAProfileService>();
+            builder.AddProfileService<IdentityServer4Extras.Services.ProfileServiceAggregator<TUser>>();
             return builder;
         }
     }

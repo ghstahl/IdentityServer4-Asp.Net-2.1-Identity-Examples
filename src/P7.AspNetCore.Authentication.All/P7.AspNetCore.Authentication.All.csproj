@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\2.1.2.P7.AspNetCore.Authentication.Google\2.1.2.P7.AspNetCore.Authentication.Google.csproj" />
+    <ProjectReference Include="..\2.1.2.P7.AspNetCore.Authentication.OpenIdConnect\2.1.2.P7.AspNetCore.Authentication.OpenIdConnect.csproj" />
+  </ItemGroup>
+
+</Project>

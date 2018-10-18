@@ -16,10 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\2.1.2.P7.AspNetCore.Authentication.OpenIdConnect\2.1.2.P7.AspNetCore.Authentication.OpenIdConnect.csproj" />
     <ProjectReference Include="..\IdentityModel.All\IdentityModel.All.csproj" />
     <ProjectReference Include="..\IdentityModelExtras\IdentityModelExtras.csproj" />
     <ProjectReference Include="..\IdentityServer4Extras\IdentityServer4Extras.csproj" />
-    <ProjectReference Include="..\P7.AspNetCore.Authentication.OpenIdConnect\P7.AspNetCore.Authentication.OpenIdConnect.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>P7.AspNetCore.Authentication.Google</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Microsoft.AspNetCore.Authentication.Google.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\2.1.2.P7.AspNetCore.Authentication.OAuth\2.1.2.P7.AspNetCore.Authentication.OAuth.csproj" />
+  </ItemGroup>
+
+</Project>

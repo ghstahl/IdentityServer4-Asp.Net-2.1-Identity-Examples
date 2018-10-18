@@ -75,7 +75,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.1.0", "2.1.0", "{5803F0AD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.AspNetIdentity", "IdentityServer4.AspNetIdentity\IdentityServer4.AspNetIdentity.csproj", "{DE216F99-FAAC-463B-BC19-739CC24826BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2.1.2.P7.AspNetCore.Authentication.OpenIdConnect", "2.1.2.P7.AspNetCore.Authentication.OpenIdConnect\2.1.2.P7.AspNetCore.Authentication.OpenIdConnect.csproj", "{D1459496-3497-490B-B8BB-0425405D11D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "2.1.2.P7.AspNetCore.Authentication.OpenIdConnect", "2.1.2.P7.AspNetCore.Authentication.OpenIdConnect\2.1.2.P7.AspNetCore.Authentication.OpenIdConnect.csproj", "{D1459496-3497-490B-B8BB-0425405D11D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2.1.2.P7.AspNetCore.Authentication.Google", "2.1.2.P7.AspNetCore.Authentication.Google\2.1.2.P7.AspNetCore.Authentication.Google.csproj", "{86C72ECF-BA22-4226-BBEE-E3B14788BEF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2.1.2.P7.AspNetCore.Authentication.OAuth", "2.1.2.P7.AspNetCore.Authentication.OAuth\2.1.2.P7.AspNetCore.Authentication.OAuth.csproj", "{A5C1DD0E-0946-44C9-B98E-D7594CB421B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P7.AspNetCore.Authentication.All", "P7.AspNetCore.Authentication.All\P7.AspNetCore.Authentication.All.csproj", "{8F0CAB30-E588-4245-B817-EC9A525E9317}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -195,6 +201,18 @@ Global
 		{D1459496-3497-490B-B8BB-0425405D11D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1459496-3497-490B-B8BB-0425405D11D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1459496-3497-490B-B8BB-0425405D11D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86C72ECF-BA22-4226-BBEE-E3B14788BEF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86C72ECF-BA22-4226-BBEE-E3B14788BEF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86C72ECF-BA22-4226-BBEE-E3B14788BEF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86C72ECF-BA22-4226-BBEE-E3B14788BEF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5C1DD0E-0946-44C9-B98E-D7594CB421B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5C1DD0E-0946-44C9-B98E-D7594CB421B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5C1DD0E-0946-44C9-B98E-D7594CB421B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5C1DD0E-0946-44C9-B98E-D7594CB421B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F0CAB30-E588-4245-B817-EC9A525E9317}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F0CAB30-E588-4245-B817-EC9A525E9317}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F0CAB30-E588-4245-B817-EC9A525E9317}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F0CAB30-E588-4245-B817-EC9A525E9317}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -224,6 +242,9 @@ Global
 		{5803F0AD-CBD9-4208-9E11-7CF68341ED3E} = {EAD7FB7F-9F16-4834-8394-14F5D659E481}
 		{DE216F99-FAAC-463B-BC19-739CC24826BF} = {5803F0AD-CBD9-4208-9E11-7CF68341ED3E}
 		{D1459496-3497-490B-B8BB-0425405D11D3} = {9506C86B-FA87-49F8-A4B3-A19198FA0650}
+		{86C72ECF-BA22-4226-BBEE-E3B14788BEF3} = {9506C86B-FA87-49F8-A4B3-A19198FA0650}
+		{A5C1DD0E-0946-44C9-B98E-D7594CB421B5} = {9506C86B-FA87-49F8-A4B3-A19198FA0650}
+		{8F0CAB30-E588-4245-B817-EC9A525E9317} = {9506C86B-FA87-49F8-A4B3-A19198FA0650}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EC514A87-9B40-4AB3-A606-F2A2A58C4FB7}

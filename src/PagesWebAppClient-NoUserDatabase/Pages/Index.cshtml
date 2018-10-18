@@ -41,7 +41,7 @@
 
 <div class="row">
   
-    @if (signedIn)
+    @if (signedIn && Model.OpenIdConnectSessionDetails != null)
     {
         <div class="col-md-9">
             <h2>OIDC</h2>

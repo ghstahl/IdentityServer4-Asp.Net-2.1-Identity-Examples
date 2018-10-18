@@ -116,15 +116,15 @@ namespace PagesWebApp
                 .AddAspNetIdentity<ApplicationUser>();
 
             // My Overrides.
-            identityServerBuilder.ReplaceRedirectUriValidator<StrictRemoteRedirectUriValidator>();
-            identityServerBuilder.SwapOutProfileService<ApplicationUser>();
+            identityServerBuilder.SwapOutRedirectUriValidator<StrictRemoteRedirectUriValidator>();
+            identityServerBuilder.SwapOutAspNetIdentityProfileService<ApplicationUser>();
 
             var authenticationBuilder = services.AddAuthentication();
             var googleClientId = Configuration["Google-ClientId"];
             var googleClientSecret = Configuration["Google-ClientSecret"];
             if (!string.IsNullOrEmpty(googleClientId) && !string.IsNullOrEmpty(googleClientSecret))
             {
-                authenticationBuilder.AddGoogle(options =>
+                authenticationBuilder.P7AddGoogle(options =>
                 {
                     options.SaveTokens = true;
                     options.ClientId = googleClientId;

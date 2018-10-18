@@ -1,4 +1,6 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
@@ -55,6 +57,12 @@ namespace PagesWebApp.IdentityServer4Services
         public virtual async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             await _delegateProfileService.GetProfileDataAsync(context);
+
+            var query = from item in context.Subject.Claims
+                where item.Type.StartsWith("agent:", StringComparison.InvariantCultureIgnoreCase)
+                select item;
+            context.IssuedClaims.AddRange(query);
+          
             /*
             if (_scopedOperation.Dictionary.ContainsKey("agent:username"))
             {
@@ -62,7 +70,7 @@ namespace PagesWebApp.IdentityServer4Services
             }
             context.IssuedClaims.Add(new Claim("role", "agent_proxy"));
             */
-          
+
         }
 
         /// <summary>
