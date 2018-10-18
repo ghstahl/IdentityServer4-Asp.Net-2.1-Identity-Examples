@@ -14,19 +14,21 @@ namespace PagesWebApp.Pages
 {
     public class IndexModel : PageModel
     {
-        private ITokenStore _tokenStore;
+        private IAuthenticatedInformation _authenticatedInformation;
 
-        public IndexModel(ITokenStore tokenStore)
+        public IndexModel(IAuthenticatedInformation authenticatedInformation)
         {
-            _tokenStore = tokenStore;
+            _authenticatedInformation = authenticatedInformation;
         }
         public List<Claim> Claims { get; set; }
+        public AuthenticateResult AuthenticateResult { get; private set; }
         public Dictionary<string,string> Tokens { get; set; }
-        public async Task OnGet()
+        public async Task OnGetAsync()
         {
             if (Request.HttpContext.User != null && User.IsAuthenticated())
             {
-                Tokens = _tokenStore.Tokens;
+                AuthenticateResult = await _authenticatedInformation.GetAuthenticateResultAsync();
+                Tokens = new Dictionary<string, string>();
                 Claims = Request.HttpContext.User.Claims.ToList();
             }
         }

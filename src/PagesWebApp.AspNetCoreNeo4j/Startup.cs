@@ -126,6 +126,7 @@ namespace PagesWebApp
             {
                 authenticationBuilder.AddGoogle(options =>
                 {
+                    options.SaveTokens = true;
                     options.ClientId = googleClientId;
                     options.ClientSecret = googleClientSecret;
                     options.Events.OnRemoteFailure = context =>
@@ -172,6 +173,8 @@ namespace PagesWebApp
 
             services.AddProtectedCookie();
             services.AddTokenStore();
+            services.AddAuthenticatedInformation();
+            
             services.AddScoped<IExternalLoginProvider, ExternalLoginProvider>();
             var serviceProvider = services.BuildServiceProvider();
             AppDependencyResolver.Init(serviceProvider);

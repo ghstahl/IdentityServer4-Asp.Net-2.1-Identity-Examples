@@ -9,6 +9,7 @@
     var signedIn = SignInManager.IsSignedIn(User);
 }
 
+<partial name="_TokenPartial" />
 <div class="row">
     <div class="col-md-3">
         <h2>Application uses</h2>
@@ -51,7 +52,7 @@
     <div class="col-md-3">
        
     </div>
-    @if (signedIn)
+    @if (signedIn && Model.Tokens != null)
     {
         <div class="col-md-3">
             <h2>Tokens</h2>
@@ -64,14 +65,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var token in Model.Tokens)
-                    {
-                        <tr>
-                            <th scope="row">@token.Key</th>
-                            <td>@token.Value</td>
 
-                        </tr>
-                    }
+                @foreach (var token in Model.Tokens)
+                {
+                    <tr>
+                        <th scope="row">@token.Key</th>
+                        <td>@token.Value</td>
+
+                    </tr>
+                }
                 </tbody>
             </table>
         </div>
