@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityModel;
+using IdentityServer4;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -38,9 +41,13 @@ namespace PagesWebApp.ClaimsFactory
             {
                 if (_externalLoginProvider.ExternalLoginInfo.LoginProvider == "EndUserKBAIDP")
                 {
+
                     var query = from item in _externalLoginProvider.ExternalLoginInfo.Principal.Claims
-                        where item.Type.StartsWith("agent:")
-                        select item;
+                        where item.Type == ClaimTypes.AuthenticationMethod 
+                              || item.Type == JwtClaimTypes.AuthenticationMethod
+                              || item.Type == "http://schemas.microsoft.com/claims/authnmethodsreferences"
+                                let c = new Claim(JwtClaimTypes.AuthenticationMethod,item.Value)
+                                select c;
                     ((ClaimsIdentity)principal.Identity).AddClaims(query);
                 }
             }
@@ -60,3 +67,4 @@ namespace PagesWebApp.ClaimsFactory
         }
     }
 }
+
