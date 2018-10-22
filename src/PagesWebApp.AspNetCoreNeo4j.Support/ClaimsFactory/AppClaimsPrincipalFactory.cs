@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -34,12 +35,21 @@ namespace PagesWebApp.ClaimsFactory
         {
             var principal = await base.CreateAsync(user);
             var items = _httpContextAccessor.HttpContext.Items;
-            ((ClaimsIdentity) principal.Identity).AddClaim(new Claim("role", "KBADerived"));
-            ((ClaimsIdentity) principal.Identity).AddClaim(new Claim("agent:username", _agentTracker.UserName));
+
+            ((ClaimsIdentity)principal.Identity).AddClaim(new Claim(JwtClaimTypes.AuthenticationMethod, $"KBADerived"));
+            ((ClaimsIdentity)principal.Identity).AddClaim(new Claim(JwtClaimTypes.AuthenticationMethod, $"agent:username:{_agentTracker.UserName}"));
+            var amr = ((ClaimsIdentity)principal.Identity).FindFirst(ClaimTypes.AuthenticationMethod);
+            if (amr != null)
+            {
+                ((ClaimsIdentity)principal.Identity).RemoveClaim(amr);
+                ((ClaimsIdentity)principal.Identity).AddClaim(new Claim(JwtClaimTypes.IdentityProvider, amr.Value));
+            }
             _challengeQuestionsTracker.Retrieve();
             foreach (var challengeQuestion in _challengeQuestionsTracker.ChallengeQuestions)
             {
-                ((ClaimsIdentity)principal.Identity).AddClaim(new Claim("agent:challengeQuestion", challengeQuestion.Key));
+                ((ClaimsIdentity)principal.Identity).AddClaim(
+                    new Claim(JwtClaimTypes.AuthenticationMethod, 
+                        $"agent:challengeQuestion:{challengeQuestion.Key}"));
             }
             return principal;
         }

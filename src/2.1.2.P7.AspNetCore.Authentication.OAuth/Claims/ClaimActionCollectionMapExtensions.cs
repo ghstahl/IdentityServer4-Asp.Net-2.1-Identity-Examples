@@ -6,7 +6,7 @@ using System.Security.Claims;
 using P7.AspNetCore.Authentication.OAuth.Claims;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.AspNetCore.Authentication
+namespace P7.AspNetCore.Authentication
 {
     public static class ClaimActionCollectionMapExtensions
     {

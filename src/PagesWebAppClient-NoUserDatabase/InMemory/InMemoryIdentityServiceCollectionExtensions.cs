@@ -49,7 +49,6 @@ namespace PagesWebAppClient.InMemory
                     options.Scope.Clear();
                     options.Scope.Add("openid");
                     options.Scope.Add("profile");
-                    options.Scope.Add("offline_access");
                     options.ClientId = record.ClientId;
                     options.SaveTokens = true;
                     options.ResponseType = "code id_token token";
