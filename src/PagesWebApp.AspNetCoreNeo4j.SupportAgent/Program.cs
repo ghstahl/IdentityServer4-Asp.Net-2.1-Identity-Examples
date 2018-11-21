@@ -41,6 +41,11 @@ namespace PagesWebApp
                 {
                     builder.ClearProviders();
                     builder.AddSerilog();
+                })
+                .UseKestrel(options =>
+                {
+                    options.Limits.MaxRequestBodySize = 30000000;
+                    options.Limits.MaxRequestLineSize = 32766;
                 });
         }
     }

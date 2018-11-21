@@ -19,6 +19,11 @@ namespace PagesWebAppClient
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseKestrel(options =>
+                {
+                    options.Limits.MaxRequestBodySize = 737280000;
+                    options.Limits.MaxRequestLineSize = 32766;
+                }).UseHttpSys(options => { options.MaxRequestBodySize = 737280000; })
                 .UseStartup<Startup>();
     }
 }

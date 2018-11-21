@@ -38,12 +38,7 @@ namespace PagesWebApp.ClaimsFactory
 
             ((ClaimsIdentity)principal.Identity).AddClaim(new Claim(JwtClaimTypes.AuthenticationMethod, $"KBADerived"));
             ((ClaimsIdentity)principal.Identity).AddClaim(new Claim(JwtClaimTypes.AuthenticationMethod, $"agent:username:{_agentTracker.UserName}"));
-            var amr = ((ClaimsIdentity)principal.Identity).FindFirst(ClaimTypes.AuthenticationMethod);
-            if (amr != null)
-            {
-                ((ClaimsIdentity)principal.Identity).RemoveClaim(amr);
-                ((ClaimsIdentity)principal.Identity).AddClaim(new Claim(JwtClaimTypes.IdentityProvider, amr.Value));
-            }
+            
             _challengeQuestionsTracker.Retrieve();
             foreach (var challengeQuestion in _challengeQuestionsTracker.ChallengeQuestions)
             {

@@ -129,7 +129,8 @@ namespace IdentityServer4.Hosting
             // and issue it as the idp claim. we then also issue a amr with "external"
             var amr = identity.FindFirst(ClaimTypes.AuthenticationMethod);
             if (amr != null &&
-                identity.FindFirst(JwtClaimTypes.IdentityProvider) == null )
+                identity.FindFirst(JwtClaimTypes.IdentityProvider) == null &&
+                identity.FindFirst(JwtClaimTypes.AuthenticationMethod) == null)
             {
                 _logger.LogDebug("Removing amr claim with value: {value}", amr.Value);
                 identity.RemoveClaim(amr);
