@@ -1,5 +1,13 @@
 # IdentityServer4 Asp.Net 2.1 Identity Examples
 
+applicationhost.config
+``` 
+<requestFiltering>
+ <requestLimits maxAllowedContentLength="30000000" maxQueryString="32768"/>
+</requestFiltering>
+```
+In our test case we are chaining up 2 idps, which starts to build up a pretty big request query string.
+
 ![Architecture](./End-User-KBA-IDPS.png)
 
 
